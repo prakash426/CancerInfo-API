@@ -281,6 +281,7 @@ def get_cancer_category_content(
 
             for s_link in cf.corroborating_sources:
                 s_obj = s_link.source
+                s_doc = getattr(s_link, "source_document", None)
                 all_sources.add(s_obj.id)
                 c_out = CorroboratingSourceOut(
                     source_id=s_obj.id,
@@ -290,7 +291,12 @@ def get_cancer_category_content(
                     country_code=s_link.country_code or s_obj.country_code,
                     url=s_link.source_url,
                     quote=s_link.quote_snippet,
-                    attribution_text=s_link.attribution_text or s_obj.attribution_text,
+                    attribution_text=(s_doc.attribution_text if s_doc and s_doc.attribution_text else None) or s_link.attribution_text or s_obj.attribution_text,
+                    document_title=s_doc.title if s_doc else None,
+                    publication_status=s_doc.publication_status if s_doc else None,
+                    reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
+                    commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                    rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
                 )
                 if user_country and (c_out.country_code == user_country or c_out.country_code == "GLOBAL"):
                     matching_sources.append(c_out)
@@ -344,6 +350,7 @@ def get_cancer_category_content(
         sources_out = []
         for cs in r.sources:
             s_obj = cs.source
+            s_doc = getattr(cs, "source_document", None)
             sources_out.append(
                 ProvenanceSourceOut(
                     source_id=s_obj.id,
@@ -354,9 +361,14 @@ def get_cancer_category_content(
                     source_updated_at=cs.source_updated_at.isoformat() + "Z" if cs.source_updated_at else None,
                     retrieved_at=cs.retrieved_at.isoformat() + "Z",
                     last_verified_at=cs.last_verified_at.isoformat() + "Z",
-                    license_status=s_obj.license_status,
-                    attribution_text=cs.attribution_text or s_obj.attribution_text,
+                    license_status=s_doc.publication_status if s_doc else s_obj.license_status,
+                    attribution_text=(s_doc.attribution_text if s_doc and s_doc.attribution_text else None) or cs.attribution_text or s_obj.attribution_text,
                     quote_snippet=cs.quote_snippet,
+                    document_title=s_doc.title if s_doc else None,
+                    publication_status=s_doc.publication_status if s_doc else None,
+                    reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
+                    commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                    rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
                 )
             )
 

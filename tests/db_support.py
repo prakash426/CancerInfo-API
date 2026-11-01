@@ -9,7 +9,12 @@ from sqlalchemy.engine import make_url
 
 
 def assert_safe_test_database(db_url):
-    url = make_url(db_url)
+    url_str = str(db_url)
+    if url_str.startswith("postgres://"):
+        url_str = url_str.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif url_str.startswith("postgresql://"):
+        url_str = url_str.replace("postgresql://", "postgresql+psycopg2://", 1)
+    url = make_url(url_str)
     if url.get_backend_name() != "postgresql":
         raise RuntimeError("A PostgreSQL test connection is required")
     if url.host not in {"127.0.0.1", "localhost", "postgres"} or url.query:

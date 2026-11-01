@@ -64,7 +64,7 @@ jobs:
         env:
           POSTGRES_TEST_URL: postgresql+psycopg2://cancerinfo_user:cancerinfo_password@localhost:5432/cancerinfo_pytest
         run: |
-          python -m pytest tests/test_migrations.py tests/test_bootstrap.py -v -ra -W default
+          python -m pytest tests/test_migrations.py tests/test_bootstrap.py tests/test_document_rights.py::test_populated_postgresql_transition -v -ra -W default
 
       - name: Validate OpenAPI schema generation smoke test
         run: |

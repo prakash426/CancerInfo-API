@@ -24,6 +24,11 @@ class ProvenanceSourceOut(BaseModel):
     license_status: str
     attribution_text: Optional[str] = None
     quote_snippet: Optional[str] = None
+    document_title: Optional[str] = None
+    publication_status: Optional[str] = None
+    reuse_conditions: Optional[str] = None
+    commercial_redistribution_allowed: Optional[bool] = None
+    rights_evidence_url: Optional[str] = None
 
 
 class CorroboratingSourceOut(BaseModel):
@@ -35,6 +40,11 @@ class CorroboratingSourceOut(BaseModel):
     url: str
     quote: Optional[str] = None
     attribution_text: Optional[str] = None
+    document_title: Optional[str] = None
+    publication_status: Optional[str] = None
+    reuse_conditions: Optional[str] = None
+    commercial_redistribution_allowed: Optional[bool] = None
+    rights_evidence_url: Optional[str] = None
 
 
 class ConsensusItemOut(BaseModel):

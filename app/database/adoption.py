@@ -15,7 +15,7 @@ from app.database.migration_check import (
 from app.database.session import Base
 import app.models  # noqa: F401
 
-BASELINE_REVISION = "0001_initial_schema"
+BASELINE_REVISION = "0002_document_rights"
 
 
 class SchemaParityError(Exception):
