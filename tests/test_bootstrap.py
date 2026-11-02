@@ -122,7 +122,7 @@ for attempt in range(2):
 print("INGESTION_SERVING_RESTART_OK")
 '''
     env = os.environ.copy()
-    env.update(DATABASE_URL=migrated_db.url.render_as_string(hide_password=False),
+    env.update(ADMIN_API_KEY="ciapi-disposable-production-test-key-2026", DATABASE_URL=migrated_db.url.render_as_string(hide_password=False),
                ENVIRONMENT="production" if migrated_db.dialect.name == "postgresql" else "development",
                CHECK_MIGRATIONS_ON_STARTUP="true")
     result = subprocess.run([sys.executable, "-c", script], env=env,
@@ -462,6 +462,7 @@ print("BOOT_OK")
 """
 
     sub_env = os.environ.copy()
+    sub_env["ADMIN_API_KEY"] = "ciapi-disposable-production-test-key-2026"
     sub_env["DATABASE_URL"] = db_url
     if is_postgres:
         sub_env["ENVIRONMENT"] = "production"

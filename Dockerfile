@@ -30,4 +30,4 @@ ENV PORT=3000
 ENV ENVIRONMENT=production
 ENV PYTHONUNBUFFERED=1
 
-CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-3000}"]
+CMD ["sh", "-c", "exec uvicorn app.main:app --no-proxy-headers --host 0.0.0.0 --port ${PORT:-3000}"]
