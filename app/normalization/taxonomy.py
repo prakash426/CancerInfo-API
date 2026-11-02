@@ -44,6 +44,19 @@ SECTION_HEURISTICS = [
 ]
 
 
+def resolve_public_category(value: str) -> str:
+    """Resolve only explicit public names and aliases; never guess a category."""
+    from app.core.errors import CategoryNotFoundError
+
+    clean = value.strip().lower()
+    slug = clean.replace(" ", "_").replace("-", "_")
+    if slug in CANONICAL_CATEGORIES:
+        return slug
+    if clean in CATEGORY_ALIASES:
+        return CATEGORY_ALIASES[clean]
+    raise CategoryNotFoundError(value)
+
+
 def normalize_category(raw_title: str) -> str:
     """
     Normalizes a section heading or topic into one of the 37 canonical categories.

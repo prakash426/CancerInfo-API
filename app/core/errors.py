@@ -4,6 +4,8 @@ Standardized API Exceptions and Error Response Handlers
 from typing import Any, Dict, Optional
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException
 
 
 class APIError(Exception):
@@ -38,6 +40,16 @@ class CategoryNotFoundError(APIError):
             message=f"Category '{category}' is not a recognized canonical category.",
             status_code=status.HTTP_404_NOT_FOUND,
             details={"category": category},
+        )
+
+
+class AmbiguousCancerError(APIError):
+    def __init__(self, identifier: str):
+        super().__init__(
+            code="AMBIGUOUS_CANCER",
+            message="Cancer identifier is ambiguous. Use a canonical ID or slug.",
+            status_code=status.HTTP_409_CONFLICT,
+            details={"identifier": identifier},
         )
 
 
@@ -90,7 +102,25 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
             "error": {
                 "code": "INTERNAL_SERVER_ERROR",
                 "message": "An unexpected error occurred while processing the request.",
-                "details": {"error_type": type(exc).__name__},
+                "details": {},
             }
         },
     )
+
+
+async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    # Do not echo request input, bodies, or exception contexts into diagnostics.
+    issues = [{"location": list(e["loc"]), "type": e["type"], "message": e["msg"]}
+              for e in exc.errors()]
+    return JSONResponse(status_code=422, content={"error": {
+        "code": "VALIDATION_ERROR", "message": "Request validation failed.",
+        "details": {"issues": issues},
+    }})
+
+
+async def http_error_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    messages = {404: ("NOT_FOUND", "Requested path was not found."),
+                405: ("METHOD_NOT_ALLOWED", "Method is not allowed for this path.")}
+    code, message = messages.get(exc.status_code, ("HTTP_ERROR", "Request could not be completed."))
+    return JSONResponse(status_code=exc.status_code, headers=exc.headers,
+                        content={"error": {"code": code, "message": message, "details": {}}})

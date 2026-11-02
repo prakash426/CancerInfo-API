@@ -27,7 +27,8 @@ class SearchRepository:
         country: Optional[str] = None,
         source_id: Optional[str] = None,
         audience: Optional[str] = None,
-        limit: int = 20,
+        limit: Optional[int] = 20,
+        skip: int = 0,
     ) -> List[Dict[str, Any]]:
         query_clean = query_str.strip()
         tokens = [t.lower() for t in query_clean.split() if t]
@@ -63,6 +64,7 @@ class SearchRepository:
         alias_matches = (
             self.db.query(CancerAlias)
             .filter(
+                CancerAlias.review_status == "APPROVED",
                 or_(
                     func.lower(CancerAlias.alias).contains(query_clean.lower()),
                     *[func.lower(CancerAlias.alias).contains(t) for t in tokens]
@@ -80,7 +82,7 @@ class SearchRepository:
             score = 1.0
             if query_clean.lower() == c.canonical_name.lower() or query_clean.lower() == c.slug.lower():
                 score = 3.0
-            elif any(query_clean.lower() == a.alias.lower() for a in c.aliases):
+            elif any(query_clean.lower() == a.alias.lower() for a in c.aliases if a.review_status == "APPROVED"):
                 score = 2.5
             elif c.canonical_name.lower().startswith(query_clean.lower()):
                 score = 2.0
@@ -92,7 +94,7 @@ class SearchRepository:
                 "category": None,
                 "snippet": c.description,
                 "record": None,
-                "matched_terms": [t for t in tokens if t in c.canonical_name.lower() or any(t in a.alias.lower() for a in c.aliases)],
+                "matched_terms": [t for t in tokens if t in c.canonical_name.lower() or any(t in a.alias.lower() for a in c.aliases if a.review_status == "APPROVED")],
             })
 
         # 3. Consensus Fact search (e.g. "cough with blood", "lump", "dimpling", "jaundice")
@@ -107,6 +109,14 @@ class SearchRepository:
 
         if detected_category:
             consensus_query = consensus_query.filter(ConsensusFact.category == detected_category)
+        if source_id:
+            consensus_query = consensus_query.filter(ConsensusFact.corroborating_sources.any(
+                ConsensusFactSource.source_id == source_id
+            ))
+        # Country personalizes citations on universal consensus; it does not
+        # exclude facts. Audience-specific searches exclude untyped consensus.
+        if audience:
+            consensus_query = consensus_query.filter(False)
 
         cf_matches = []
         # Check full query match
@@ -181,7 +191,7 @@ class SearchRepository:
             content_query = content_query.filter(ContentRecord.audience == audience.strip().lower())
 
         if source_id:
-            content_query = content_query.join(ContentRecord.sources).filter(ContentSource.source_id == source_id)
+            content_query = content_query.filter(ContentRecord.sources.any(ContentSource.source_id == source_id))
 
         # Content keyword filter
         for t in tokens:
@@ -189,7 +199,7 @@ class SearchRepository:
             if t != detected_category and t not in CATEGORY_ALIASES:
                 content_query = content_query.filter(func.lower(ContentRecord.content).contains(t))
 
-        content_matches = content_query.limit(limit).all()
+        content_matches = content_query.all()
 
         for rec in content_matches:
             # Create snippet
@@ -208,6 +218,14 @@ class SearchRepository:
                 "matched_terms": [t for t in tokens if t in rec.content.lower()],
             })
 
-        # Sort by score descending
-        results.sort(key=lambda x: x["score"], reverse=True)
-        return results[:limit]
+        # Filtered searches describe evidence rather than untyped taxonomy hits.
+        if category or country or source_id or audience:
+            results = [r for r in results if r["match_type"] != "cancer"]
+        def order(r):
+            entity = r.get("record") or r.get("consensus_item") or r["cancer"]
+            country_rank = 0
+            if country and r.get("record"):
+                country_rank = int(r["record"].country_code != country.strip().upper())
+            return (-r["score"], country_rank, r["match_type"], r["cancer"].id, entity.id)
+        results.sort(key=order)
+        return results[skip:] if limit is None else results[skip:skip + limit]

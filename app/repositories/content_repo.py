@@ -2,7 +2,7 @@
 Content Record and Provenance Repository
 """
 from typing import List, Optional, Tuple
-from sqlalchemy import desc, func
+from sqlalchemy import case, desc, func
 from sqlalchemy.orm import Session, joinedload
 from app.models import (
     ConsensusFact,
@@ -41,6 +41,7 @@ class ContentRepository:
             .order_by(
                 ConsensusFact.display_order.asc(),
                 ConsensusFact.corroboration_count.desc(),
+                ConsensusFact.id.asc(),
             )
             .all()
         )
@@ -85,13 +86,15 @@ class ContentRepository:
             query = query.filter(ContentRecord.language == language.strip().lower())
 
         if source_id:
-            query = query.join(ContentRecord.sources).filter(ContentSource.source_id == source_id)
+            query = query.filter(ContentRecord.sources.any(ContentSource.source_id == source_id))
 
         total = query.count()
         records = (
             query.order_by(
-                desc(ContentRecord.jurisdiction_scope == "GLOBAL"),  # Country-specific first if present
-                ContentRecord.created_at.asc()
+                case((ContentRecord.country_code == (country.strip().upper() if country else ""), 0),
+                     (ContentRecord.country_code == "GLOBAL", 1), else_=2),
+                ContentRecord.created_at.asc(),
+                ContentRecord.id.asc(),
             )
             .offset(skip)
             .limit(limit)

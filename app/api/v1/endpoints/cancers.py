@@ -11,7 +11,7 @@ from app.core.constants import (
 )
 from app.core.errors import CancerNotFoundError, CategoryNotFoundError
 from app.database.session import get_db
-from app.normalization.taxonomy import normalize_category
+from app.normalization.taxonomy import resolve_public_category
 from app.repositories.cancer_repo import CancerRepository
 from app.repositories.content_repo import ContentRepository
 from app.schemas.cancer import (
@@ -258,7 +258,7 @@ def get_cancer_category_content(
     if not cancer_obj:
         raise CancerNotFoundError(cancer)
 
-    norm_category = normalize_category(category)
+    norm_category = resolve_public_category(category)
     if norm_category not in CANONICAL_CATEGORIES:
         raise CategoryNotFoundError(category)
 
@@ -303,6 +303,10 @@ def get_cancer_category_content(
                 else:
                     other_sources.append(c_out)
 
+            matching_sources.sort(key=lambda citation: (
+                citation.country_code != user_country, citation.source_id, citation.url
+            ))
+            other_sources.sort(key=lambda citation: (citation.source_id, citation.url))
             # Option A with user tag personalization:
             # If user specifies country, prioritize matching country citations; keep all if none match
             if user_country and matching_sources:
@@ -416,8 +420,10 @@ def get_cancer_category_content(
         records=records_out,
     )
 
-    result_count = len(items_out) if items_out is not None else len(records_out)
-    total_records = len(items_out) if items_out is not None else total
+    # The legacy records collection owns page/limit; consensus items are a
+    # separate unpaginated collection, summarized by consensus_summary.
+    result_count = len(records_out) + len(items_out or [])
+    total_records = total
     total_pages = math.ceil(total_records / limit) if limit > 0 else 1
 
     return StandardResponse(
