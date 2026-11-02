@@ -86,3 +86,11 @@ WHO remains PERMISSION_PENDING. NHS remains REVIEW_REQUIRED pending its
 adaptation/attribution handling; the CDC item remains REVIEW_REQUIRED because
 its policy could not be reverified for this release. No research record is
 removed. This is a deliberately smaller public subset, not loss of corpus data.
+
+The subsequent NHS/CDC excerpt release is described in
+[NHS and CDC publication](NHS_CDC_PUBLICATION.md). It clears only 17 unchanged
+NHS excerpts and one exact CDC paragraph, using per-record review hashes and
+mandatory notices on category, search and history responses. The original
+paraphrases stay internal; WHO remains permission-pending. Apply migration
+0005 first, deploy the new notice-aware code, then activate the reviewed plan.
+This prevents the preceding release from publishing history without notices.

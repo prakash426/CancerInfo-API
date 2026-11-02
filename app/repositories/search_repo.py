@@ -206,7 +206,8 @@ class SearchRepository:
         for rec in content_matches:
             # Create snippet
             snippet = rec.content
-            if len(snippet) > 280:
+            # A reviewed source excerpt must retain its qualifications in every display.
+            if rec.content_type != "SOURCE_CONTENT" and len(snippet) > 280:
                 snippet = snippet[:280].rsplit(" ", 1)[0] + "..."
 
             results.append({

@@ -158,6 +158,7 @@ class SourceDocument(Base):
     redistribution_allowed = Column(Boolean, nullable=True)
     noncommercial_redistribution_allowed = Column(Boolean, nullable=True)
     approved_publication_content_types = Column(JSON, nullable=True)
+    publication_record_reviews = Column(JSON, nullable=True)
     full_text_storage_allowed = Column(Boolean, nullable=True)
     derived_summary_allowed = Column(Boolean, nullable=True)
     attribution_required = Column(Boolean, nullable=True)

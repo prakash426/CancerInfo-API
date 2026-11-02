@@ -12,6 +12,7 @@ from starlette.exceptions import HTTPException
 from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.constants import MEDICAL_DISCLAIMER
+from app.core.source_notices import SOURCE_NOTICE
 from app.core.errors import (APIError, api_error_handler, generic_exception_handler,
                              validation_error_handler, http_error_handler)
 from app.core.security import rate_limiter
@@ -33,7 +34,7 @@ app = FastAPI(
     title=settings.APP_NAME,
     description=(
         f"{settings.APP_DESCRIPTION}\n\n"
-        f"**Medical Disclaimer:** {MEDICAL_DISCLAIMER}"
+        f"**Medical Disclaimer:** {MEDICAL_DISCLAIMER}\n\n{SOURCE_NOTICE}"
     ),
     version=settings.APP_VERSION,
     openapi_url="/openapi.json",
@@ -380,6 +381,7 @@ curl -s http://localhost:3000/v1/coverage | jq</code></pre>
     </div>
 
     <div class="disclaimer">
+      <p>{SOURCE_NOTICE}</p>
       <strong>Clinical Disclaimer:</strong> {MEDICAL_DISCLAIMER}
     </div>
   </div>

@@ -94,6 +94,15 @@ class CancerCategoryDataOut(BaseModel):
     records: List[ContentRecordOut] = Field(default_factory=list)
 
 
+class VersionSourceNoticeOut(BaseModel):
+    source_id: str
+    url: str
+    document_title: Optional[str] = None
+    attribution_text: Optional[str] = None
+    reuse_conditions: Optional[str] = None
+    copied_at: str
+
+
 class ContentVersionOut(BaseModel):
     version_number: int
     content: str
@@ -101,3 +110,4 @@ class ContentVersionOut(BaseModel):
     change_reason: Optional[str] = None
     content_hash: str
     created_at: str
+    sources: List[VersionSourceNoticeOut] = Field(default_factory=list)

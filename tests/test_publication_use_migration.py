@@ -8,7 +8,7 @@ from app.database.manifest import capture_current_model_manifest
 from app.ingestion.seed import seed_database
 from app.models import SourceDocument, WhoFactProvenance, ContentRecord
 
-NEW_COLUMNS = ("noncommercial_redistribution_allowed", "approved_publication_content_types")
+NEW_COLUMNS = ("publication_record_reviews", "noncommercial_redistribution_allowed", "approved_publication_content_types")
 
 
 def test_populated_approval_upgrade_and_rollback_preserve_data(test_db_url, alembic_cfg):
