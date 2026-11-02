@@ -58,19 +58,26 @@ def search(
         consensus_item_out = None
         if r.get("consensus_item"):
             cf = r["consensus_item"]
-            corrob_sources = [
-                CorroboratingSourceOut(
-                    source_id=cs.source.id,
-                    organization=cs.source.organization_name,
-                    authority_type=cs.source.authority_type,
-                    trust_tier=cs.source.trust_tier,
-                    country_code=cs.country_code or cs.source.country_code,
-                    url=cs.source_url,
-                    quote=cs.quote_snippet,
-                    attribution_text=cs.attribution_text or cs.source.attribution_text,
+            corrob_sources = []
+            for cs in cf.corroborating_sources:
+                s_doc = getattr(cs, "source_document", None)
+                corrob_sources.append(
+                    CorroboratingSourceOut(
+                        source_id=cs.source.id,
+                        organization=cs.source.organization_name,
+                        authority_type=cs.source.authority_type,
+                        trust_tier=cs.source.trust_tier,
+                        country_code=cs.country_code or cs.source.country_code,
+                        url=cs.source_url,
+                        quote=cs.quote_snippet,
+                        attribution_text=(s_doc.attribution_text if s_doc and s_doc.attribution_text else None) or cs.attribution_text or cs.source.attribution_text,
+                        document_title=s_doc.title if s_doc else None,
+                        publication_status=s_doc.publication_status if s_doc else None,
+                        reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
+                        commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                        rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
+                    )
                 )
-                for cs in cf.corroborating_sources
-            ]
             consensus_item_out = ConsensusItemOut(
                 id=cf.id,
                 fact_key=cf.fact_key,
@@ -83,22 +90,29 @@ def search(
         record_out = None
         if r.get("record"):
             rec = r["record"]
-            sources_out = [
-                ProvenanceSourceOut(
-                    source_id=cs.source.id,
-                    organization=cs.source.organization_name,
-                    source_name=cs.source.source_name,
-                    url=cs.source_url,
-                    trust_tier=cs.source.trust_tier,
-                    source_updated_at=cs.source_updated_at.isoformat() + "Z" if cs.source_updated_at else None,
-                    retrieved_at=cs.retrieved_at.isoformat() + "Z",
-                    last_verified_at=cs.last_verified_at.isoformat() + "Z",
-                    license_status=cs.source.license_status,
-                    attribution_text=cs.attribution_text or cs.source.attribution_text,
-                    quote_snippet=cs.quote_snippet,
+            sources_out = []
+            for cs in rec.sources:
+                s_doc = getattr(cs, "source_document", None)
+                sources_out.append(
+                    ProvenanceSourceOut(
+                        source_id=cs.source.id,
+                        organization=cs.source.organization_name,
+                        source_name=cs.source.source_name,
+                        url=cs.source_url,
+                        trust_tier=cs.source.trust_tier,
+                        source_updated_at=cs.source_updated_at.isoformat() + "Z" if cs.source_updated_at else None,
+                        retrieved_at=cs.retrieved_at.isoformat() + "Z",
+                        last_verified_at=cs.last_verified_at.isoformat() + "Z",
+                        license_status=s_doc.publication_status if s_doc else cs.source.license_status,
+                        attribution_text=(s_doc.attribution_text if s_doc and s_doc.attribution_text else None) or cs.attribution_text or cs.source.attribution_text,
+                        quote_snippet=cs.quote_snippet,
+                        document_title=s_doc.title if s_doc else None,
+                        publication_status=s_doc.publication_status if s_doc else None,
+                        reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
+                        commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                        rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
+                    )
                 )
-                for cs in rec.sources
-            ]
             jurisdiction_out = None
             if rec.country_code:
                 jurisdiction_out = JurisdictionOut(

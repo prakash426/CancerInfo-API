@@ -33,6 +33,10 @@ cancerinfo.db
 # Logs & Diagnostics
 *.log
 
-# Unit Tests & Local Scripts (not needed in production image)
+# Unit Tests & Local Scripts
 tests/
-scripts/
+
+# Exclude local scripts except production-required L003 CLIs
+scripts/*
+!scripts/bootstrap.py
+!scripts/adopt_existing_schema.py

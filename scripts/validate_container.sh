@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # scripts/validate_container.sh
-# CIAPI-L002: Container Portability, Endpoint Responsiveness & Data Durability Validation
+# CIAPI-L003: Container Portability, Endpoints, Migrations & Durability Validation
 # ==============================================================================
 set -euo pipefail
 
-IMAGE_NAME="cancerinfo-api:ciapi-l002-test"
+IMAGE_NAME="cancerinfo-api:ciapi-l003-test"
 RAND_ID="${RANDOM}_$$"
 CONTAINER_DEFAULT="ciapi_cnt_default_${RAND_ID}"
 CONTAINER_CUSTOM="ciapi_cnt_custom_${RAND_ID}"
@@ -53,7 +53,7 @@ wait_for_endpoint() {
 }
 
 echo "======================================================================"
-echo " Starting CIAPI-L002 Container Validation Suite"
+echo " Starting CIAPI-L003 Container & Migration Validation Suite"
 echo "======================================================================"
 
 # -----------------------------------------------------------------------------
@@ -88,26 +88,41 @@ if docker run --rm "$IMAGE_NAME" sh -c "test -d /app/tests"; then
 fi
 echo "PASSED (not present in image)."
 
-# D: Verify Python 3.11 runtime inside image
+# D: Verify Alembic migrations, bootstrap CLI, and schema adoption CLI are packaged into image
+echo -n "  - Checking presence of Alembic migrations, bootstrap, and adoption CLI... "
+docker run --rm "$IMAGE_NAME" sh -c "test -d /app/alembic && test -f /app/alembic.ini && test -f /app/scripts/bootstrap.py && test -f /app/scripts/adopt_existing_schema.py"
+echo "PASSED."
+
+# E: Verify Python 3.11 runtime inside image
 echo -n "  - Checking Python runtime inside image... "
 PY_VER=$(docker run --rm "$IMAGE_NAME" python -c 'import sys; assert sys.version_info[:2] == (3, 11), sys.version; print(sys.version.split()[0])')
 echo "PASSED (${PY_VER})."
 
-# E: Verify OpenAPI generation inside image
+# F: Verify OpenAPI generation inside image
 echo -n "  - Checking OpenAPI spec generation inside image... "
-docker run --rm "$IMAGE_NAME" python -c "from app.main import app; spec = app.openapi(); assert len(spec['paths']) > 0; print(f'OK ({len(spec[\"paths\"])} paths)')"
+docker run --rm \
+    -e ENVIRONMENT=production \
+    -e DATABASE_URL="postgresql+psycopg2://openapi_check:openapi_check@127.0.0.1:5432/openapi_check" \
+    "$IMAGE_NAME" \
+    python -c "from app.main import app; spec = app.openapi(); assert len(spec['paths']) > 0; print(f'OK ({len(spec[\"paths\"])} paths)')"
 
 # -----------------------------------------------------------------------------
-# 2. Test Default Port (3000) Boot & HTTP Endpoints
+# 2. Test Default Port (3000) Boot, Migrations, Bootstrap & HTTP Endpoints
 # -----------------------------------------------------------------------------
 echo ""
-echo "[Step 2/5] Testing default port (3000) container boot and HTTP endpoints..."
+echo "[Step 2/5] Testing default port (3000) container boot, migrations, and endpoints..."
 docker volume create "$VOLUME_DEFAULT" > /dev/null
 docker run -d \
     --name "$CONTAINER_DEFAULT" \
     -p "${PORT_DEFAULT}:${PORT_DEFAULT}" \
     -v "${VOLUME_DEFAULT}:/app/data" \
+    -e ENVIRONMENT=development \
+    -e DATABASE_URL=sqlite:////app/data/cancerinfo.db \
     "$IMAGE_NAME"
+
+echo "Applying migrations and controlled bootstrap in default container..."
+docker exec "$CONTAINER_DEFAULT" alembic upgrade head
+docker exec "$CONTAINER_DEFAULT" python scripts/bootstrap.py
 
 wait_for_endpoint "$PORT_DEFAULT" "/v1/health" "$CONTAINER_DEFAULT"
 
@@ -206,9 +221,14 @@ docker volume create "$VOLUME_CUSTOM" > /dev/null
 docker run -d \
     --name "$CONTAINER_CUSTOM" \
     -e PORT="${PORT_CUSTOM}" \
+    -e ENVIRONMENT=development \
+    -e DATABASE_URL=sqlite:////app/data/cancerinfo.db \
     -p "${PORT_CUSTOM}:${PORT_CUSTOM}" \
     -v "${VOLUME_CUSTOM}:/app/data" \
     "$IMAGE_NAME"
+
+docker exec "$CONTAINER_CUSTOM" alembic upgrade head
+docker exec "$CONTAINER_CUSTOM" python scripts/bootstrap.py
 
 wait_for_endpoint "$PORT_CUSTOM" "/v1/health" "$CONTAINER_CUSTOM"
 
@@ -263,7 +283,14 @@ docker run -d \
     --name "$CONTAINER_PERSIST_A" \
     -p "${PORT_DEFAULT}:${PORT_DEFAULT}" \
     -v "${VOLUME_PERSIST}:/app/data" \
+    -e ENVIRONMENT=development \
+    -e DATABASE_URL=sqlite:////app/data/cancerinfo.db \
     "$IMAGE_NAME"
+
+# Apply migrations and bootstrap in Container A
+echo "Applying migrations and controlled bootstrap in Container A..."
+docker exec "$CONTAINER_PERSIST_A" alembic upgrade head
+docker exec "$CONTAINER_PERSIST_A" python scripts/bootstrap.py
 
 wait_for_endpoint "$PORT_DEFAULT" "/v1/health" "$CONTAINER_PERSIST_A"
 
@@ -308,11 +335,13 @@ docker run -d \
     --name "$CONTAINER_PERSIST_B" \
     -p "${PORT_DEFAULT}:${PORT_DEFAULT}" \
     -v "${VOLUME_PERSIST}:/app/data" \
+    -e ENVIRONMENT=development \
+    -e DATABASE_URL=sqlite:////app/data/cancerinfo.db \
     "$IMAGE_NAME"
 
 wait_for_endpoint "$PORT_DEFAULT" "/v1/health" "$CONTAINER_PERSIST_B"
 
-# Verify probe record persisted into Container B via HTTP
+# Verify probe record persisted into Container B via HTTP without re-running bootstrap
 echo -n "  - Verifying probe record persists via HTTP GET in Container B... "
 PROBE_RESP_B=$(curl -s -f "http://127.0.0.1:${PORT_DEFAULT}/v1/cancers/durability-probe-cancer")
 echo "$PROBE_RESP_B" | grep -q "Durability Probe Cancer" || { echo "FAILED! Record did NOT persist into Container B!"; exit 1; }
@@ -332,6 +361,14 @@ print('Confirmed record matches expected values.')
 "
 echo "PASSED."
 
+# Verify repeated bootstrap refusal inside Container B
+echo -n "  - Verifying repeated bootstrap refusal inside Container B... "
+if docker exec "$CONTAINER_PERSIST_B" python scripts/bootstrap.py > /dev/null 2>&1; then
+    echo "FAILED! Repeated bootstrap did not refuse on populated database!"
+    exit 1
+fi
+echo "PASSED (refused safely)."
+
 # Clean up Container B & persistent volume
 docker rm -f "$CONTAINER_PERSIST_B" > /dev/null
 docker volume rm -f "$VOLUME_PERSIST" > /dev/null
@@ -342,11 +379,13 @@ echo "Persistence test completed successfully."
 # -----------------------------------------------------------------------------
 echo ""
 echo "======================================================================"
-echo " ALL CIAPI-L002 CONTAINER VALIDATIONS PASSED SUCCESSFULLY"
+echo " ALL CIAPI-L003 CONTAINER & MIGRATION VALIDATIONS PASSED"
 echo " - Dynamic PORT runtime configuration: PASSED"
 echo " - Absence of baked SQLite database: PASSED"
 echo " - Absence of unit tests in production image: PASSED"
+echo " - Packaging of Alembic migrations and bootstrap CLI: PASSED"
 echo " - Default port (3000) & custom port (8081) boot: PASSED"
 echo " - HTTP endpoints (/v1/health, /v1/cancers, /, /docs, /redoc, /openapi.json): PASSED"
+echo " - Controlled bootstrap execution & repeated refusal: PASSED"
 echo " - Local SQLite durability across container destruction & recreation: PASSED"
 echo "======================================================================"

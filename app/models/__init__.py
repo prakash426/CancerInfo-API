@@ -16,6 +16,7 @@ from sqlalchemy import (
     JSON,
 )
 from sqlalchemy.orm import relationship
+from app.core.constants import PublicationStatus
 from app.database.session import Base
 
 
@@ -139,10 +140,53 @@ class SourceDocument(Base):
     http_last_modified = Column(String(128), nullable=True)
     parser_version = Column(String(32), default="1.0.0")
     processing_status = Column(String(32), default="PROCESSED")
-    license_status = Column(String(32), default="APPROVED")
+    license_status = Column(String(32), default="REVIEW_REQUIRED")
+
+    # Document-Level Rights & Publication Decision Fields (CIAPI-L004)
+    publication_status = Column(
+        String(32),
+        server_default="REVIEW_REQUIRED",
+        default=PublicationStatus.REVIEW_REQUIRED.value,
+        nullable=False,
+        index=True,
+    )
+    rights_evidence_url = Column(String(1024), nullable=True)
+    rights_reviewed_at = Column(DateTime, nullable=True)
+    rights_reviewer = Column(String(255), nullable=True)
+    permissible_use = Column(String(255), nullable=True)
+    commercial_redistribution_allowed = Column(Boolean, nullable=True)
+    redistribution_allowed = Column(Boolean, nullable=True)
+    full_text_storage_allowed = Column(Boolean, nullable=True)
+    derived_summary_allowed = Column(Boolean, nullable=True)
+    attribution_required = Column(Boolean, nullable=True)
+    attribution_text = Column(String(512), nullable=True)
+    reuse_restrictions = Column(Text, nullable=True)
+    quarantine_reason = Column(Text, nullable=True)
+    third_party_permission_status = Column(String(64), nullable=True)
+    third_party_permission_notes = Column(Text, nullable=True)
 
     source = relationship("Source", back_populates="documents")
     content_sources = relationship("ContentSource", back_populates="source_document")
+    consensus_fact_sources = relationship("ConsensusFactSource", back_populates="source_document")
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault("publication_status", PublicationStatus.REVIEW_REQUIRED.value)
+        kwargs.setdefault("license_status", "REVIEW_REQUIRED")
+        super().__init__(**kwargs)
+
+    def is_publication_eligible(self) -> bool:
+        """
+        Evaluate fail-closed document publication eligibility.
+        Delegates strictly to the consolidated evaluate_publication_eligibility engine.
+        """
+        from app.core.rights_validation import evaluate_publication_eligibility
+        is_eligible, _ = evaluate_publication_eligibility(self)
+        return is_eligible
+
+    def assert_publication_eligible(self) -> None:
+        """Raise PublicationEligibilityError if document is not eligible."""
+        from app.core.rights_validation import assert_publication_eligible
+        assert_publication_eligible(self)
 
 
 class ContentRecord(Base):
@@ -200,6 +244,33 @@ class ContentSource(Base):
     content_record = relationship("ContentRecord", back_populates="sources")
     source = relationship("Source", back_populates="content_sources")
     source_document = relationship("SourceDocument", back_populates="content_sources")
+
+
+class WhoFactProvenance(Base):
+    """
+    Per-fact provenance extension for WHO review fields that have no home
+    in ContentRecord or ContentSource (heading path, locator, match
+    location, statistical context, limitations, rights status).
+    """
+    __tablename__ = "who_fact_provenance"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    content_record_id = Column(String(36), ForeignKey("content_records.id"),
+                               nullable=False, unique=True, index=True)
+    heading_path = Column(String(1024), nullable=True)
+    source_locator = Column(String(1024), nullable=True)
+    match_locations = Column(String(255), nullable=True)
+    geography = Column(String(255), nullable=True)
+    population = Column(String(255), nullable=True)
+    reference_period = Column(String(64), nullable=True)
+    units = Column(String(255), nullable=True)
+    denominator = Column(String(512), nullable=True)
+    limitations = Column(Text, nullable=True)
+    rights_review_status = Column(String(64), nullable=True)
+    retrieved_at_utc = Column(String(64), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    content_record = relationship("ContentRecord", backref="who_provenance")
 
 
 class ContentVersion(Base):
@@ -309,9 +380,11 @@ class ConsensusFactSource(Base):
     attribution_text = Column(String(512), nullable=True)
     country_code = Column(String(10), nullable=True, index=True)  # "US", "GB", "AU", "GLOBAL"
     display_order = Column(Integer, default=0)
+    source_document_id = Column(String(36), ForeignKey("source_documents.id"), nullable=True, index=True)
     last_verified_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
     fact = relationship("ConsensusFact", back_populates="corroborating_sources")
     source = relationship("Source")
+    source_document = relationship("SourceDocument", back_populates="consensus_fact_sources")
 

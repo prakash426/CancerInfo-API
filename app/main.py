@@ -12,21 +12,15 @@ from app.core.config import settings
 from app.core.constants import MEDICAL_DISCLAIMER
 from app.core.errors import APIError, api_error_handler, generic_exception_handler
 from app.core.security import rate_limiter
-from app.database.session import Base, SessionLocal, engine
-from app.ingestion.seed import seed_database
+from app.database.session import engine
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 1. Initialize database tables
-    Base.metadata.create_all(bind=engine)
-
-    # 2. Seed initial taxonomy, source registry, and verified baseline records
-    db = SessionLocal()
-    try:
-        seed_database(db)
-    finally:
-        db.close()
+    # Enforce database schema verification in production or when explicitly configured
+    if settings.is_production or settings.CHECK_MIGRATIONS_ON_STARTUP:
+        from app.database.migration_check import verify_database_schema_at_head
+        verify_database_schema_at_head(engine)
 
     yield
 

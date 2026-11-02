@@ -109,6 +109,8 @@ python3 -m pytest tests/ -v
 - `tests/test_sources.py`: Trust tier verification, license compliance, URL validation.
 - `tests/test_taxonomy_and_normalization.py`: 37-category schema validation, HTML stripping, bullet point extraction.
 - `tests/test_admin_and_pipeline.py`: Ingestion pipelines and seed scripts.
+- `tests/test_migrations.py`: Alembic schema migration, head revision matching, idempotency, legacy `cancer_content` preservation, production configuration validation.
+- `tests/test_bootstrap.py`: Explicit CLI bootstrap, dry-run mode, single-transaction execution, rollback on error, repeated execution refusal, non-mutating startup verification.
 
 ---
 
@@ -209,3 +211,38 @@ This automated test suite verifies:
      ```
    - No persistent container volume is needed when external PostgreSQL is used. Container-local SQLite is strictly for local development and validation. Production credentials must never be committed to Git.
 
+---
+
+### 6. Migrations, Controlled Initialization & Legacy Preservation (CIAPI-L003)
+
+For detailed deployment runbooks, Render configuration, and Neon operator workflows, see [MIGRATIONS_AND_INITIALIZATION.md](MIGRATIONS_AND_INITIALIZATION.md).
+
+#### 1. Alembic Versioned Migrations
+```bash
+# Verify current migration status
+alembic current
+
+# Run migrations to head
+alembic upgrade head
+```
+- Migrates all 11 current-model tables without altering or dropping legacy tables.
+- Legacy table `cancer_content` (5,628 rows, 22 columns) is strictly preserved and excluded from Alembic autogenerate schema changes via `include_object` filters.
+
+#### 2. Controlled CLI Bootstrap
+```bash
+# Dry run inspection (non-mutating report of schema and row counts)
+python scripts/bootstrap.py --validate-only
+
+# Execute baseline seeding (single-transaction, safe rollback on failure)
+python scripts/bootstrap.py
+```
+- The bootstrap script validates that the database is at Alembic head revision.
+- Refuses to run against populated current-model databases to prevent data corruption or duplicate rows.
+- Runs entirely within a single atomic database transaction. If any error occurs, the entire operation is rolled back with zero leftover rows.
+- Seeds all 191 baseline records across sources, cancers, aliases, source documents, content records, citations, and consensus facts with full provenance.
+
+#### 3. Production Startup Safety
+- Startup `lifespan` in `app/main.py` is strictly non-mutating: it never calls `Base.metadata.create_all` and never calls `seed_database`.
+- When `ENVIRONMENT=production` or `CHECK_MIGRATIONS_ON_STARTUP=true`, the API validates that the connected database schema is at Alembic head revision before serving traffic. If unmigrated or unreachable, startup fails with a clean, actionable error.
+- Production environment requires PostgreSQL (`postgresql+psycopg2://`); SQLite and missing connection URLs are rejected at configuration load time.
+- In-flight admin seed endpoint `POST /v1/admin/seed` returns HTTP 403 Forbidden in production, directing operators to use the controlled CLI bootstrap script.

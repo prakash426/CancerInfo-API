@@ -35,7 +35,8 @@ class ContentRepository:
                 ConsensusFact.active == True,
             )
             .options(
-                joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source)
+                joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source),
+                joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source_document),
             )
             .order_by(
                 ConsensusFact.display_order.asc(),
@@ -64,7 +65,8 @@ class ContentRepository:
                 ContentRecord.active == True,
             )
             .options(
-                joinedload(ContentRecord.sources).joinedload(ContentSource.source)
+                joinedload(ContentRecord.sources).joinedload(ContentSource.source),
+                joinedload(ContentRecord.sources).joinedload(ContentSource.source_document),
             )
         )
 

@@ -5,6 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from app.core.config import settings
 from app.core.security import verify_admin_key
 from app.database.session import get_db
 from app.ingestion.pipeline import run_ingestion_for_source
@@ -49,7 +50,17 @@ async def trigger_source_ingestion(
 def trigger_seed(db: Session = Depends(get_db)):
     """
     Seeds initial taxonomy, sources, and verified baseline records if database is empty.
+    Disabled in production environments.
     """
+    if settings.is_production:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Database seeding via administrative HTTP endpoint is strictly disabled in production. "
+                "Use the controlled CLI bootstrap command instead."
+            ),
+        )
+
     seed_database(db)
     return StandardResponse(
         data={"message": "Seed routine executed successfully."},

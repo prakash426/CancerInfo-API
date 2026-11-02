@@ -68,7 +68,7 @@ _To my mom and dad: This code is dedicated to your courage, your grace, and ever
 
 ### Set up the Python service
 
-Use a virtual environment and a separate local database. Startup creates tables and seeds demonstration content. No Node installation is needed. Supported launch runtime is Python 3.11.
+Use a virtual environment and a separate local database. Database schema is versioned with Alembic migrations, and baseline data is initialized via controlled bootstrap. Production startup never silently creates tables or seeds data. No Node installation is needed. Supported launch runtime is Python 3.11.
 
 ```bash
 git clone https://github.com/Prakash-Merepala/CancerInfo-API.git
@@ -77,6 +77,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --no-cache-dir --require-hashes -r requirements.txt
 export DATABASE_URL=sqlite:////tmp/cancerinfo-local.db
+alembic upgrade head
+python scripts/bootstrap.py
 python -m uvicorn app.main:app --host 127.0.0.1 --port 3000
 ```
 
@@ -226,6 +228,7 @@ This fragment is abbreviated. The homepage above is illustrative, not an accepta
 Publication is planned and remains conditional on the acceptance gates:
 
 - **[RapidAPI Publishing Guide](rapidapi/RAPIDAPI_LISTING_GUIDE.md)**: The static specification has 8 paths while FastAPI generates 15 including admin routes. Generate and test a public-only export before import; verify the collection separately.
+- **[Migrations & Controlled Initialization Guide](docs/MIGRATIONS_AND_INITIALIZATION.md)**: Alembic PostgreSQL schema versioning, non-mutating startup validation, legacy table preservation (`cancer_content`), and deployment runbook for Render and Neon.
 - **[Free Cloud Hosting Guide](docs/FREE_HOSTING_DEPLOYMENT.md)**: Deployment checklist and provider decision notes. Hosting cost, persistence and capacity require verification for the chosen service.
 - **[Validation & Testing Guide](docs/VALIDATION_GUIDE.md)**: Quality assurance runbook for CI/CD and production verification.
 - **[App Ideas & Ecosystem Recipes](docs/APP_IDEAS_GUIDE.md)**: Future integration concepts with explicit data and safety prerequisites; they are not current API capabilities.
@@ -237,7 +240,7 @@ Publication is planned and remains conditional on the acceptance gates:
 
 ## 🛠️ Tech Stack & Architecture
 
-- **Backend**: Python 3.11, FastAPI, Pydantic v2, SQLAlchemy 2.0, SQLite default / PostgreSQL configurable but deployment unverified, Uvicorn.
+- **Backend**: Python 3.11, FastAPI, Pydantic v2, SQLAlchemy 2.0, Alembic 1.13+ (versioned migrations), SQLite (local dev/tests) / PostgreSQL (production required), Uvicorn.
 - **Developer Documentation & Portal**: Built directly into FastAPI: Interactive Swagger UI (`/docs`), ReDoc (`/redoc`), OpenAPI 3.1 spec (`/openapi.json`), and Developer Landing (`/`).
 - **Request handling**: Request ID, timing and disclaimer headers on the normal middleware path; process-local rate limiting. The early 429 response omits several normal headers, and proxy trust requires hardening.
 - **Automated Testing**: Complete pytest suite passed with full fact-level provenance validation. No coverage percentage or production acceptance is claimed.
