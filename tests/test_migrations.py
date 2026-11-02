@@ -141,7 +141,7 @@ def test_alembic_revision_equals_head(test_db_url, alembic_cfg):
     assert current_rev is not None
     assert head_rev is not None
     assert current_rev == head_rev
-    assert current_rev == "0004_publication_use"
+    assert current_rev == "0005_record_publication"
 
 
 def test_repeated_migration_is_idempotent_no_op(test_db_url, alembic_cfg):
@@ -156,7 +156,7 @@ def test_repeated_migration_is_idempotent_no_op(test_db_url, alembic_cfg):
     rev_second = get_current_revision(engine)
 
     assert rev_first == rev_second
-    assert rev_second == "0004_publication_use"
+    assert rev_second == "0005_record_publication"
 
 
 def test_legacy_cancer_content_table_is_preserved_untouched(test_db_url, alembic_cfg):
@@ -408,8 +408,8 @@ def test_pre_alembic_schema_adoption_with_parity_verification(test_db_url, alemb
     # 5. Run actual adoption (stamps to head)
     adopt_report = adopt_existing_schema(engine, dry_run=False)
     assert adopt_report["status"] == "SUCCESSFULLY_ADOPTED"
-    assert adopt_report["adopted_revision"] == "0004_publication_use"
-    assert get_current_revision(engine) == "0004_publication_use"
+    assert adopt_report["adopted_revision"] == "0005_record_publication"
+    assert get_current_revision(engine) == "0005_record_publication"
 
     # 6. Verify existing data was untouched
     session = Session()
@@ -419,7 +419,7 @@ def test_pre_alembic_schema_adoption_with_parity_verification(test_db_url, alemb
 
     # 7. Verify subsequent startup check succeeds
     head_rev = verify_database_schema_at_head(engine)
-    assert head_rev == "0004_publication_use"
+    assert head_rev == "0005_record_publication"
 
     # 8. Test fail-closed rejection: attempting to adopt an already-managed database MUST raise SchemaParityError
     with pytest.raises(SchemaParityError, match="Adoption rejected: Database is already managed by Alembic"):
@@ -539,7 +539,7 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
     faulty_dir.mkdir()
     (faulty_dir / "9999_faulty.py").write_text(
         "revision = '9999_faulty'\n"
-        "down_revision = '0004_publication_use'\n"
+        "down_revision = '0005_record_publication'\n"
         "branch_labels = depends_on = None\n"
         "from alembic import op\n"
         "import sqlalchemy as sa\n"
@@ -565,14 +565,14 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
     )
     assert proc.returncode != 0
     assert "L003_INTENTIONAL_MIGRATION_FAILURE" in proc.stderr, proc.stderr
-    assert get_current_revision(engine) == "0004_publication_use"
+    assert get_current_revision(engine) == "0005_record_publication"
     compare_current_model_manifests(baseline, capture_current_model_manifest(engine))
     compare_legacy_audits(legacy_before, audit_legacy_cancer_content(engine))
     if not is_sqlite:
         assert "faulty_probe_table" not in inspect(engine).get_table_names()
 
     def verify_restored(restored):
-        assert verify_database_schema_at_head(restored) == "0004_publication_use"
+        assert verify_database_schema_at_head(restored) == "0005_record_publication"
         assert verify_schema_parity(restored)["tables_verified"] == len(CURRENT_MODEL_TABLES)
         compare_current_model_manifests(baseline, capture_current_model_manifest(restored))
         compare_legacy_audits(legacy_before, audit_legacy_cancer_content(restored))
@@ -654,6 +654,7 @@ def test_legacy_long_revision_identifier_remapped_transparently(test_db_url, ale
         with engine.connect() as conn:
             conn.execute(text("UPDATE alembic_version SET version_num = '0002_document_rights_and_consensus_linkage'"))
             conn.execute(text("DROP TABLE who_fact_provenance"))
+            conn.execute(text("ALTER TABLE source_documents DROP COLUMN publication_record_reviews"))
             conn.execute(text("ALTER TABLE source_documents DROP COLUMN approved_publication_content_types"))
             conn.execute(text("ALTER TABLE source_documents DROP COLUMN noncommercial_redistribution_allowed"))
             conn.commit()
@@ -683,11 +684,11 @@ def test_legacy_long_revision_identifier_remapped_transparently(test_db_url, ale
         # 5. Verify persistence, then complete the outstanding upgrade
         assert get_current_revision(engine) == "0002_document_rights"
         command.upgrade(alembic_cfg, "head")
-        assert verify_database_schema_at_head(engine) == "0004_publication_use"
+        assert verify_database_schema_at_head(engine) == "0005_record_publication"
 
         # 6. Subsequent migration commands succeed seamlessly
         command.upgrade(alembic_cfg, "head")
-        assert get_current_revision(engine) == "0004_publication_use"
+        assert get_current_revision(engine) == "0005_record_publication"
     else:
         # In PostgreSQL: verify normal schema is NOT weakened (version_num length is <= 32)
         inspector = inspect(engine)
@@ -697,8 +698,8 @@ def test_legacy_long_revision_identifier_remapped_transparently(test_db_url, ale
         assert getattr(col_type, "length", 32) <= 32
 
         # Verify PostgreSQL database is cleanly at head and repair is a safe no-op
-        assert get_current_revision(engine) == "0004_publication_use"
+        assert get_current_revision(engine) == "0005_record_publication"
         assert repair_legacy_revision(engine) is None
-        assert verify_database_schema_at_head(engine) == "0004_publication_use"
+        assert verify_database_schema_at_head(engine) == "0005_record_publication"
 
     engine.dispose()
