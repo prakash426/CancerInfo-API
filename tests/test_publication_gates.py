@@ -81,7 +81,7 @@ def test_eligible_evidence_is_public_and_internal_history_is_sanitized(client, g
     ("rights_reviewed_at", None), ("rights_reviewer", " "),
     ("permissible_use", None), ("redistribution_allowed", False),
     ("commercial_redistribution_allowed", False), ("commercial_redistribution_allowed", None),
-    ("full_text_storage_allowed", False), ("derived_summary_allowed", False),
+    ("derived_summary_allowed", False),
     ("attribution_required", None), ("attribution_text", ""),
     ("third_party_permission_status", "REQUIRED_NOT_SUBMITTED"),
     ("third_party_permission_status", "GRANTED"),

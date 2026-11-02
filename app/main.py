@@ -52,6 +52,7 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=[
         "X-Request-ID",
+        "X-Publication-Use",
         "X-Response-Time-MS",
         "X-Medical-Disclaimer",
         "X-Disclaimer",
@@ -115,7 +116,17 @@ async def request_metrics_and_rate_limit(request: Request, call_next):
     else:
         limit, remaining, reset = settings.RATE_LIMIT_PER_MINUTE, settings.RATE_LIMIT_PER_MINUTE, 60
 
-    response: Response = await call_next(request)
+    from app.core.publication_access import publication_use, approved_use
+    use = approved_use(request.headers.get("X-API-Key"))
+    token = publication_use.set(use)
+    try:
+        response: Response = await call_next(request)
+    finally:
+        publication_use.reset(token)
+    # Results vary by approval. Prevent shared caches from leaking restricted data.
+    response.headers["X-Publication-Use"] = use
+    response.headers["Cache-Control"] = "private, no-store"
+    response.headers.append("Vary", "X-API-Key")
 
     # Response headers
     process_time = (time.time() - start_time) * 1000.0

@@ -1,5 +1,7 @@
 # Content Rights, Redistribution, and Attribution Guide (CIAPI-L004)
 
+Current use-specific implementation: [Publication by content type and approved use](publication-use-policy.md). The candidate inventories below describe the original L004 audit, not the current live corpus.
+
 ## 1. Executive Summary & Policy Overview
 
 The CancerInfo API aggregates cancer clinical information, patient guides, and epidemiological statistics from authoritative public health organizations worldwide. However, public availability on the open web does **not** equal unrestricted redistribution rights for downstream API consumers, commercial entities, or derivative works.
@@ -35,20 +37,28 @@ CancerInfo API models publication clearance using the `PublicationStatus` enum:
 | `PERMISSION_PENDING` | `PERMISSION_PENDING` | **No** (Quarantined) | Document requires explicit third-party copyright clearance or a formal commercial waiver. |
 | `QUARANTINED` | `QUARANTINED` | **No** (Quarantined) | Document contains known license violations, proprietary restrictions, or disputed ownership. |
 | `REJECTED` | `REJECTED` | **No** (Permanent stop) | Material explicitly refused for API redistribution. |
-| `ELIGIBLE` | `ELIGIBLE` | **Yes** (Subject to attribution) | Document has passed manual item-level audit with verified evidence and recorded reviewer. |
+| `ELIGIBLE` | `ELIGIBLE` | **Conditional** | Reviewed status; the output type, use, rights evidence and attribution must also pass. |
 
-### The Invariant of `is_publication_eligible()`
-A `SourceDocument` is considered publication-eligible **only if all** of the following conditions are simultaneously met:
-1. `publication_status == "ELIGIBLE"`
-2. `rights_evidence_url` is non-empty and points to the authoritative legal policy or license grant.
-3. `rights_reviewed_at` contains a valid ISO timestamp.
-4. `rights_reviewer` contains the name or ID of the human auditor who performed the audit.
-5. `redistribution_allowed is True`
-6. `commercial_redistribution_allowed is True`
-7. `quarantine_reason is None` (or empty)
-8. `third_party_permission_status in (None, "", "NOT_APPLICABLE", "GRANTED")`
+### Publication evaluation
 
-If any single condition fails, `is_publication_eligible()` evaluates to `False`, and calling `assert_publication_eligible()` raises a `PublicationEligibilityError`.
+Every delivery requires ELIGIBLE status, valid rights evidence, a review timestamp
+and reviewer, permissible-use evidence, redistribution_allowed=True, attribution
+compliance, no quarantine, and a resolved third-party decision of NOT_APPLICABLE
+or GRANTED. GRANTED requires supporting evidence notes. Missing decisions fail.
+
+Anonymous/commercial delivery requires commercial_redistribution_allowed=True.
+Approved noncommercial delivery requires a reviewed developer key, explicit
+noncommercial_redistribution_allowed=True, and an exact output type in
+approved_publication_content_types. Free access does not establish approval.
+
+Structured facts and summaries require derived_summary_allowed=True; full-text
+storage permission does not gate these responses. Source content requires explicit
+type approval and full-text storage permission. Other output types require explicit
+approval. See the linked policy for history, caching and deployment rules.
+
+The no-argument is_publication_eligible() and assert_publication_eligible() remain
+conservative legacy commercial document audits. Repositories evaluate the actual
+content type and the server-approved request use through the shared evaluator.
 
 ---
 

@@ -15,7 +15,7 @@ from app.database.migration_check import (
 from app.database.session import Base
 import app.models  # noqa: F401
 
-BASELINE_REVISION = "0003_who_provenance"
+BASELINE_REVISION = "0004_publication_use"
 
 
 class SchemaParityError(Exception):
