@@ -12,6 +12,8 @@ engine_kwargs = {}
 if settings.is_sqlite:
     connect_args["check_same_thread"] = False
 else:
+    connect_args.update(connect_timeout=settings.DB_CONNECT_TIMEOUT,
+                        options=f"-c statement_timeout={settings.DB_STATEMENT_TIMEOUT_MS}")
     engine_kwargs["pool_pre_ping"] = True
     engine_kwargs["pool_size"] = settings.DB_POOL_SIZE
     engine_kwargs["max_overflow"] = settings.DB_MAX_OVERFLOW

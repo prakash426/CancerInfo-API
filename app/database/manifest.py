@@ -1,7 +1,8 @@
 """
 Current-Model Manifest Module (CIAPI-L003)
 
-Captures and compares exact ordered manifests for all current-model tables:
+Captures and compares exact ordered manifests for all corpus tables.
+Ephemeral rate-limit accounting is excluded; schema/FK checks still cover it:
 - sources
 - source_health
 - cancers
@@ -26,7 +27,7 @@ from typing import Any, Dict, List
 from sqlalchemy import inspect, text
 from sqlalchemy.engine import Engine
 
-from app.database.model_tables import CURRENT_MODEL_TABLES
+from app.database.model_tables import CURRENT_MODEL_TABLES, CORPUS_MODEL_TABLES
 
 
 def _serialize_value(val: Any) -> Any:
@@ -37,7 +38,7 @@ def _serialize_value(val: Any) -> Any:
 
 def capture_current_model_manifest(engine: Engine) -> Dict[str, Any]:
     """
-    Captures an exact, deterministic manifest of all current-model tables.
+    Captures an exact, deterministic manifest of all corpus tables (excluding request accounting).
     Returns:
         dict containing:
         - tables: Dict[table_name, List[Dict[column_name, column_value]]]
@@ -48,7 +49,7 @@ def capture_current_model_manifest(engine: Engine) -> Dict[str, Any]:
     inspector = inspect(engine)
     existing_tables = set(inspector.get_table_names())
 
-    missing = set(CURRENT_MODEL_TABLES) - existing_tables
+    missing = set(CORPUS_MODEL_TABLES) - existing_tables
     if missing:
         raise RuntimeError(f"Cannot capture complete manifest; missing tables: {sorted(missing)}")
 
@@ -57,7 +58,7 @@ def capture_current_model_manifest(engine: Engine) -> Dict[str, Any]:
     total_rows = 0
 
     with engine.connect() as conn:
-        for tbl in CURRENT_MODEL_TABLES:
+        for tbl in CORPUS_MODEL_TABLES:
             # Query all columns ordered by primary key id
             result = conn.execute(text(f"SELECT * FROM {tbl} ORDER BY id"))
             columns = list(result.keys())
@@ -98,7 +99,7 @@ def compare_current_model_manifests(
         f"Total row count changed: {label_a}={manifest_a['total_rows']} vs {label_b}={manifest_b['total_rows']}"
     )
 
-    for tbl in CURRENT_MODEL_TABLES:
+    for tbl in CORPUS_MODEL_TABLES:
         rows_a = manifest_a["tables"].get(tbl, [])
         rows_b = manifest_b["tables"].get(tbl, [])
         assert len(rows_a) == len(rows_b), (

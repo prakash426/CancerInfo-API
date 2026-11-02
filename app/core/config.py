@@ -11,7 +11,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore"
+        extra="ignore",
+        hide_input_in_errors=True
     )
 
     APP_NAME: str = "CancerInfo API"
@@ -30,12 +31,15 @@ class Settings(BaseSettings):
     # Connection pooling settings (sized conservatively for Neon hosted limits)
     DB_POOL_SIZE: int = 5
     DB_MAX_OVERFLOW: int = 10
-    DB_POOL_TIMEOUT: int = 30
+    DB_POOL_TIMEOUT: int = Field(default=5, ge=1, le=30)
+    DB_CONNECT_TIMEOUT: int = Field(default=5, ge=1, le=30)
+    DB_STATEMENT_TIMEOUT_MS: int = Field(default=3000, ge=100, le=30000)
     DB_POOL_RECYCLE: int = 1800
 
     # Security & Admin
-    ADMIN_API_KEY: str = "dev-admin-secret-key"
-    RATE_LIMIT_PER_MINUTE: int = 120
+    ADMIN_API_KEY: str = Field(default="dev-admin-secret-key", repr=False)
+    RATE_LIMIT_PER_MINUTE: int = Field(default=120, ge=1, le=10000)
+    TRUSTED_PROXY_CIDRS: List[str] = Field(default_factory=list)
 
     # Keys are issued only after reviewing the downstream application and use.
     # Store SHA-256 digests, never plaintext keys, in deployment secrets.
@@ -48,6 +52,22 @@ class Settings(BaseSettings):
     # Pagination
     DEFAULT_PAGE_SIZE: int = 20
     MAX_PAGE_SIZE: int = 100
+
+    @field_validator("TRUSTED_PROXY_CIDRS", mode="before")
+    @classmethod
+    def validate_trusted_proxies(cls, values):
+        from ipaddress import ip_network
+        if isinstance(values, str):
+            values = json.loads(values) if values.strip().startswith("[") else values.split(",")
+        result = []
+        for value in values:
+            if not value.strip():
+                continue
+            network = ip_network(value.strip(), strict=False)
+            if network.prefixlen == 0:
+                raise ValueError("Trust-all proxy networks are forbidden.")
+            result.append(str(network))
+        return result
 
     @field_validator("NONCOMMERCIAL_API_KEY_SHA256")
     @classmethod
@@ -82,6 +102,12 @@ class Settings(BaseSettings):
         if self.CORS_ALLOW_CREDENTIALS and "*" in self.CORS_ORIGINS:
             raise ValueError("Credentialed CORS requires explicit origins; wildcard origins are forbidden.")
         if self.is_production:
+            key = self.ADMIN_API_KEY
+            if (len(key) < 32 or key != key.strip() or not key.isascii()
+                    or any(ch.isspace() for ch in key)
+                    or key.lower() in {"dev-admin-secret-key", "your-secure-admin-api-key",
+                                       "your-secure-admin-api-key-change-me"}):
+                raise ValueError("Production requires a non-default administrator secret of at least 32 ASCII characters without whitespace.")
             if not self.DATABASE_URL or self.DATABASE_URL.strip() == "":
                 raise ValueError(
                     "Production configuration error: DATABASE_URL must be explicitly supplied. "

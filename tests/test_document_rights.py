@@ -418,9 +418,9 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
     cfs_cols = {c["name"] for c in inspector.get_columns("consensus_fact_sources")}
     assert "source_document_id" not in cfs_cols
 
-    # 4. Re-upgrade to head (now 0005_record_publication)
+    # 4. Re-upgrade to head (now 0006_shared_rate_limits)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0005_record_publication"
+    assert get_current_revision(engine) == "0006_shared_rate_limits"
     inspector = inspect(engine)
     sd_cols = {c["name"] for c in inspector.get_columns("source_documents")}
     assert "publication_status" in sd_cols
@@ -801,7 +801,7 @@ def test_populated_l003_database_upgrade_and_transition(tmp_path):
 
     # 3. Upgrade schema to head (L004 plus provenance)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0005_record_publication"
+    assert get_current_revision(engine) == "0006_shared_rate_limits"
 
     # Verify consensus citation source_document_id is currently null
     with sessionmaker(bind=engine)() as s:
@@ -980,7 +980,7 @@ def test_transition_fails_and_rolls_back_on_unresolved_links(tmp_path):
 
 def test_transition_enforces_supported_schema_revision(tmp_path):
     """
-    Issue 3: Transition must strictly enforce the supported schema revision (0005_record_publication).
+    Issue 3: Transition must strictly enforce the supported schema revision (0006_shared_rate_limits).
     Fails fast if database is at 0001_initial_schema or unmigrated.
     """
     from alembic import command

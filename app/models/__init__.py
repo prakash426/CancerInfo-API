@@ -391,3 +391,11 @@ class ConsensusFactSource(Base):
     source = relationship("Source")
     source_document = relationship("SourceDocument", back_populates="consensus_fact_sources")
 
+
+
+class RateLimitBucket(Base):
+    """Ephemeral operational state, separate from the preserved content corpus."""
+    __tablename__ = "rate_limit_buckets"
+    id = Column(String(64), primary_key=True)
+    events = Column(JSON, nullable=False)
+    expires_at = Column(Float, nullable=False, index=True)

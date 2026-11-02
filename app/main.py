@@ -2,9 +2,10 @@
 CancerInfo API - Master Application Entry Point
 """
 import time
+import logging
 import uuid
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, Response, status
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -15,7 +16,8 @@ from app.core.constants import MEDICAL_DISCLAIMER
 from app.core.source_notices import SOURCE_NOTICE
 from app.core.errors import (APIError, api_error_handler, generic_exception_handler,
                              validation_error_handler, http_error_handler)
-from app.core.security import rate_limiter
+from app.core.security import rate_limiter, client_address
+from starlette.concurrency import run_in_threadpool
 from app.database.session import engine
 from app.schemas.common import ErrorResponse
 
@@ -41,7 +43,7 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
-    responses={code: {"model": ErrorResponse} for code in (400, 401, 404, 405, 409, 422, 429, 500)},
+    responses={code: {"model": ErrorResponse} for code in (400, 401, 404, 405, 409, 422, 429, 500, 503)},
 )
 
 # CORS Configuration
@@ -75,71 +77,52 @@ app.add_exception_handler(HTTPException, http_error_handler)
 @app.middleware("http")
 async def request_metrics_and_rate_limit(request: Request, call_next):
     request_id = str(uuid.uuid4())
-    start_time = time.time()
-
-    # Client IP identification
-    client_ip = request.headers.get("X-Forwarded-For")
-    if client_ip:
-        client_ip = client_ip.split(",")[0].strip()
-    else:
-        client_ip = request.client.host if request.client else "127.0.0.1"
-
-    # Bypass rate limiter for internal docs, openapi, and health check endpoints
-    path = request.url.path
-    is_exempt = (
-        path.startswith("/docs")
-        or path.startswith("/redoc")
-        or path == "/openapi.json"
-        or path == "/v1/health"
-        or path == "/health"
-        or path == "/api/health"
-        or path == "/"
-    )
-    if not is_exempt:
-        allowed, limit, remaining, reset = rate_limiter.check(client_ip)
-        if not allowed:
-            return JSONResponse(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                content={
-                    "error": {
-                        "code": "RATE_LIMIT_EXCEEDED",
-                        "message": "Too many requests. Please wait before retrying.",
-                        "details": {"retry_after_seconds": reset},
-                    }
-                },
-                headers={
-                    "X-RateLimit-Limit": str(limit),
-                    "X-RateLimit-Remaining": "0",
-                    "X-RateLimit-Reset": str(reset),
-                    "Retry-After": str(reset),
-                },
-            )
-    else:
-        limit, remaining, reset = settings.RATE_LIMIT_PER_MINUTE, settings.RATE_LIMIT_PER_MINUTE, 60
-
+    request.state.request_id = request_id
+    start_time = time.monotonic()
     from app.core.publication_access import publication_use, approved_use
     use = approved_use(request.headers.get("X-API-Key"))
     token = publication_use.set(use)
+    limit, remaining, reset = settings.RATE_LIMIT_PER_MINUTE, settings.RATE_LIMIT_PER_MINUTE, 60
+    path = request.url.path
+    exempt = path in {"/", "/docs", "/docs/oauth2-redirect", "/redoc", "/openapi.json",
+                      "/v1/health", "/v1/ready", "/health", "/api/health"}
     try:
-        response: Response = await call_next(request)
+        response = None
+        if not exempt:
+            try:
+                allowed, limit, remaining, reset = await run_in_threadpool(
+                    rate_limiter.check, client_address(request))
+            except Exception:
+                logging.getLogger(__name__).error("rate_limit_unavailable request_id=%s", request_id)
+                response = JSONResponse(status_code=503, content={"error": {
+                    "code": "RATE_LIMIT_UNAVAILABLE", "message": "Request accounting is temporarily unavailable.",
+                    "details": {}}}, headers={"Retry-After": "5"})
+                remaining = 0
+            else:
+                if not allowed:
+                    response = JSONResponse(status_code=429, content={"error": {
+                        "code": "RATE_LIMIT_EXCEEDED", "message": "Too many requests. Please wait before retrying.",
+                        "details": {"retry_after_seconds": reset}}}, headers={"Retry-After": str(reset)})
+        if response is None:
+            try:
+                response = await call_next(request)
+            except Exception as exc:
+                logging.getLogger(__name__).error("request_failed request_id=%s error_type=%s", request_id, type(exc).__name__)
+                response = await generic_exception_handler(request, exc)
     finally:
         publication_use.reset(token)
-    # Results vary by approval. Prevent shared caches from leaking restricted data.
+    # Apply the same privacy and compliance contract to success and failure paths.
     response.headers["X-Publication-Use"] = use
     response.headers["Cache-Control"] = "private, no-store"
     response.headers.append("Vary", "X-API-Key")
-
-    # Response headers
-    process_time = (time.time() - start_time) * 1000.0
     response.headers["X-Request-ID"] = request_id
-    response.headers["X-Response-Time-MS"] = f"{process_time:.2f}"
+    response.headers["X-Response-Time-MS"] = f"{(time.monotonic() - start_time) * 1000:.2f}"
     response.headers["X-RateLimit-Limit"] = str(limit)
     response.headers["X-RateLimit-Remaining"] = str(remaining)
     response.headers["X-RateLimit-Reset"] = str(reset)
     response.headers["X-Disclaimer"] = "Informational API only. Not medical advice."
     response.headers["X-Medical-Disclaimer"] = "Informational only; not medical advice"
     response.headers["X-CancerInfo-API-Version"] = settings.APP_VERSION
-
     return response
 
 

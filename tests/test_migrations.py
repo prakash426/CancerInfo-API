@@ -60,6 +60,7 @@ from app.database.migration_check import (
 from app.database.session import Base
 from db_support import assert_safe_test_database, disposable_postgres, pg_tool
 from app.database.manifest import CURRENT_MODEL_TABLES, verify_foreign_key_integrity
+from app.database.model_tables import CORPUS_MODEL_TABLES
 from app.models import IngestionJob
 from app.models import Cancer, Source
 
@@ -141,7 +142,7 @@ def test_alembic_revision_equals_head(test_db_url, alembic_cfg):
     assert current_rev is not None
     assert head_rev is not None
     assert current_rev == head_rev
-    assert current_rev == "0005_record_publication"
+    assert current_rev == "0006_shared_rate_limits"
 
 
 def test_repeated_migration_is_idempotent_no_op(test_db_url, alembic_cfg):
@@ -156,7 +157,7 @@ def test_repeated_migration_is_idempotent_no_op(test_db_url, alembic_cfg):
     rev_second = get_current_revision(engine)
 
     assert rev_first == rev_second
-    assert rev_second == "0005_record_publication"
+    assert rev_second == "0006_shared_rate_limits"
 
 
 def test_legacy_cancer_content_table_is_preserved_untouched(test_db_url, alembic_cfg):
@@ -288,25 +289,26 @@ def test_production_configuration_rejections():
     """Test 7: Production configuration strictly requires PostgreSQL, rejects SQLite/empty URL, and redacts credentials."""
     # 1. Reject default SQLite in production
     with pytest.raises(ValueError, match="SQLite is strictly forbidden in production") as exc_info:
-        Settings(ENVIRONMENT="production", DATABASE_URL="sqlite:///./cancerinfo.db")
+        Settings(ADMIN_API_KEY="ciapi-disposable-production-test-key-2026", ENVIRONMENT="production", DATABASE_URL="sqlite:///./cancerinfo.db")
     assert "sqlite:///./cancerinfo.db" not in str(exc_info.value), "Supplied URL leaked into exception!"
 
     # 2. Reject explicit SQLite path in production
     with pytest.raises(ValueError, match="SQLite is strictly forbidden in production"):
-        Settings(ENVIRONMENT="production", DATABASE_URL="sqlite:////app/data/cancerinfo.db")
+        Settings(ADMIN_API_KEY="ciapi-disposable-production-test-key-2026", ENVIRONMENT="production", DATABASE_URL="sqlite:////app/data/cancerinfo.db")
 
     # 3. Reject empty URL in production
     with pytest.raises(ValueError, match="DATABASE_URL must be explicitly supplied"):
-        Settings(ENVIRONMENT="production", DATABASE_URL="")
+        Settings(ADMIN_API_KEY="ciapi-disposable-production-test-key-2026", ENVIRONMENT="production", DATABASE_URL="")
 
     # 4. Reject unsupported connection scheme without leaking supplied URL
     secret_url = "mysql://admin_user:super_secret_pw@db.internal:3306/cancerinfo"
     with pytest.raises(ValueError, match="must be a PostgreSQL connection URL") as exc_info:
-        Settings(ENVIRONMENT="production", DATABASE_URL=secret_url)
+        Settings(ADMIN_API_KEY="ciapi-disposable-production-test-key-2026", ENVIRONMENT="production", DATABASE_URL=secret_url)
     assert "super_secret_pw" not in str(exc_info.value), "Credentials leaked into exception message!"
 
     # 5. Accept valid PostgreSQL URL
     prod_settings = Settings(
+        ADMIN_API_KEY="ciapi-disposable-production-test-key-2026",
         ENVIRONMENT="production",
         DATABASE_URL="postgres://cancer_admin:secret@ep-neon-123.eastus2.azure.neon.tech/neondb",
     )
@@ -408,8 +410,8 @@ def test_pre_alembic_schema_adoption_with_parity_verification(test_db_url, alemb
     # 5. Run actual adoption (stamps to head)
     adopt_report = adopt_existing_schema(engine, dry_run=False)
     assert adopt_report["status"] == "SUCCESSFULLY_ADOPTED"
-    assert adopt_report["adopted_revision"] == "0005_record_publication"
-    assert get_current_revision(engine) == "0005_record_publication"
+    assert adopt_report["adopted_revision"] == "0006_shared_rate_limits"
+    assert get_current_revision(engine) == "0006_shared_rate_limits"
 
     # 6. Verify existing data was untouched
     session = Session()
@@ -419,7 +421,7 @@ def test_pre_alembic_schema_adoption_with_parity_verification(test_db_url, alemb
 
     # 7. Verify subsequent startup check succeeds
     head_rev = verify_database_schema_at_head(engine)
-    assert head_rev == "0005_record_publication"
+    assert head_rev == "0006_shared_rate_limits"
 
     # 8. Test fail-closed rejection: attempting to adopt an already-managed database MUST raise SchemaParityError
     with pytest.raises(SchemaParityError, match="Adoption rejected: Database is already managed by Alembic"):
@@ -520,7 +522,7 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
         connection.execute(legacy.insert().values(content="retained legacy text",
                                                  content_id="legacy-1", content_hash="hash-1"))
     baseline = capture_current_model_manifest(engine)
-    assert all(baseline["row_counts"][name] > 0 for name in CURRENT_MODEL_TABLES)
+    assert all(baseline["row_counts"][name] > 0 for name in CORPUS_MODEL_TABLES)
     legacy_before = audit_legacy_cancer_content(engine)
 
     is_sqlite = engine.dialect.name == "sqlite"
@@ -539,7 +541,7 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
     faulty_dir.mkdir()
     (faulty_dir / "9999_faulty.py").write_text(
         "revision = '9999_faulty'\n"
-        "down_revision = '0005_record_publication'\n"
+        "down_revision = '0006_shared_rate_limits'\n"
         "branch_labels = depends_on = None\n"
         "from alembic import op\n"
         "import sqlalchemy as sa\n"
@@ -565,14 +567,14 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
     )
     assert proc.returncode != 0
     assert "L003_INTENTIONAL_MIGRATION_FAILURE" in proc.stderr, proc.stderr
-    assert get_current_revision(engine) == "0005_record_publication"
+    assert get_current_revision(engine) == "0006_shared_rate_limits"
     compare_current_model_manifests(baseline, capture_current_model_manifest(engine))
     compare_legacy_audits(legacy_before, audit_legacy_cancer_content(engine))
     if not is_sqlite:
         assert "faulty_probe_table" not in inspect(engine).get_table_names()
 
     def verify_restored(restored):
-        assert verify_database_schema_at_head(restored) == "0005_record_publication"
+        assert verify_database_schema_at_head(restored) == "0006_shared_rate_limits"
         assert verify_schema_parity(restored)["tables_verified"] == len(CURRENT_MODEL_TABLES)
         compare_current_model_manifests(baseline, capture_current_model_manifest(restored))
         compare_legacy_audits(legacy_before, audit_legacy_cancer_content(restored))
@@ -654,6 +656,7 @@ def test_legacy_long_revision_identifier_remapped_transparently(test_db_url, ale
         with engine.connect() as conn:
             conn.execute(text("UPDATE alembic_version SET version_num = '0002_document_rights_and_consensus_linkage'"))
             conn.execute(text("DROP TABLE who_fact_provenance"))
+            conn.execute(text("DROP TABLE rate_limit_buckets"))
             conn.execute(text("ALTER TABLE source_documents DROP COLUMN publication_record_reviews"))
             conn.execute(text("ALTER TABLE source_documents DROP COLUMN approved_publication_content_types"))
             conn.execute(text("ALTER TABLE source_documents DROP COLUMN noncommercial_redistribution_allowed"))
@@ -684,11 +687,11 @@ def test_legacy_long_revision_identifier_remapped_transparently(test_db_url, ale
         # 5. Verify persistence, then complete the outstanding upgrade
         assert get_current_revision(engine) == "0002_document_rights"
         command.upgrade(alembic_cfg, "head")
-        assert verify_database_schema_at_head(engine) == "0005_record_publication"
+        assert verify_database_schema_at_head(engine) == "0006_shared_rate_limits"
 
         # 6. Subsequent migration commands succeed seamlessly
         command.upgrade(alembic_cfg, "head")
-        assert get_current_revision(engine) == "0005_record_publication"
+        assert get_current_revision(engine) == "0006_shared_rate_limits"
     else:
         # In PostgreSQL: verify normal schema is NOT weakened (version_num length is <= 32)
         inspector = inspect(engine)
@@ -698,8 +701,8 @@ def test_legacy_long_revision_identifier_remapped_transparently(test_db_url, ale
         assert getattr(col_type, "length", 32) <= 32
 
         # Verify PostgreSQL database is cleanly at head and repair is a safe no-op
-        assert get_current_revision(engine) == "0005_record_publication"
+        assert get_current_revision(engine) == "0006_shared_rate_limits"
         assert repair_legacy_revision(engine) is None
-        assert verify_database_schema_at_head(engine) == "0005_record_publication"
+        assert verify_database_schema_at_head(engine) == "0006_shared_rate_limits"
 
     engine.dispose()
