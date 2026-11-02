@@ -1,6 +1,10 @@
 """
 Source Registry and Coverage Tests
 """
+import pytest
+
+pytestmark = pytest.mark.usefixtures("public_seed_evidence")
+
 
 
 def test_list_sources(client):

@@ -1,6 +1,10 @@
 """
 Consensus Facts and Decoupled Biological Category Tests
 """
+import pytest
+
+pytestmark = pytest.mark.usefixtures("public_seed_evidence")
+
 
 
 def test_biological_category_decoupled_symptoms(client):

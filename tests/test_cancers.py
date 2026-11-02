@@ -1,6 +1,10 @@
 """
 Cancers and Knowledge Content Tests
 """
+import pytest
+
+pytestmark = pytest.mark.usefixtures("public_seed_evidence")
+
 
 
 def test_list_cancers(client):

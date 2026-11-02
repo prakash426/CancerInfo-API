@@ -9,8 +9,10 @@ from app.database.session import Base, get_db
 from app.ingestion.who_import import build_documents, run_import
 from app.ingestion.who_validate import validate_package
 from app.main import app
+from test_migrations import test_db_url  # noqa: F401: disposable dialect fixture
 from app.models import (Cancer, ContentRecord, ContentSource, ContentVersion,
-                        Source, SourceDocument, WhoFactProvenance)
+                        Source, SourceDocument, WhoFactProvenance,
+                        ConsensusFact, ConsensusFactSource)
 
 URL_A = "https://www.who.int/news-room/fact-sheets/detail/lung-cancer"
 URL_B = "https://www.who.int/news-room/fact-sheets/detail/cancer"
@@ -126,11 +128,13 @@ def _decisions(url_b_decision="METADATA_ONLY", signed=True):
 
 
 @pytest.fixture
-def isolated_db():
-    engine = create_engine("sqlite:///:memory:",
-                           connect_args={"check_same_thread": False},
-                           poolclass=StaticPool)
-    Base.metadata.create_all(engine)
+def isolated_db(test_db_url):
+    from alembic import command
+    from app.database.migration_check import get_alembic_config, set_alembic_url_safe
+    cfg = get_alembic_config()
+    set_alembic_url_safe(cfg, test_db_url)
+    command.upgrade(cfg, "head")
+    engine = create_engine(test_db_url)
     session = sessionmaker(bind=engine)()
     session.add(Source(
         id="who-global", organization_name="World Health Organization",
@@ -145,6 +149,7 @@ def isolated_db():
     session.commit()
     yield session
     session.close()
+    engine.dispose()
 # --- part 2: behavior tests ---
 def test_valid_mini_package_passes_validation():
     pkg, register = _mini_package()
@@ -279,7 +284,7 @@ def test_second_run_updates_and_retires(isolated_db):
     assert "11 cases" in active[0].content
 
 
-def test_api_exposes_publication_status(isolated_db):
+def test_api_withholds_unreviewed_import(isolated_db):
     pkg, _register = _mini_package()
     run_import(isolated_db, pkg, _decisions())
     isolated_db.commit()
@@ -295,5 +300,93 @@ def test_api_exposes_publication_status(isolated_db):
     finally:
         app.dependency_overrides.clear()
     assert resp.status_code == 200
-    assert "who-global" in resp.text
-    assert "REVIEW_REQUIRED" in resp.text
+    assert resp.json()["data"]["records"] == []
+    assert resp.json()["pagination"]["total_records"] == 0
+    assert isolated_db.query(ContentRecord).count() == 2
+    assert isolated_db.query(SourceDocument).filter_by(publication_status="REVIEW_REQUIRED").count() == 1
+
+
+@pytest.mark.parametrize("withdrawal", ["METADATA_ONLY", "REJECT", "unsigned", "missing"])
+def test_rights_withdrawal_retires_content_and_preserves_history(isolated_db, withdrawal):
+    from publication_support import add_public_document
+    pkg, _ = _mini_package()
+    run_import(isolated_db, pkg, _decisions())
+    # Evidence outside this package must remain untouched.
+    other_doc = add_public_document(isolated_db, "who-global", "https://example.invalid/unrelated")
+    cancer = isolated_db.query(Cancer).one()
+    other = ContentRecord(canonical_cancer_id=cancer.id, category="overview", content="Unrelated fixture")
+    isolated_db.add(other)
+    isolated_db.flush()
+    isolated_db.add(ContentSource(content_record_id=other.id, source_id="who-global",
+                                 source_url=other_doc.original_url, source_document=other_doc))
+    withdrawn_doc = isolated_db.query(SourceDocument).filter_by(original_url=URL_A).one()
+    affected = isolated_db.query(ContentRecord).filter(ContentRecord.id != other.id).first()
+    # Shared evidence is withheld as a whole; its unrelated contributor and
+    # separate record remain intact.
+    isolated_db.add(ContentSource(content_record_id=affected.id, source_id="who-global",
+                                 source_url=other_doc.original_url, source_document=other_doc))
+    fact = ConsensusFact(cancer_id=cancer.id, category="symptoms", fact_key="withdrawn-fact",
+                         title="Synthetic shared consensus")
+    isolated_db.add(fact)
+    isolated_db.flush()
+    isolated_db.add_all([
+        ConsensusFactSource(consensus_fact_id=fact.id, source_id="who-global",
+                            source_url=withdrawn_doc.original_url, source_document=withdrawn_doc),
+        ConsensusFactSource(consensus_fact_id=fact.id, source_id="who-global",
+                            source_url=other_doc.original_url, source_document=other_doc),
+    ])
+    isolated_db.commit()
+    record_ids = [r.id for r in isolated_db.query(ContentRecord) if r.id != other.id]
+    originals = [(v.id, v.content, v.change_reason) for v in isolated_db.query(ContentVersion)]
+    provenance = [(p.id, p.content_record_id) for p in isolated_db.query(WhoFactProvenance)]
+    links_before = isolated_db.query(ContentSource).count()
+    decisions = _decisions()
+    if withdrawal == "unsigned":
+        decisions[URL_A]["reviewer"] = ""
+    elif withdrawal == "missing":
+        del decisions[URL_A]
+    else:
+        decisions[URL_A]["decision"] = withdrawal
+    result = run_import(isolated_db, pkg, decisions)
+    isolated_db.commit()
+    assert result["retired"] == 2
+    assert all(not isolated_db.get(ContentRecord, rid).active for rid in record_ids)
+    assert other.active
+    assert not fact.active
+    assert isolated_db.query(ConsensusFactSource).filter_by(consensus_fact_id=fact.id).count() == 2
+    assert other_doc.publication_status == "ELIGIBLE"
+    assert isolated_db.query(ContentSource).count() == links_before
+    assert [(p.id, p.content_record_id) for p in isolated_db.query(WhoFactProvenance)] == provenance
+    assert [(v.id, v.content, v.change_reason) for v in isolated_db.query(ContentVersion)
+            if v.change_type != "RIGHTS_WITHDRAWN"] == originals
+    assert isolated_db.query(ContentVersion).filter_by(change_type="RIGHTS_WITHDRAWN").count() == 2
+    doc = isolated_db.query(SourceDocument).filter_by(original_url=URL_A).one()
+    assert doc.publication_status == "QUARANTINED"
+    assert doc.processing_status == ("REJECTED" if withdrawal == "REJECT" else "METADATA_ONLY")
+    repeat = run_import(isolated_db, pkg, decisions)
+    isolated_db.commit()
+    assert repeat["retired"] == 0
+    assert isolated_db.query(ContentVersion).filter_by(change_type="RIGHTS_WITHDRAWN").count() == 2
+
+
+def test_rights_withdrawal_rolls_back_with_the_caller_transaction(isolated_db, monkeypatch):
+    import app.ingestion.who_import as importer
+    pkg, _ = _mini_package()
+    run_import(isolated_db, pkg, _decisions())
+    isolated_db.commit()
+    before = [(r.id, r.active, r.version_number) for r in isolated_db.query(ContentRecord)]
+    original = importer._withdraw_document
+
+    def fail_after_withdrawal(*args):
+        original(*args)
+        raise RuntimeError("Synthetic transaction failure")
+
+    monkeypatch.setattr(importer, "_withdraw_document", fail_after_withdrawal)
+    decisions = _decisions()
+    decisions[URL_A]["decision"] = "REJECT"
+    with pytest.raises(RuntimeError, match="Synthetic transaction failure"):
+        run_import(isolated_db, pkg, decisions)
+    isolated_db.rollback()
+    assert [(r.id, r.active, r.version_number) for r in isolated_db.query(ContentRecord)] == before
+    assert isolated_db.query(ContentVersion).count() == 2
+    assert isolated_db.query(SourceDocument).filter_by(original_url=URL_A).one().publication_status == "REVIEW_REQUIRED"

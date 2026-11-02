@@ -62,3 +62,19 @@ def client(db_session):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def public_seed_evidence(db_session):
+    """Explicit disposable reviews for legacy API behavior tests only.
+
+    The real seed rights are not changed. Closing the test session rolls these
+    test-only decisions back; rights tests use unmodified seed decisions.
+    """
+    from app.models import SourceDocument
+    from publication_support import approve_test_document
+    for doc in db_session.query(SourceDocument):
+        approve_test_document(doc)
+    db_session.flush()
+    yield
+    db_session.rollback()

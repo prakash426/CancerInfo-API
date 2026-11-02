@@ -146,4 +146,9 @@ def verify_database_schema_at_head(engine: Engine) -> str:
             f"Run 'alembic upgrade head' before starting the application."
         )
 
+    from app.database.adoption import verify_schema_parity, SchemaParityError
+    try:
+        verify_schema_parity(engine)
+    except SchemaParityError as exc:
+        raise RuntimeError("Database schema validation failed: " + str(exc)) from exc
     return head_rev
