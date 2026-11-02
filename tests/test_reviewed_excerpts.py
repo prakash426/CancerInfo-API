@@ -120,3 +120,12 @@ def test_invalid_public_manifest_rolls_back_appended_excerpt(db_session, gate_da
     with pytest.raises(ValueError):
         with db_session.begin_nested():publish(db_session,plan)
     assert db_session.get(ContentRecord,'synthetic-reviewed-copy') is None
+
+
+def test_search_does_not_truncate_reviewed_excerpts(client, db_session, gate_data):
+    gate_data[1].content = 'gatedneedle ' + ('Synthetic qualification retained. ' * 15)
+    approve_excerpt(db_session, gate_data)
+    response = client.get('/v1/search?q=gatedneedle').json()['data']['results']
+    item = next(r for r in response if r.get('record'))
+    assert item['snippet'] == gate_data[1].content
+    assert item['record']['content'] == item['snippet']

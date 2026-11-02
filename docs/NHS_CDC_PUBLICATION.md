@@ -13,6 +13,9 @@ service-level OGL notice. They are scoped to England. No adapted NHS content or
 NHS-derived consensus is approved. Consumers must carry these notices through
 to presentation and must not impose a specific charge for NHS content.
 
+Search snippets retain the complete reviewed excerpt, including qualifications,
+rather than truncating it.
+
 The CDC record is a verbatim screening-recommendations paragraph retaining the
 45-to-75 range and the individual decision for ages 76 to 85. Its quote is exact.
 The original paraphrase and its inaccurate quote remain preserved internally.
