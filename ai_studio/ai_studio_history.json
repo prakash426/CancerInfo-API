@@ -4,8 +4,8 @@
     "display_title": "CancerInfo API & Knowledge Explorer",
     "version": "1.0.0",
     "applet_id": "419f62e9-9c0b-410a-9c5e-551fc5b277b6",
-    "license": "MIT (100% Free Forever for Humanity)",
-    "description": "A free, structured, global, source-transparent public REST API aggregating normalized cancer knowledge with fact-level provenance from authoritative health organizations.",
+    "license": "MIT (software license; hosted API access has separate subscription and usage terms)",
+    "description": "A cancer information API designed to organize structured information with source citations. Available topics and coverage vary by source and release. For informational use only; not medical advice.",
     "export_generated_at": "2026-09-24T17:35:00Z",
     "primary_languages": ["Python 3.11+", "TypeScript / JavaScript"],
     "backend_frameworks": ["FastAPI (Python)", "Express (Node.js full-stack bridge)"],
@@ -14,7 +14,7 @@
   },
   "emotional_and_mission_core": {
     "dedication": "Dedicated with infinite love to the creator's mother and father, and to every cancer warrior, caregiver, and family worldwide.",
-    "origin_story": "The project was conceived in hospital chemotherapy waiting rooms while the creator's parents were undergoing cancer treatment. Late-night research revealed conflicting medical blog posts, clickbait, differing screening ages between nations, and paywalled jargon without citation. As an engineer accustomed to cryptographic provenance and single sources of truth, the creator vowed to build the public API they needed on those dark nights: a 100% free, un-paywalled clinical oncology knowledge base where every fact is cited directly to primary public health authorities.",
+    "origin_story": "The project was conceived in hospital chemotherapy waiting rooms while the creator's parents were undergoing cancer treatment. Late-night research revealed conflicting medical blog posts, clickbait, differing screening ages between nations, and paywalled jargon without citation. As an engineer accustomed to cryptographic provenance and single sources of truth, the creator vowed to build the public API they needed on those dark nights: a structured cancer information API designed to retain citations to primary health-information sources.",
     "zero_guesswork_guarantee": "No unverified claims. Every medical record specifies the exact source URL, health organization name, trust tier, retrieval date, verification timestamp, jurisdiction country code, and copyright/open-government attribution text. Designed specifically so AI models and clinicians never hallucinate."
   },
   "executive_summary": {
@@ -30,7 +30,7 @@
       "name": "Project Inception & Core Vision",
       "summary": "User established the project concept: a clinical oncology REST API dedicated to their parents. Established the Zero Guesswork Guarantee, fact-level provenance requirement, and open-source licensing.",
       "key_decisions": [
-        "100% free community resource with no commercial paywalls.",
+        "Community-oriented access was an early goal. Current hosted access follows the published subscription and usage terms; see docs/ACCESS_AND_USAGE.md.",
         "Authoritative sources only: National Cancer Institute (US), World Health Organization (Global), National Health Service (UK), Cancer Australia (AU), CDC (US).",
         "Mandatory clinical and legal disclaimer on every response header and body."
       ]
@@ -73,7 +73,7 @@
       "name": "Publishing, Documentation & Cloud Deployment Ecosystem",
       "summary": "Authored comprehensive publishing collateral for developers and public marketplaces.",
       "documentation_created": [
-        "rapidapi/RAPIDAPI_LISTING_GUIDE.md: Step-by-step instructions to list under RapidAPI Hub 100% Free plan.",
+        "rapidapi/RAPIDAPI_LISTING_GUIDE.md: Step-by-step listing preparation and Basic subscription configuration; see docs/ACCESS_AND_USAGE.md.",
         "rapidapi/rapidapi-openapi.json: Complete OpenAPI 3.1 specification.",
         "rapidapi/postman_collection.json: Postman collection with test assertions.",
         "docs/FREE_HOSTING_DEPLOYMENT.md: Deploying for $0/mo on Google Cloud Run, Render, Railway, Fly.io.",

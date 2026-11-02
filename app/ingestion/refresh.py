@@ -56,7 +56,7 @@ def refresh_document(db, document, *, parser_version='shared-readers-v1'):
             link.quote_snippet=section.quote_snippet;link.attribution_text=source.attribution_text
             link.last_verified_at=datetime.utcnow()
             if changed:
-                snapshot=dict(parser_version=parser_version,url=link.source_url,source_id=source.id,document_id=doc.id,source_locator=section.source_locator,source_updated_at=document.source_updated_at.isoformat() if document.source_updated_at else None,quote=link.quote_snippet,attribution=link.attribution_text,previous_provenance=previous)
+                snapshot=dict(content_type=rec.content_type,parser_version=parser_version,url=link.source_url,source_id=source.id,document_id=doc.id,source_locator=section.source_locator,source_updated_at=document.source_updated_at.isoformat() if document.source_updated_at else None,quote=link.quote_snippet,attribution=link.attribution_text,previous_provenance=previous)
                 db.add(ContentVersion(content_record_id=rec.id,version_number=rec.version_number,content=rec.content,content_hash=compute_content_hash(rec.content),change_type='NEW' if previous is None else 'UPDATED',change_reason=json.dumps(snapshot)))
         for key,(rec,link) in old.items():
             if key not in touched and rec.active:

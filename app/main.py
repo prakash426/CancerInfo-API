@@ -7,12 +7,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException
 from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.constants import MEDICAL_DISCLAIMER
-from app.core.errors import APIError, api_error_handler, generic_exception_handler
+from app.core.errors import (APIError, api_error_handler, generic_exception_handler,
+                             validation_error_handler, http_error_handler)
 from app.core.security import rate_limiter
 from app.database.session import engine
+from app.schemas.common import ErrorResponse
 
 
 @asynccontextmanager
@@ -36,17 +40,19 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
+    responses={code: {"model": ErrorResponse} for code in (400, 401, 404, 405, 409, 422, 429, 500)},
 )
 
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS if isinstance(settings.CORS_ORIGINS, list) else [settings.CORS_ORIGINS],
-    allow_credentials=True,
+    allow_credentials=settings.CORS_ALLOW_CREDENTIALS,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=[
         "X-Request-ID",
+        "X-Publication-Use",
         "X-Response-Time-MS",
         "X-Medical-Disclaimer",
         "X-Disclaimer",
@@ -61,6 +67,8 @@ app.add_middleware(
 # Exception Handlers
 app.add_exception_handler(APIError, api_error_handler)
 app.add_exception_handler(Exception, generic_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_error_handler)
+app.add_exception_handler(HTTPException, http_error_handler)
 
 
 @app.middleware("http")
@@ -108,7 +116,17 @@ async def request_metrics_and_rate_limit(request: Request, call_next):
     else:
         limit, remaining, reset = settings.RATE_LIMIT_PER_MINUTE, settings.RATE_LIMIT_PER_MINUTE, 60
 
-    response: Response = await call_next(request)
+    from app.core.publication_access import publication_use, approved_use
+    use = approved_use(request.headers.get("X-API-Key"))
+    token = publication_use.set(use)
+    try:
+        response: Response = await call_next(request)
+    finally:
+        publication_use.reset(token)
+    # Results vary by approval. Prevent shared caches from leaking restricted data.
+    response.headers["X-Publication-Use"] = use
+    response.headers["Cache-Control"] = "private, no-store"
+    response.headers.append("Vary", "X-API-Key")
 
     # Response headers
     process_time = (time.time() - start_time) * 1000.0
@@ -369,4 +387,3 @@ curl -s http://localhost:3000/v1/coverage | jq</code></pre>
 </html>
 """
     return HTMLResponse(content=html_content)
-

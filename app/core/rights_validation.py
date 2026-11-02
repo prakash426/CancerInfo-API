@@ -6,9 +6,9 @@ Enforces strict fail-closed publication gates:
 2. Rejects unknown or missing third-party permission decisions and inconsistent evidence.
 3. Source-level registry fields (APPROVED, Tier 1, government status, domain) NEVER confer document clearance.
 """
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 from urllib.parse import urlparse
-from app.core.constants import PublicationStatus, ThirdPartyPermissionStatus
+from app.core.constants import ContentType, PublicationStatus, ThirdPartyPermissionStatus
 
 
 class PublicationEligibilityError(ValueError):
@@ -26,30 +26,16 @@ ELIGIBLE_THIRD_PARTY_STATUSES = {
 def evaluate_publication_eligibility(
     doc,
     source=None,
+    *,
+    content_type=None,
+    publication_use="COMMERCIAL",
 ) -> Tuple[bool, List[str]]:
-    """
-    Evaluates whether a SourceDocument is eligible for public/commercial API publication.
-    Returns (is_eligible, deficiency_reasons).
+    """Evaluate a reviewed document for an exact output type and use.
 
-    Rules:
-    - Must have publication_status == 'ELIGIBLE'
-    - Must have valid rights_evidence_url (non-empty http/https URL)
-    - Must have non-null rights_reviewed_at timestamp
-    - Must have non-empty rights_reviewer decision owner
-    - Must have non-empty permissible_use determination
-    - Must have redistribution_allowed is True
-    - Must have commercial_redistribution_allowed is True
-    - Inconsistent evidence: commercial_redistribution_allowed cannot be True while redistribution_allowed is False
-    - Inconsistent evidence: quarantine_reason cannot be present when publication_status is ELIGIBLE
-    - Must have full_text_storage_allowed is True and derived_summary_allowed is True
-    - Attribution consistency: if attribution_required is True, attribution_text must not be empty
-    - Third-party permission decision:
-      * Reject missing/null/empty third-party decision
-      * Reject unknown third-party decision (not in ThirdPartyPermissionStatus)
-      * Reject unresolved statuses (REQUIRED_NOT_SUBMITTED, REQUESTED_AWAITING_RESPONSE, PENDING, etc.)
-      * Only NOT_APPLICABLE and GRANTED are eligible
-      * If GRANTED, third_party_permission_notes must provide evidence/reference of grant
-    - Source properties (active, APPROVED, Tier 1, government) NEVER satisfy document requirements.
+    The default retains the legacy commercial document audit. Public callers
+    must supply the actual output type. Noncommercial use requires a separate
+    explicit grant; neither free text nor a source's identity implies approval.
+    This evaluates delivery rights, not permission to retain source full text.
     """
     reasons: List[str] = []
 
@@ -96,26 +82,44 @@ def evaluate_publication_eligibility(
     elif not redist_allowed:
         reasons.append("Document-level redistribution is not allowed (redistribution_allowed=False)")
 
-    if comm_allowed is None:
-        reasons.append("Missing explicit decision for commercial_redistribution_allowed (commercial redistribution is not allowed)")
-    elif not comm_allowed:
-        reasons.append("Document-level commercial/API redistribution is not allowed (commercial_redistribution_allowed=False)")
+    if publication_use not in {"COMMERCIAL", "NONCOMMERCIAL"}:
+        reasons.append("Unknown publication use")
+    elif publication_use == "COMMERCIAL":
+        if comm_allowed is not True:
+            reasons.append("Document-level commercial/API redistribution is not allowed (commercial_redistribution_allowed must be True)")
+    else:
+        if getattr(doc, "noncommercial_redistribution_allowed", None) is not True:
+            reasons.append("Missing explicit approved noncommercial redistribution permission")
+        if comm_allowed not in (True, False):
+            reasons.append("Missing explicit commercial permission decision")
 
     if comm_allowed and not redist_allowed:
         reasons.append("Inconsistent evidence: commercial_redistribution_allowed is True while redistribution_allowed is False")
 
-    # 7. Explicit decisions for storage and derivative permissions
-    storage_allowed = getattr(doc, "full_text_storage_allowed", None)
-    if storage_allowed is None:
-        reasons.append("Missing explicit decision for full_text_storage_allowed (cannot be None)")
-    elif not storage_allowed:
-        reasons.append("Document does not allow full text storage (full_text_storage_allowed=False)")
+    approved_types = getattr(doc, "approved_publication_content_types", None)
+    known_types = {t.value for t in ContentType}
+    if content_type is not None and (not isinstance(content_type, str) or content_type not in known_types):
+        reasons.append("Unknown publication content type")
+        content_type = "INVALID"
+    # An explicit allowlist is mandatory for noncommercial delivery and full
+    # source text. Existing broad commercial reviews remain valid for summaries.
+    needs_types = publication_use == "NONCOMMERCIAL" or content_type in {
+        "SOURCE_CONTENT", "TRANSLATION", "AI_ASSISTED_NORMALIZATION", "MANUALLY_CURATED"
+    }
+    if approved_types is not None or needs_types:
+        if (not isinstance(approved_types, list) or not approved_types
+                or any(not isinstance(t, str) or t not in known_types for t in approved_types)
+                or content_type not in approved_types):
+            reasons.append("Output content type lacks explicit document approval")
 
+    storage_allowed = getattr(doc, "full_text_storage_allowed", None)
     derived_allowed = getattr(doc, "derived_summary_allowed", None)
-    if derived_allowed is None:
-        reasons.append("Missing explicit decision for derived_summary_allowed (cannot be None)")
-    elif not derived_allowed:
-        reasons.append("Document does not allow derived summary generation (derived_summary_allowed=False)")
+    if content_type is None or content_type == "SOURCE_CONTENT":
+        if storage_allowed is not True:
+            reasons.append("Document does not allow full text storage (full_text_storage_allowed must be True)")
+    if content_type != "SOURCE_CONTENT":
+        if derived_allowed is not True:
+            reasons.append("Document does not allow derived summary generation (derived_summary_allowed must be True)")
 
     # 8. Attribution consistency and explicit decision
     attr_required = getattr(doc, "attribution_required", None)

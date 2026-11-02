@@ -39,6 +39,9 @@ jobs:
         run: |
           python --version
 
+      - name: Reject tracked local data and credentials
+        run: python scripts/check_local_artifacts.py
+
       - name: Install dependencies from committed reproducible lock
         run: |
           python -m pip install --upgrade pip
@@ -64,7 +67,7 @@ jobs:
         env:
           POSTGRES_TEST_URL: postgresql+psycopg2://cancerinfo_user:cancerinfo_password@localhost:5432/cancerinfo_pytest
         run: |
-          python -m pytest tests/test_migrations.py tests/test_bootstrap.py tests/test_document_rights.py::test_populated_postgresql_transition -v -ra -W default
+          python -m pytest tests/test_migrations.py tests/test_bootstrap.py tests/test_public_contract.py tests/test_publication_gates.py tests/test_content_use_eligibility.py tests/test_publication_use_migration.py tests/test_schema_safeguards.py tests/test_who_importer.py tests/test_document_rights.py::test_populated_postgresql_transition -v -ra -W default
 
       - name: Validate OpenAPI schema generation smoke test
         run: |

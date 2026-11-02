@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "c4b12345-6789-4abc-def0-cancerinfo001",
     "name": "CancerInfo API (Production v1)",
-    "description": "Postman Collection for CancerInfo API: Free, global, source-transparent cancer knowledge platform with fact-level provenance.",
+    "description": "Postman collection for CancerInfo API client examples. Structured cancer information with source citations; available coverage varies by release. For informational use only; not medical advice.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [

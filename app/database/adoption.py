@@ -7,7 +7,7 @@ from alembic.migration import MigrationContext
 from sqlalchemy import inspect
 from sqlalchemy.engine import Engine
 
-from app.database.manifest import CURRENT_MODEL_TABLES
+from app.database.model_tables import CURRENT_MODEL_TABLES
 from app.database.migration_check import (
     get_alembic_config, get_current_revision, get_head_revision,
     set_alembic_url_safe,
@@ -15,7 +15,7 @@ from app.database.migration_check import (
 from app.database.session import Base
 import app.models  # noqa: F401
 
-BASELINE_REVISION = "0003_who_provenance"
+BASELINE_REVISION = "0004_publication_use"
 
 
 class SchemaParityError(Exception):

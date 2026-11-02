@@ -4,6 +4,7 @@ Cancer Repository
 from typing import List, Optional, Tuple
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, joinedload
+from app.repositories.publication import PublicEvidence
 from app.models import Cancer, CancerAlias, ContentRecord
 
 
@@ -20,39 +21,31 @@ class CancerRepository:
         ident_spaces = ident_lower.replace("-", " ")
         ident_hyphens = ident_lower.replace(" ", "-")
 
-        # 1. Check exact slug or ID
-        cancer = self.db.query(Cancer).filter(
-            or_(
-                func.lower(Cancer.slug) == ident_lower,
-                func.lower(Cancer.slug) == ident_hyphens,
-                Cancer.id == identifier,
-            )
-        ).first()
+        from app.core.errors import AmbiguousCancerError
+
+        def unique(query):
+            matches = query.all()
+            if len(matches) > 1:
+                raise AmbiguousCancerError(identifier)
+            return matches[0] if matches else None
+
+        # Exact identity wins over normalized names and aliases.
+        cancer = self.db.query(Cancer).filter(Cancer.id == identifier.strip()).first()
         if cancer:
             return cancer
-
-        # 2. Check canonical name
-        cancer = self.db.query(Cancer).filter(
-            or_(
-                func.lower(Cancer.canonical_name) == ident_lower,
-                func.lower(Cancer.canonical_name) == ident_spaces,
-            )
-        ).first()
+        cancer = unique(self.db.query(Cancer).filter(func.lower(Cancer.slug) == ident_lower))
         if cancer:
             return cancer
-
-        # 3. Check aliases
-        alias_match = self.db.query(CancerAlias).filter(
-            or_(
-                func.lower(CancerAlias.alias) == ident_lower,
-                func.lower(CancerAlias.alias) == ident_spaces,
-                func.lower(CancerAlias.alias) == ident_hyphens,
-            )
-        ).first()
-        if alias_match:
-            return self.db.query(Cancer).filter(Cancer.id == alias_match.cancer_id).first()
-
-        return None
+        cancer = unique(self.db.query(Cancer).filter(or_(
+            func.lower(Cancer.slug) == ident_hyphens,
+            func.lower(Cancer.canonical_name).in_([ident_lower, ident_spaces]),
+        )))
+        if cancer:
+            return cancer
+        return unique(self.db.query(Cancer).filter(Cancer.aliases.any(
+            (CancerAlias.review_status == "APPROVED") &
+            func.lower(CancerAlias.alias).in_([ident_lower, ident_spaces, ident_hyphens])
+        )))
 
     def list_cancers(
         self,
@@ -65,7 +58,7 @@ class CancerRepository:
             query = query.filter(func.lower(Cancer.anatomical_site) == site.lower())
 
         total = query.count()
-        cancers = query.order_by(Cancer.canonical_name.asc()).offset(skip).limit(limit).all()
+        cancers = query.order_by(Cancer.canonical_name.asc(), Cancer.id.asc()).offset(skip).limit(limit).all()
         return cancers, total
 
     def get_cancer_sections(self, cancer_id: str) -> List[dict]:
@@ -73,6 +66,7 @@ class CancerRepository:
         Returns list of categories that have active content records for this cancer,
         along with record counts and countries represented.
         """
+        evidence = PublicEvidence(self.db)
         results = (
             self.db.query(
                 ContentRecord.category,
@@ -80,7 +74,7 @@ class CancerRepository:
             )
             .filter(
                 ContentRecord.canonical_cancer_id == cancer_id,
-                ContentRecord.active == True
+                evidence.records()
             )
             .group_by(ContentRecord.category)
             .all()
@@ -93,7 +87,7 @@ class CancerRepository:
                 .filter(
                     ContentRecord.canonical_cancer_id == cancer_id,
                     ContentRecord.category == cat,
-                    ContentRecord.active == True
+                    evidence.records()
                 )
                 .distinct().all()
             ]

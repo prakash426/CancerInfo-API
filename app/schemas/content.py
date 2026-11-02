@@ -28,6 +28,8 @@ class ProvenanceSourceOut(BaseModel):
     publication_status: Optional[str] = None
     reuse_conditions: Optional[str] = None
     commercial_redistribution_allowed: Optional[bool] = None
+    noncommercial_redistribution_allowed: Optional[bool] = None
+    approved_publication_content_types: Optional[List[str]] = None
     rights_evidence_url: Optional[str] = None
 
 
@@ -44,6 +46,8 @@ class CorroboratingSourceOut(BaseModel):
     publication_status: Optional[str] = None
     reuse_conditions: Optional[str] = None
     commercial_redistribution_allowed: Optional[bool] = None
+    noncommercial_redistribution_allowed: Optional[bool] = None
+    approved_publication_content_types: Optional[List[str]] = None
     rights_evidence_url: Optional[str] = None
 
 

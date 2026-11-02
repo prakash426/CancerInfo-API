@@ -125,13 +125,13 @@ Developers discover public APIs through 4 primary distribution channels:
 ```
 
 1. **The `public-apis/public-apis` GitHub Repository** (Over 330,000 GitHub Stars):
-   - The #1 place developers look for free APIs. A single merged PR here typically brings 200–500 unique developers per day.
+   - A directory developers use to discover APIs. Check its current submission rules and describe the API’s access requirements accurately.
 2. **RapidAPI Hub**:
-   - The world's largest API marketplace. Listing as "100% Free" triggers recommendation in the Free Tier filter.
+   - An API marketplace where developers can review the listing and subscription plans. Describe the Basic plan and applicable platform charges in the pricing section; do not promise recommendation or placement.
 3. **Hacker News (Show HN)**:
    - Genuine, mission-driven developer projects with personal stories (like honoring parents lost to cancer) routinely reach the front page of Hacker News, attracting thousands of contributors and stars.
 4. **Product Hunt**:
-   - Launching as a free developer tool under the "Health Tech" and "Developer Tools" categories.
+   - Present the API as a developer tool under suitable health and developer categories. Link to the current subscription and usage terms wherever pricing is discussed.
 
 ---
 

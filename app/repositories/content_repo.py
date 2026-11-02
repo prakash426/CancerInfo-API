@@ -2,8 +2,9 @@
 Content Record and Provenance Repository
 """
 from typing import List, Optional, Tuple
-from sqlalchemy import desc, func
+from sqlalchemy import case, desc, func
 from sqlalchemy.orm import Session, joinedload
+from app.repositories.publication import PublicEvidence
 from app.models import (
     ConsensusFact,
     ConsensusFactSource,
@@ -32,7 +33,7 @@ class ContentRepository:
             .filter(
                 ConsensusFact.cancer_id == cancer_id,
                 ConsensusFact.category == category,
-                ConsensusFact.active == True,
+                PublicEvidence(self.db).consensus(),
             )
             .options(
                 joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source),
@@ -41,6 +42,7 @@ class ContentRepository:
             .order_by(
                 ConsensusFact.display_order.asc(),
                 ConsensusFact.corroboration_count.desc(),
+                ConsensusFact.id.asc(),
             )
             .all()
         )
@@ -62,7 +64,7 @@ class ContentRepository:
             .filter(
                 ContentRecord.canonical_cancer_id == cancer_id,
                 ContentRecord.category == category,
-                ContentRecord.active == True,
+                PublicEvidence(self.db).records(),
             )
             .options(
                 joinedload(ContentRecord.sources).joinedload(ContentSource.source),
@@ -85,13 +87,15 @@ class ContentRepository:
             query = query.filter(ContentRecord.language == language.strip().lower())
 
         if source_id:
-            query = query.join(ContentRecord.sources).filter(ContentSource.source_id == source_id)
+            query = query.filter(ContentRecord.sources.any(ContentSource.source_id == source_id))
 
         total = query.count()
         records = (
             query.order_by(
-                desc(ContentRecord.jurisdiction_scope == "GLOBAL"),  # Country-specific first if present
-                ContentRecord.created_at.asc()
+                case((ContentRecord.country_code == (country.strip().upper() if country else ""), 0),
+                     (ContentRecord.country_code == "GLOBAL", 1), else_=2),
+                ContentRecord.created_at.asc(),
+                ContentRecord.id.asc(),
             )
             .offset(skip)
             .limit(limit)
@@ -101,25 +105,31 @@ class ContentRepository:
 
     def get_sources_for_cancer(self, cancer_id: str) -> List[Source]:
         """Returns all distinct sources that have provided content for this cancer"""
-        return (
-            self.db.query(Source)
-            .join(ContentSource, ContentSource.source_id == Source.id)
+        evidence = PublicEvidence(self.db)
+        source_ids = (
+            self.db.query(ContentSource.source_id)
             .join(ContentRecord, ContentRecord.id == ContentSource.content_record_id)
-            .filter(
-                ContentRecord.canonical_cancer_id == cancer_id,
-                ContentRecord.active == True
-            )
-            .distinct()
-            .all()
+            .filter(ContentRecord.canonical_cancer_id == cancer_id, evidence.records())
         )
+        # Source has JSON fields, so PostgreSQL cannot DISTINCT entire Source
+        # rows. Membership also avoids duplicate rows without a JSON equality.
+        return self.db.query(Source).filter(Source.id.in_(source_ids)).order_by(Source.id).all()
+
 
     def get_content_versions(self, cancer_id: str, limit: int = 50) -> List[ContentVersion]:
         """Returns version audit log for content of this cancer"""
-        return (
+        evidence = PublicEvidence(self.db)
+        versions = (
             self.db.query(ContentVersion)
             .join(ContentRecord, ContentRecord.id == ContentVersion.content_record_id)
-            .filter(ContentRecord.canonical_cancer_id == cancer_id)
-            .order_by(ContentVersion.created_at.desc())
-            .limit(limit)
-            .all()
+            .filter(ContentRecord.canonical_cancer_id == cancer_id, evidence.records())
+            .options(joinedload(ContentVersion.content_record).joinedload(ContentRecord.sources))
+            .order_by(ContentVersion.created_at.desc(), ContentVersion.id.asc())
         )
+        public = []
+        for version in versions:
+            if evidence.version(version):
+                public.append(version)
+                if len(public) == limit:
+                    break
+        return public

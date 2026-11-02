@@ -13,11 +13,11 @@
 [![Docker](https://img.shields.io/badge/Docker-portable_%26_durable-2496ED?style=for-the-badge&logo=docker&logoColor=white)](docker-compose.yml)
 
 <p align="center">
-  <b>Built with code. Powered by love. Serving humanity free of charge.</b><br>
+  <b>Built with code. Powered by love. Dedicated to clearer cancer information.</b><br>
   <i>"Because when someone you love is fighting cancer, finding trustworthy medical knowledge shouldn't be another battle."</i>
 </p>
 
-[Quickstart](#-local-quickstart) • [Why This Exists](#-why-this-exists-the-story-behind-the-code) • [API Reference](#-api-endpoints) • [RapidAPI Guide](rapidapi/RAPIDAPI_LISTING_GUIDE.md) • [Architecture](#-architecture) • [App Ideas](docs/APP_IDEAS_GUIDE.md)
+[Quickstart](#-local-quickstart) • [Why This Exists](#-why-this-exists-the-story-behind-the-code) • [API Reference](#-api-endpoints) • [RapidAPI Guide](rapidapi/RAPIDAPI_LISTING_GUIDE.md) • [Access & Usage](docs/ACCESS_AND_USAGE.md) • [Architecture](#-architecture) • [App Ideas](docs/APP_IDEAS_GUIDE.md)
 
 ---
 
@@ -33,7 +33,7 @@ The seed contains 7 cancer entities, 5 with content, 21 records and 5 populated 
 
 ## 💜 Why This Exists: The Story Behind the Code
 
-> _"Code cannot cure cancer. But code can destroy the fog of misinformation, dismantle knowledge paywalls, and place verified, life-saving clinical facts directly into the hands of every developer, doctor, caregiver, and child fighting for their family."_
+> _"Code cannot cure cancer. But code can help developers, caregivers, and families find cancer information and trace it to its sources."_
 
 This project was not born out of a hackathon prompt or a venture pitch.
 
@@ -56,7 +56,6 @@ I made a silent promise: **I would build the public API I desperately needed on 
 
 **CancerInfo API** is the project built toward that promise. Its goals are:
 
-- **100% Free Forever**: No paywalls, no monetization gates, no commercial exploitation.
 - **Record-Level Source Transparency**: Preserve the exact document, organization, jurisdiction and attribution behind each published record. The current model stores these links, but review and publication enforcement remain launch requirements. Registry entries include NCI, WHO, NHS, Cancer Australia and CDC; registration does not certify rights or supported ingestion.
 - **Structured for Builders**: JSON retrieval, taxonomy resolution, country filtering and heuristic text search for informational integrations. The service does not calculate screening eligibility, provide treatment advice or guarantee that a downstream AI system avoids hallucinations.
 
@@ -83,6 +82,10 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 3000
 ```
 
 Check out the reviewed Python branch before running these commands if the repository default differs. The root `.env.example` documents the Python API settings only. Gemini and AI Studio hosting variables are not required. Set a unique admin secret in your deployment environment before exposing any administrative endpoint; never commit the real value.
+
+Database files, backups, WHO research packages and private permission documents stay local and are not versioned. Checkouts do not restore a corpus. Use an explicitly selected database and preserve a backup before any data operation. Bootstrap is for an empty development database, not the recovered staging or release corpus.
+
+Public CORS requests do not allow browser credentials by default. If a consumer requires cookies, set `CORS_ALLOW_CREDENTIALS=true` with an explicit `CORS_ORIGINS` allowlist; wildcard origins with credentials are rejected at startup.
 
 ### 1. Test via cURL
 
@@ -223,7 +226,7 @@ This fragment is abbreviated. The homepage above is illustrative, not an accepta
 
 ---
 
-## 🌐 Publish & Deploy Free to the Community
+## 🌐 Publish & Deploy to the Community
 
 Publication is planned and remains conditional on the acceptance gates:
 
@@ -317,6 +320,6 @@ Please read our **[Contributing Guidelines](CONTRIBUTING.md)** and **[Code of Co
 
 _If this project touches your heart or helps your work, please star the repository on GitHub to help other developers find it._ ⭐
 
-**CancerInfo API — Free knowledge for a cancer-free future.**
+**CancerInfo API — Cancer information with sources you can trace.**
 
 </div>

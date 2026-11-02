@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "CancerInfo API",
-    "description": "Free, global, source-transparent cancer knowledge REST API aggregating verified clinical data with fact-level provenance from NCI (US), WHO, NHS (UK), and Cancer Australia. Built with love and dedicated to cancer fighters and families worldwide.",
+    "description": "A cancer information API designed to organize structured information with source citations. Available topics and coverage vary by source and release. For informational use only; not medical advice.",
     "version": "1.0.0",
     "contact": {
       "name": "CancerInfo Open API Initiative",
@@ -13,8 +13,7 @@
       "name": "MIT with Public Health Attributions",
       "url": "https://opensource.org/licenses/MIT"
     },
-    "x-rapidapi-category": "Health & Fitness",
-    "x-rapidapi-pricing": "FREE"
+    "x-rapidapi-category": "Health & Fitness"
   },
   "servers": [
     {

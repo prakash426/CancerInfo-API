@@ -40,3 +40,15 @@ tests/
 scripts/*
 !scripts/bootstrap.py
 !scripts/adopt_existing_schema.py
+
+# Keep restored private staging/research out of the build context
+*.db.*
+*.db-*
+database/
+permissions/
+tmp/
+who_*.csv
+who_*.ndjson
+who_*.json
+who_*.md
+docs/LIVE_API_TEST_REPORT.md

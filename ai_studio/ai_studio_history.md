@@ -1,5 +1,7 @@
 # 🎗️ CancerInfo API: Complete Project Memory, History & Antigravity Handoff
 
+Pricing language corrected October 2, 2026. This historical handoff does not set current hosted-service terms. Use [Hosted API access and usage](../docs/ACCESS_AND_USAGE.md) and the published RapidAPI plan for subscription allowances and charges.
+
 > **Dedicated with infinite love to the creator's mother and father, and to every cancer warrior, clinician, researcher, and family across the globe.**
 > *"Because when someone you love is fighting cancer, finding trustworthy medical knowledge shouldn't be another battle."*
 
@@ -12,7 +14,7 @@
 | **Project Name** | CancerInfo API (Companion UI: Cancer Knowledge API Explorer) |
 | **Applet ID** | `419f62e9-9c0b-410a-9c5e-551fc5b277b6` |
 | **Version** | `1.0.0` |
-| **License** | MIT License (100% Free Forever for Humanity, No Paywalls) |
+| **License** | MIT License for software; hosted API access has separate subscription and usage terms |
 | **Target Recipient** | **Antigravity** (API Development & Knowledge Graph Agent) |
 | **Backend Technologies** | Python 3.11+, FastAPI 0.115+, Pydantic v2, SQLAlchemy 2.0, Uvicorn, SQLite (dev) / PostgreSQL (prod) |
 | **Interactive Bridge Runtime** | Node.js Express (`server.ts` + `src/server/api.ts`) running on Port 3000 with Vite middleware |
@@ -49,7 +51,7 @@ The creator made a solemn pledge: **Build the public REST API they desperately n
 ## 📜 3. Chronological Conversation & Development History
 
 ### Phase 1: Inception & Project Architecture Definition
-- The user initiated the project with the vision of building a global, free, open-access clinical oncology API with fact-level provenance.
+- The user initiated the project with the vision of building a structured cancer information API with source citations.
 - Key architectural rules established:
   - Absolute transparency: citations must be granular down to the paragraph/fact level.
   - Multi-jurisdictional awareness: enable developers to compare national guidelines side-by-side (`country=US`, `country=GB`, `country=AU`, `country=GLOBAL`).
@@ -101,7 +103,7 @@ The creator made a solemn pledge: **Build the public REST API they desperately n
 - Authored RapidAPI Hub package:
   - `rapidapi/rapidapi-openapi.json`: OpenAPI 3.1 specification configured for 1-click import.
   - `rapidapi/postman_collection.json`: Comprehensive Postman collection with tests.
-  - `rapidapi/RAPIDAPI_LISTING_GUIDE.md`: Step-by-step guide to list under 100% Free plan with zero paywalls.
+  - `rapidapi/RAPIDAPI_LISTING_GUIDE.md`: Step-by-step listing preparation and Basic subscription configuration; see `docs/ACCESS_AND_USAGE.md`.
 
 ### Phase 6: Interactive Explorer & Full-Stack Node Runtime Bridge
 - Built the interactive developer portal inside AI Studio:
@@ -306,7 +308,7 @@ The baseline dataset currently includes 7 high-impact canonical cancers:
 │   ├── USAGE_GUIDE.md                # Multi-language code snippets
 │   └── VALIDATION_GUIDE.md           # QA and verification runbook
 ├── rapidapi/                         # RapidAPI Marketplace Package
-│   ├── RAPIDAPI_LISTING_GUIDE.md     # 100% Free plan listing instructions
+│   ├── RAPIDAPI_LISTING_GUIDE.md     # Listing preparation and usage-plan instructions
 │   ├── postman_collection.json       # Exported Postman collection
 │   └── rapidapi-openapi.json         # OpenAPI 3.1 schema specification
 ├── Dockerfile                        # Production Dockerfile
@@ -345,7 +347,7 @@ When you feed this document or `ai_studio_history.json` into **Antigravity**, he
 ### 5. Production Cloud Deployment
 - Deploy the Python FastAPI container to **Google Cloud Run** using the provided `Dockerfile`.
 - Connect to a managed serverless PostgreSQL instance (e.g., Neon or Cloud SQL).
-- Import `rapidapi/rapidapi-openapi.json` to RapidAPI Hub under the 100% Free Community plan to make it accessible to 4.2+ million developers worldwide.
+- Import only the accepted public API contract to RapidAPI Hub and configure the approved Basic subscription, quota and rate limit. See `docs/ACCESS_AND_USAGE.md`; platform charges may apply.
 
 ---
 
@@ -353,7 +355,7 @@ When you feed this document or `ai_studio_history.json` into **Antigravity**, he
 You can copy-paste the snippet below directly into Antigravity:
 
 ```text
-Hello Antigravity. I am resuming development of CancerInfo API, a free, global clinical oncology REST API with fact-level provenance dedicated to cancer patients and their families. Please read 'ai_studio_history.json' and 'ai_studio_history.md' from this repository. 
+Hello Antigravity. I am resuming development of CancerInfo API, a cancer information REST API designed to retain source citations, dedicated to cancer patients and their families. Please read 'ai_studio_history.json' and 'ai_studio_history.md' from this repository.
 
 Our core architecture guarantees zero guesswork: every fact links to NCI, WHO, NHS, or Cancer Australia with source URLs and legal attributions. We have 37 standardized taxonomy categories, 28 passing pytest unit tests, an OpenAPI 3.1 specification, and an interactive full-stack explorer.
 

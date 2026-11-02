@@ -195,7 +195,7 @@ export default function App() {
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden md:block">
-                Free, global, source-transparent cancer knowledge platform with fact-level provenance
+                Structured cancer information with source citations; coverage varies by release
               </p>
             </div>
           </div>
@@ -569,7 +569,7 @@ export default function App() {
                 <Users className="w-4 h-4 text-sky-400" />
               </div>
               <div className="text-2xl font-extrabold text-white">4.2M+</div>
-              <p className="text-[11px] text-emerald-400 font-medium">Developers browsing free API hub</p>
+              <p className="text-[11px] text-emerald-400 font-medium">Developers browsing API directories</p>
             </div>
 
             <div className="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
@@ -680,9 +680,9 @@ export default function App() {
                     2
                   </span>
                   <div>
-                    <h4 className="font-semibold text-white">RapidAPI Hub Marketplace ("Free" Tag)</h4>
+                    <h4 className="font-semibold text-white">RapidAPI Hub Marketplace</h4>
                     <p className="text-slate-400 text-[11px] mt-0.5">
-                      Developers filtering for free healthcare and disease databases discover and test endpoints directly in browser.
+                      Developers can review the API documentation, subscription plans, and usage limits before trying endpoints.
                     </p>
                   </div>
                 </div>
@@ -725,10 +725,10 @@ export default function App() {
               <span>Ready for Marketplace Submission</span>
             </div>
             <h2 className="text-2xl font-bold text-white tracking-tight">
-              RapidAPI & Free Community Publishing Package
+              RapidAPI & Community Publishing Package
             </h2>
             <p className="text-slate-400 text-sm max-w-3xl mt-1">
-              Everything required to publish CancerInfo API on RapidAPI Hub, Postman Network, and free cloud hosting providers.
+              Reference materials for preparing a CancerInfo API listing on RapidAPI Hub and Postman Network.
             </p>
           </div>
 
@@ -789,7 +789,7 @@ export default function App() {
                 </div>
                 <h3 className="font-bold text-white text-base">RapidAPI Step-by-Step Guide</h3>
                 <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-                  Clear instructions on setting up RapidAPI Studio, configuring target URLs, and locking the plan to $0/month Free.
+                  Instructions for setting up RapidAPI Studio, target URLs, and the Basic subscription with usage limits.
                 </p>
                 <div className="mt-3 font-mono text-[11px] text-slate-500 bg-slate-950 p-2 rounded border border-slate-800 truncate">
                   rapidapi/RAPIDAPI_LISTING_GUIDE.md
@@ -825,7 +825,7 @@ export default function App() {
               </li>
               <li className="flex items-start space-x-2.5">
                 <span className="w-5 h-5 rounded-full bg-sky-950 text-sky-400 font-bold flex items-center justify-center shrink-0 text-[10px] border border-sky-800">4</span>
-                <span><strong>Configure Free Plan</strong>: Set Basic Tier to $0/month and Unlimited calls so researchers and developers never pay a penny.</span>
+                <span><strong>Configure Basic Plan</strong>: $0/month subscription, 1,000 requests/month with a hard limit, and 10 requests/minute. RapidAPI bandwidth platform charges may apply; check the current Pricing tab.</span>
               </li>
               <li className="flex items-start space-x-2.5">
                 <span className="w-5 h-5 rounded-full bg-sky-950 text-sky-400 font-bold flex items-center justify-center shrink-0 text-[10px] border border-sky-800">5</span>
@@ -882,13 +882,13 @@ export default function App() {
 
             <div className="p-4 rounded-xl bg-purple-950/40 border border-purple-900/60 text-purple-200 font-medium">
               I made a silent promise: I would build the public API I desperately needed on those dark nights. 
-              A reliable, free, source-transparent platform that aggregates facts strictly from world-leading public health authorities, 
-              preserves every citation, and makes it freely available to every developer on Earth.
+              A source-transparent platform designed to organize cancer information and retain citations,
+              so developers can trace the information they display.
             </div>
 
             <p className="text-slate-300">
-              <strong>CancerInfo API</strong> is that promise kept. It will remain 100% free forever—for clinical apps, patient navigation tools, 
-              community clinics, and researchers.
+              <strong>CancerInfo API</strong> is the project built toward that promise: clearer cancer information
+              for developers, researchers, caregivers, and families.
             </p>
 
             <p className="text-slate-400 text-xs italic pt-4 border-t border-slate-800">

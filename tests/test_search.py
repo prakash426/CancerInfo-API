@@ -1,6 +1,10 @@
 """
 Search Endpoint Tests
 """
+import pytest
+
+pytestmark = pytest.mark.usefixtures("public_seed_evidence")
+
 
 
 def test_search_canonical_cancer_name(client):

@@ -12,7 +12,7 @@ Tests:
 8. Bootstrap dry-run / validate-only mode inspects without mutating.
 9. Presence of legacy 'cancer_content' table is handled safely and left 100% untouched.
 10. Starting the API twice in production mode causes zero mutations on the database,
-    verified via exact ordered manifests across all 11 current-model tables.
+    verified via exact ordered manifests across all current-model tables.
 """
 import os
 import subprocess
@@ -132,7 +132,7 @@ print("INGESTION_SERVING_RESTART_OK")
 
 
 def test_controlled_bootstrap_creates_expected_data(migrated_db):
-    """Test 1: Controlled bootstrap populates all 11 current-model tables with baseline content (203 rows)."""
+    """Test 1: Controlled bootstrap populates all current-model tables with baseline content (203 rows)."""
     res = execute_bootstrap(migrated_db, dry_run=False)
 
     assert res["status"] == "SUCCESS"
@@ -266,7 +266,7 @@ def test_repeated_bootstrap_refuses_safely(migrated_db):
 def test_simulated_bootstrap_failure_rolls_back_completely(migrated_db):
     """
     Test 6: A simulated bootstrap failure after actual database writes within
-    the transaction rolls back completely, leaving 0 records in all 11 tables.
+    the transaction rolls back completely, leaving 0 records in all managed tables.
     """
     from app.database import bootstrap as bs_mod
     original_seed = bs_mod.seed_database
@@ -283,7 +283,7 @@ def test_simulated_bootstrap_failure_rolls_back_completely(migrated_db):
         with pytest.raises(RuntimeError, match="Bootstrap transaction failed and was completely rolled back"):
             execute_bootstrap(migrated_db, dry_run=False)
 
-    # Verify complete rollback: zero current-model records exist across ALL 11 tables
+    # Verify complete rollback: zero current-model records exist across ALL managed tables
     state = inspect_database_state(migrated_db)
     assert state["total_current_model_rows"] == 0
     for tbl, count in state["current_model_counts"].items():
@@ -417,7 +417,7 @@ def test_starting_api_twice_in_production_mode_does_not_mutate_data(migrated_db)
     """
     Test 9: Starting the API twice in production mode causes ZERO mutations on the database.
     1. Sets ENVIRONMENT=production explicitly in the environment before application import and startup.
-    2. Captures and compares exact ordered manifests for all 11 current-model tables:
+    2. Captures and compares exact ordered manifests for all current-model tables:
        - Primary keys and foreign-key values
        - Aliases and citation fields
        - Content hashes and version numbers
@@ -427,9 +427,15 @@ def test_starting_api_twice_in_production_mode_does_not_mutate_data(migrated_db)
     # 1. Populate database via bootstrap
     execute_bootstrap(migrated_db, dry_run=False)
 
+    from app.models import WhoFactProvenance, ContentRecord
+    with sessionmaker(bind=migrated_db)() as session:
+        session.add(WhoFactProvenance(content_record_id=session.query(ContentRecord.id).first()[0],
+                                      heading_path="Synthetic startup preservation"))
+        session.commit()
+
     # 2. Capture baseline manifest before any startup
     manifest_before = capture_current_model_manifest(migrated_db)
-    assert manifest_before["total_rows"] == 203
+    assert manifest_before["total_rows"] == 204
 
     # 3. Prepare subprocess script that boots API with environment variables set before import
     db_url = migrated_db.url.render_as_string(hide_password=False)
@@ -495,7 +501,7 @@ print("BOOT_OK")
     compare_current_model_manifests(manifest_before, manifest_after_1, "Baseline", "After-Start-1")
     compare_current_model_manifests(manifest_after_1, manifest_after_2, "After-Start-1", "After-Start-2")
 
-    # 5. Verify foreign-key integrity across all 11 tables
+    # 5. Verify foreign-key integrity across all managed tables
     fk_result = verify_foreign_key_integrity(migrated_db)
     assert fk_result["status"] == "VALID"
     assert fk_result["violations"] == 0

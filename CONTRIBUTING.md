@@ -36,7 +36,12 @@ python -m pip install --no-cache-dir --require-hashes -r requirements.txt
 # 3. Run the automated test suite
 DATABASE_URL=sqlite:////tmp/cancerinfo-tests.db python -m pytest tests/ -v
 
-# 4. Start local development server with auto-reload
+# 4. Initialize a separate, empty development database explicitly
+export DATABASE_URL=sqlite:////tmp/cancerinfo-development.db
+alembic upgrade head
+python scripts/bootstrap.py
+
+# 5. Start local development server with auto-reload
 uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
 ```
 
@@ -66,4 +71,4 @@ Create a task-referenced branch from the agreed base. This documentation branch 
 
 The archived React client is future scope. Core changes must not restore a second dataset or serving implementation. Include requirements, changed files, schema/data impact, exact tests/results and unresolved risks in each handoff. Source review, local tests, CI, image boot, database restore and marketplace acceptance are separate evidence stages.
 
-Startup creates and seeds tables. Use a disposable database for tests and never run seed/ingestion against valuable data without an approved data procedure. Public content must pass exact-document rights and citation review. See [codebase and launch assessment](docs/CODEBASE_ATLAS.md).
+Startup never creates or seeds tables. Run migrations and the controlled bootstrap explicitly on an empty development database. Local corpora, backups and private research must remain untracked; `python scripts/check_local_artifacts.py` verifies the Git index without reading their contents. Use a disposable database for tests and never run seed/ingestion against valuable data without an approved data procedure. Public content must pass exact-document rights and citation review. See [codebase and launch assessment](docs/CODEBASE_ATLAS.md).
