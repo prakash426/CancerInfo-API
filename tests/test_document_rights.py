@@ -399,6 +399,7 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
     with sessionmaker(bind=engine)() as s:
         from sqlalchemy.orm import defer
         migrated_doc = s.query(SourceDocument).options(
+            defer(SourceDocument.publication_record_reviews),
             defer(SourceDocument.noncommercial_redistribution_allowed),
             defer(SourceDocument.approved_publication_content_types)).filter_by(id="doc-pre-l004").one()
         assert migrated_doc.publication_status == "REVIEW_REQUIRED"
@@ -417,9 +418,9 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
     cfs_cols = {c["name"] for c in inspector.get_columns("consensus_fact_sources")}
     assert "source_document_id" not in cfs_cols
 
-    # 4. Re-upgrade to head (now 0004_publication_use)
+    # 4. Re-upgrade to head (now 0005_record_publication)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0004_publication_use"
+    assert get_current_revision(engine) == "0005_record_publication"
     inspector = inspect(engine)
     sd_cols = {c["name"] for c in inspector.get_columns("source_documents")}
     assert "publication_status" in sd_cols
@@ -800,7 +801,7 @@ def test_populated_l003_database_upgrade_and_transition(tmp_path):
 
     # 3. Upgrade schema to head (L004 plus provenance)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0004_publication_use"
+    assert get_current_revision(engine) == "0005_record_publication"
 
     # Verify consensus citation source_document_id is currently null
     with sessionmaker(bind=engine)() as s:
@@ -979,7 +980,7 @@ def test_transition_fails_and_rolls_back_on_unresolved_links(tmp_path):
 
 def test_transition_enforces_supported_schema_revision(tmp_path):
     """
-    Issue 3: Transition must strictly enforce the supported schema revision (0004_publication_use).
+    Issue 3: Transition must strictly enforce the supported schema revision (0005_record_publication).
     Fails fast if database is at 0001_initial_schema or unmigrated.
     """
     from alembic import command

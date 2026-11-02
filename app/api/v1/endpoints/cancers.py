@@ -2,6 +2,7 @@
 Cancers and Content Category Endpoints
 """
 import math
+import json
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
@@ -27,6 +28,7 @@ from app.schemas.content import (
     ConsensusSummaryOut,
     ContentRecordOut,
     ContentVersionOut,
+    VersionSourceNoticeOut,
     CorroboratingSourceOut,
     JurisdictionOut,
     ProvenanceSourceOut,
@@ -228,6 +230,16 @@ def get_cancer_content_versions(
             change_reason="Reviewed content version.",
             content_hash=v.content_hash,
             created_at=v.created_at.isoformat() + "Z",
+            sources=[VersionSourceNoticeOut(
+                source_id=link.source_id, url=link.source_url,
+                document_title=link.source_document.title,
+                attribution_text=link.source_document.attribution_text,
+                reuse_conditions=link.source_document.reuse_restrictions,
+                copied_at=link.retrieved_at.isoformat() + "Z",
+            ) for link in v.content_record.sources
+                if link.source_document is not None
+                and link.source_document_id == json.loads(v.change_reason)["document_id"]
+                and link.source_url == json.loads(v.change_reason)["url"]],
         )
         for v in versions
     ]
