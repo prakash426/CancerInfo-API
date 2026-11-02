@@ -21,3 +21,23 @@ htmlcov/
 env/
 venv/
 
+# Local corpora, backups, research, and private permission/connection material
+*.db
+*.db-*
+*.db.*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite.*
+*.dump
+/database/
+/permissions/
+/tmp/
+/who_*.csv
+/who_*.ndjson
+/who_*.json
+/who_*.md
+/tests/Competitor-Analysis/
+/logo/
+/docs/LIVE_API_TEST_REPORT.md
+

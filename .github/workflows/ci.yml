@@ -39,6 +39,9 @@ jobs:
         run: |
           python --version
 
+      - name: Reject tracked local data and credentials
+        run: python scripts/check_local_artifacts.py
+
       - name: Install dependencies from committed reproducible lock
         run: |
           python -m pip install --upgrade pip
