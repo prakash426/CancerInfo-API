@@ -297,6 +297,8 @@ def get_cancer_category_content(
                     publication_status=s_doc.publication_status if s_doc else None,
                     reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
                     commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                    noncommercial_redistribution_allowed=s_doc.noncommercial_redistribution_allowed if s_doc else None,
+                    approved_publication_content_types=s_doc.approved_publication_content_types if s_doc else None,
                     rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
                 )
                 if user_country and (c_out.country_code == user_country or c_out.country_code == "GLOBAL"):
@@ -373,6 +375,8 @@ def get_cancer_category_content(
                     publication_status=s_doc.publication_status if s_doc else None,
                     reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
                     commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                    noncommercial_redistribution_allowed=s_doc.noncommercial_redistribution_allowed if s_doc else None,
+                    approved_publication_content_types=s_doc.approved_publication_content_types if s_doc else None,
                     rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
                 )
             )

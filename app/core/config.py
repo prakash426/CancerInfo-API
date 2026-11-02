@@ -3,7 +3,7 @@ Application Configuration
 """
 import json
 from typing import List, Union
-from pydantic import field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     ADMIN_API_KEY: str = "dev-admin-secret-key"
     RATE_LIMIT_PER_MINUTE: int = 120
 
+    # Keys are issued only after reviewing the downstream application and use.
+    # Store SHA-256 digests, never plaintext keys, in deployment secrets.
+    NONCOMMERCIAL_API_KEY_SHA256: List[str] = Field(default_factory=list, repr=False)
+
     # CORS
     CORS_ORIGINS: Union[str, List[str]] = ["*"]
     CORS_ALLOW_CREDENTIALS: bool = False
@@ -44,6 +48,14 @@ class Settings(BaseSettings):
     # Pagination
     DEFAULT_PAGE_SIZE: int = 20
     MAX_PAGE_SIZE: int = 100
+
+    @field_validator("NONCOMMERCIAL_API_KEY_SHA256")
+    @classmethod
+    def validate_noncommercial_keys(cls, values):
+        import re
+        if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in values):
+            raise ValueError("Noncommercial approvals require lowercase SHA-256 key digests.")
+        return values
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

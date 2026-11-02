@@ -397,9 +397,13 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
 
     # Verify existing document received fail-closed server_default 'REVIEW_REQUIRED'
     with sessionmaker(bind=engine)() as s:
-        migrated_doc = s.query(SourceDocument).filter_by(id="doc-pre-l004").one()
+        from sqlalchemy.orm import defer
+        migrated_doc = s.query(SourceDocument).options(
+            defer(SourceDocument.noncommercial_redistribution_allowed),
+            defer(SourceDocument.approved_publication_content_types)).filter_by(id="doc-pre-l004").one()
         assert migrated_doc.publication_status == "REVIEW_REQUIRED"
-        assert migrated_doc.is_publication_eligible() is False
+        from types import SimpleNamespace
+        assert evaluate_publication_eligibility(SimpleNamespace(**migrated_doc.__dict__))[0] is False
 
     # 3. Downgrade back to L003
     command.downgrade(cfg, "0001_initial_schema")
@@ -413,9 +417,9 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
     cfs_cols = {c["name"] for c in inspector.get_columns("consensus_fact_sources")}
     assert "source_document_id" not in cfs_cols
 
-    # 4. Re-upgrade to head (now 0003_who_provenance)
+    # 4. Re-upgrade to head (now 0004_publication_use)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0003_who_provenance"
+    assert get_current_revision(engine) == "0004_publication_use"
     inspector = inspect(engine)
     sd_cols = {c["name"] for c in inspector.get_columns("source_documents")}
     assert "publication_status" in sd_cols
@@ -796,7 +800,7 @@ def test_populated_l003_database_upgrade_and_transition(tmp_path):
 
     # 3. Upgrade schema to head (L004 plus provenance)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0003_who_provenance"
+    assert get_current_revision(engine) == "0004_publication_use"
 
     # Verify consensus citation source_document_id is currently null
     with sessionmaker(bind=engine)() as s:
@@ -975,7 +979,7 @@ def test_transition_fails_and_rolls_back_on_unresolved_links(tmp_path):
 
 def test_transition_enforces_supported_schema_revision(tmp_path):
     """
-    Issue 3: Transition must strictly enforce the supported schema revision (0003_who_provenance).
+    Issue 3: Transition must strictly enforce the supported schema revision (0004_publication_use).
     Fails fast if database is at 0001_initial_schema or unmigrated.
     """
     from alembic import command
