@@ -1,0 +1,2235 @@
+{
+  "review": "Reconcile retained non-WHO text/data reviews with verified official policies. WHO deferred. NHS attribution/adaptation conditions and inaccessible CDC policy remain withheld; research content is preserved.",
+  "documents": [
+    {
+      "id": "00b4963e-f864-4e57-b1cf-8c7d376c46e3",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/breast/screening",
+      "content_hash": "625067ba60e5beb941d08f887ca08f3660a3695a5f793a0a7ece0d801c6e820a",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Guidelines may quote USPSTF or third-party professional society recommendations that carry separate copyright protections."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368480",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "02a0df44-646a-49c5-a513-5126927fb792",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/ovarian/patient/ovarian-epithelial-treatment-pdq",
+      "content_hash": "3b499619156bab62a96e0d5615a5dbd955d0867f2b6438f5ed3d6b2cb11afa2a",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "NCI text reuse policy; PDQ branding conditions apply.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368525",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "0831f764-c21e-458b-8e24-86c7f1d58b4e",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/radiation-and-health",
+      "content_hash": "e8c364534e28e99522bf421539295f1e1e55deb7019981d849f3d2f42764b8a7",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "08a7ec6a-e4ab-4859-9127-88d9353a387a",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "db6148f1637014566407e9e090ff84a59c62706fa4068cd20cde16ae56da02e1",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "097bf4d3-8c84-44aa-b92a-21811bcfc710",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/human-t-lymphotropic-virus-type-1",
+      "content_hash": "5858e2f10294f24c5a7d2063f36d54f81506ab1e452b6fbcf27ba1f7ae7cd160",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "1144e7d2-d45a-4b34-9fd1-182676c098e5",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/human-papilloma-virus-and-cancer",
+      "content_hash": "0b9c39bc947237b656b4a6151b71578e73465662c26ac5cb53ac8e843957bd41",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "12f3f011-f245-42db-9919-93bf364ef6b0",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer-in-children",
+      "content_hash": "86b7c7dd193cf02a3fcc010f499f081a193b404a5ad3ee0ef97aa816e153a8f5",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "1320b0bf-c18e-435c-b425-7e3993efaeed",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/arsenic",
+      "content_hash": "a040446f31f249094b122d8553e7508d572f556780acf53e4add3e4e2e6ae34b",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "1c9464b7-973b-49d8-bd2e-0fbcd601907e",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/ovarian-cancer/tests-and-next-steps/",
+      "content_hash": "49e81bef6148e255efc6d3c6767839cb68ef476e8e7300f0acb15f1b3dc13afa",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "258725b6-eb74-4fcc-a774-84020ed3057a",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/health-topics/cancer",
+      "content_hash": "f9c0d572506115f5e3b630633fe44070626ba99d5e02ffe6379743afe0f87654",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "2750ff48-a603-4ff6-9842-f5d3e2fb4658",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/breast-screening-mammogram/",
+      "content_hash": "7f9858924919d4ec9c6f80bbc21c9fd5bf2dc33a49fd78bdadd7b99048e3b166",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "2bce6a58-5308-4113-869b-85961ca65c9d",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/radiation-protecting-against-skin-cancer",
+      "content_hash": "bb91feef5a5dd1a85ad6c62079bd2d922a88011f82aae17e87b97fc5f50930a3",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "2d4c287d-e834-4d65-9be0-adc4193ad62e",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer-in-children",
+      "content_hash": "e5ef731e4ce821cdf4a45726f140e8b7f51dbefc3d08c6a3d8bfe331587e48ae",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "2fcce78b-99bf-4a04-ba1b-76f649f146a9",
+      "source_id": "aihw-au",
+      "original_url": "https://www.aihw.gov.au/reports/cancer/cancer-data-in-australia",
+      "content_hash": "f93c79d370961ba3d79dd4d375456764e6c4695597b84ba919bf0de7b90d0261",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "CC BY 4.0 unless a separate/restrictive notice applies.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null,
+        "canonical_url": "https://www.aihw.gov.au/reports/cancer/cancer-data-in-australia"
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368527",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Based on Australian Institute of Health and Welfare material. CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: selected statistical observations structured as text. No endorsement implied.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery.",
+        "canonical_url": "https://www.aihw.gov.au/getmedia/12fd1bf5-69cd-4d98-ad29-2fb6ef5326e0/CDiA-2025-Book-1e-Long-term-cancer-incidence-projections.xlsx"
+      }
+    },
+    {
+      "id": "3111f1ce-e818-4e77-83a2-b77ebba01472",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/use-of-potassium-iodine-for-thyroid-protection-during-nuclear-or-radiological-emergencies",
+      "content_hash": "4cdf4e47bacba46a93ac4f5ea70352d778a6390ef12c0b29aa003cfe85fddf87",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "3454023b-55ca-4dbc-8184-312ffb30e057",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/breast-cancer",
+      "content_hash": "4dc28e3ba52ca79271413b699e8660b035b48e87d4117e11eb3c3d745c242849",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "37211c31-3b50-422f-8882-6e15b728c4c7",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/radiation-the-known-health-effects-of-ultraviolet-radiation",
+      "content_hash": "d3a077a32265b1a5592e08ebdcdfa74ea98811c79bf90885277265d5909430f6",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "3748b7f7-98e8-4716-aba1-942572c3e2ab",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/pancreatic",
+      "content_hash": "407f3ea6954c3969bedc57765b59d68290188bd8e1c9b8608426983d84ed527a",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of endocrine/exocrine medical illustrations."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368529",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "38f04670-ef7d-4f82-b9d5-6a2c930d2e7e",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/podcasts/episode/science-in-5/episode--111---sun-and-skin-cancer",
+      "content_hash": "cbd97dba44bd95102a9c568e8b2a9264111a0f28f9edf87edddf0ed188547fa6",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "48f4f8e7-0e24-4ba3-87e0-7b80ef1376e1",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news/item/01-09-2023-one-in-three-men-worldwide-are-infected-with-genital-human-papillomavirus",
+      "content_hash": "444588e7c4e6f227349df52e29ece275a3a11bbd30c63f62567e5d2c14a012a3",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "4a231524-d1c5-4751-bcfc-73dcac162cb6",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/pancreatic/symptoms",
+      "content_hash": "3622aba5b2ebc128eb253b5c8850ae12fce896bed0190d348104c09818fb7214",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of clinical symptom presentation descriptions."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368530",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "4d2d9180-f8d2-4eca-b727-b3452c5c5611",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/human-papilloma-virus-and-cancer",
+      "content_hash": "5c37a106e9353c863946ae1b43c344bfc137bcee1b6b82985792fd206a9b5ae7",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "4e47e3d1-dfd4-4ad4-8c1d-56cb7892e2d6",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "51822e88fab7e08e8c49d19e0f8a50eae616159b0034d1a9d1e9b4f3551af3c1",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "4e81f6e1-a583-4193-b9c3-9e9ed17c31be",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/colorectal-cancer",
+      "content_hash": "da14a202b14571267119607236098f024495e65b9c29bad23111fea8fdc87380",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "54d0ae34-f81b-4629-9456-7cc5d265ab36",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/health-topics/cervical-cancer",
+      "content_hash": "e20f4e3ef9e6cd06be85049618ecec350d32edc0a995fbec1adb1e0ec9e1f9fe",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "59ce6c13-05b2-4ab8-809f-285c20337685",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/ovarian-cancer/",
+      "content_hash": "f1237ed0b3c8faf10f7997b95ba4d73cbd8fb61f246d5b3e2148e311ad440fae",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "5a143090-b9aa-48ed-bf0e-4d4a457a91d8",
+      "source_id": "cdc-us",
+      "original_url": "https://www.cdc.gov/cancer/colorectal/basic_info/screening/",
+      "content_hash": "83636a39737aa6131103a665c5042a64db6a2a139c04a516b8214c04c4ee7d2a",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "5f0468af-5b47-440b-8c45-9b32668adc4a",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "c854a2a910891f522100f677814767d3009a8a57dae7380db8665bf9cc6b6317",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "626b41f0-0a2d-4abe-bc16-735b784e896e",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/ovarian-cancer/causes/",
+      "content_hash": "80952aec5640344b545ddc939fa1fbeece829aa5f86a600f8bae211e539b95c2",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "641c0626-495c-4fad-8e33-b1a36d536621",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/breast-cancer/symptoms/",
+      "content_hash": "073eb6d6d248a1d3d272f73a5936c7f84a445573c73827b8a643c3dadaed0104",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "6d1ea335-3651-4664-977e-2599b38a8609",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/radiation-ultraviolet-(uv)-radiation-and-skin-cancer",
+      "content_hash": "cf315c84610b929a6df8f1b480430004108ef2d27aa3dacd8f41709355c44bd9",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "6d9269e2-1736-40e6-93c1-5a2ab2240f86",
+      "source_id": "medlineplus-us",
+      "original_url": "https://medlineplus.gov/ovariancancer.html",
+      "content_hash": "ee46b0a7b689e7333980e702430217ef06c83cde4767b3931cf02d25b3f92163",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Own topic summaries and genetics are public domain; licensed sections differ.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368531",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Source: MedlinePlus, National Library of Medicine. Structured from the health-topic summary; licensed third-party linked articles and images are excluded.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "725b5e21-1e10-40d2-a3d2-52d16b7d4b44",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "1dbab7e18e093c23d3296cc07dc2f7498e45a09fd90f0dd38e96794260f97714",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "7448079b-fdb8-47b8-8c2b-c09db3212878",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/human-t-lymphotropic-virus-type-1",
+      "content_hash": "467ae2c74f17dd84738c0a8334207807835dd3cd1a9964eb39a93f0abead2711",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "7510e4a8-8d80-4180-88b4-7ae2c811a541",
+      "source_id": "nz-cancer-agency",
+      "original_url": "https://teaho.govt.nz/index.php/cancer-information/types-cancer/ovarian-cancer",
+      "content_hash": "78fc12e34b9551861475166485a0b53ea63048362eec6a2c45f407fd6166aa39",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "CC BY 4.0 default includes embedded dashboards; exceptions apply.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368532",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from Te Aho o Te Kahu material under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: structured extraction. No endorsement implied.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "7588b49f-9f2a-4cc9-8bb2-d1c1ab9b572a",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/prostate",
+      "content_hash": "6550d80e340f7bfb7027a75ee3f6a4dd688b9cae8cbc781d9479f2374266fb53",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of male pelvic anatomy illustrations and grading scale references (Gleason/Grade Groups)."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368533",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "77e23a87-6e8f-44cd-9898-b9697fd59c00",
+      "source_id": "statcan-ca",
+      "original_url": "https://www150.statcan.gc.ca/n1/en/catalogue/1310084001",
+      "content_hash": "d66d968409846303fb59a173a98aea860ecaaf8104c95177ac7daf7832f8f6ed",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Statistics Canada Open Licence.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null,
+        "canonical_url": "https://www150.statcan.gc.ca/n1/en/catalogue/1310084001"
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368533",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Source: Statistics Canada, Table 13-10-0840-01. Structured statistical extracts. This does not constitute an endorsement by Statistics Canada of this product. https://www.statcan.gc.ca/en/terms-conditions/open-licence",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery.",
+        "canonical_url": "https://www150.statcan.gc.ca/n1/tbl/csv/13100840-eng.zip"
+      }
+    },
+    {
+      "id": "7b224e8c-b8c5-40e4-9ce9-92687108971b",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/ovarian/patient/ovarian-screening-pdq",
+      "content_hash": "933d3a797018bf48c87b2eed07a9043720904fc55cd8a50cbc4611161063c70c",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "NCI text reuse policy; PDQ branding conditions apply.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368534",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "7da376c4-29a6-4b14-8cfa-433539c251e3",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "968e597fe7ec2943afda3e1b0dfcd7b07c38811bd7f360a5297f5ca33e6bc11e",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "7da8a89f-94fc-467b-b49b-d794742b884b",
+      "source_id": "cbs-nl",
+      "original_url": "https://www.cbs.nl/",
+      "content_hash": "880b6502a307d3d227be4c13ef41f45eef88819ac10122016d9560cc6bbaff10",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "CBS open-data channel uses Creative Commons attribution.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null,
+        "canonical_url": "https://www.cbs.nl/"
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368535",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Source: Statistics Netherlands (CBS), CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: selected statistical observations structured as text. No endorsement implied.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery.",
+        "canonical_url": "https://opendata.cbs.nl/ODataApi/OData/7052eng/TypedDataSet?$filter=Sex%20eq%20%27T001038%27%20and%20Age%20eq%20%2710000%27%20and%20Periods%20eq%20%272024JJ00%27"
+      }
+    },
+    {
+      "id": "81eaa430-8c22-43a1-b873-37026f6558be",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/prostate/symptoms",
+      "content_hash": "e44547860d1c0c1509cb93af1772f4107ab2f0b89313489577946747285f2989",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of patient education presentation descriptions."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368536",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "8686fe54-a3d2-4eb5-aa43-f527d57bddc1",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/breast/symptoms",
+      "content_hash": "fcab6bc2297bbc8fc5c485ba98943b441b452628ef125ff849024b1779786b90",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "May contain medical illustration diagrams subject to third-party medical animator licensing."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368537",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "88dcb1a6-dde3-45f7-a6d8-320614cbf261",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/ovarian/patient/child-ovarian-treatment-pdq",
+      "content_hash": "4a9cac20d7cd5b8b33c3831db6dbcdf6b8119aba6bf60707ac710eeed15e9e6f",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "NCI text reuse policy; PDQ branding conditions apply.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368537",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "8b28b134-fa6b-4999-aa57-76f098c17633",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/radiation-japan-nuclear-concerns",
+      "content_hash": "eec8defcc4de46397e284a387c6c5e04abd19ea06d3130fe79e004828ad4992c",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "8da4551c-b334-4de7-a4a2-ec1f621401b0",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer-in-children",
+      "content_hash": "eb933ee0e6a577a53125f053002ffc60bfaedba4cf81d1759d6d83c4caa8fada",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "8e35a09d-8727-4c9a-86f5-9335bbaad322",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cervical-cancer",
+      "content_hash": "fd6178004a12456ba7754b1311b528caa8839e45d298e28e6c0a7e0fa97ec1b0",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "8e4fb629-6562-4749-8e93-7d194d461b71",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/ultraviolet-radiation",
+      "content_hash": "9b3c507ef19ddee518da2c32b74fb7f3a6f5207f2d49e84ad433bb88d8d12f2d",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "903e0e87-3343-46d3-9e8d-71881803fcee",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/bowel-cancer/symptoms/",
+      "content_hash": "f5cf8bba11076e58df171f0961ee93647af0b7490a84962ac2b08edee36fdd2e",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "90605865-f14f-4cc7-a80a-fd2b3460a22a",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b",
+      "content_hash": "18ce5e1499ff63cf33c32403682fcf96a526268a07d171b9633dcd66b04ba417",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "9282153f-04f0-496e-ba91-dc1693a73ebf",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/Schistosomiasis",
+      "content_hash": "85e320a26991b63baf781ec4f9b01c5354a5baeb46075a0b5e4579b59d385358",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "92f13cba-5f75-43a9-8151-214cb85b45eb",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/breast-cancer",
+      "content_hash": "4e2600a35957daa6e87304c17a018956926afb973640c102bb4dd1786bce1095",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "93ad0703-7737-476e-b951-fec7e3de9d2f",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/ovarian-cancer/treatment/",
+      "content_hash": "d0797c955fa5de9b05874dc0361faf3040d33e77a5e771190b040a90558655f7",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "991f81da-e9d0-4b59-88a8-287536e97c74",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/bowel-cancer-screening/",
+      "content_hash": "02dda462ff93cc1d8f4995e655230943bdf693cc11c6dd7e06c281fd9208abdd",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "9b803483-301f-45e2-871a-13146c797321",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "498d1c6ad8d3f555a26c69ef9370672032bb5b5c516f832b42e3021e73e0b9ce",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "9ea9a273-d49a-4f92-8061-2b5536c43731",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer-in-children",
+      "content_hash": "2737490f16a33e9eda5d3be207a50e5853f1f6258e2bed191cf8c252dc20dd3b",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "a54b2843-519c-4fe3-be36-b23d4721e0db",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/breast",
+      "content_hash": "025eb2f9e3332b753b0c58059b968abe8a5346a41b79d8bad6b475496d92c685",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Text created by NCI is in public domain, but exact page review is required to verify absence of proprietary clinical diagrams or external guideline excerpts."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368539",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "a5fa0201-f20d-4e29-9f82-29942675fe41",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news/item/27-04-2007-who-calls-for-prevention-of-cancer-through-healthy-workplaces",
+      "content_hash": "24074eb35fbcfe374af5f6acaa0475208eae150c2c546807cbab55c03181288d",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "a7d8b615-f150-42ae-a483-54bafafb886f",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/health-topics/cancer",
+      "content_hash": "ef15f318d52afdaef08cf109accc4ae75c1401c4bb43d6091b11cdeb71987b5c",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "a90da325-89fc-445d-927c-cb45c85a40d4",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/health-topics/cancer",
+      "content_hash": "b6b48fbc98dcbf065f357a500995209dbace4a77455cd6083cf2454fb5a675d9",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "a9199856-bbf5-4814-ac77-b12d33f489e4",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "fe6d8646f5d5f9d14eac63579f4383d59b4524cdedcce91f2eecae2d29def343",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "ab853756-a4aa-4e96-8c37-0a496311a4cd",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "bce41edf3311b8ea6c1ef87285af8b43e0c2eadefe2d908c0df77ea12c52d96d",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "ab907847-9202-4007-bc0f-379b54ae2b52",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "3715dde08ca77988fbc41f6a86ca39903dbdef49561ac4d582027cfa11622d70",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "b2429a6d-3e05-4f15-a64d-541fe338e6e3",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/questions-and-answers/item/radiation-ultraviolet-(uv)-radiation-and-skin-cancer",
+      "content_hash": "718d6d6093b4dde697c2da6a393ea5eb27491aad5226fdc56bd70f5b07dd828f",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "b9c58952-8244-4c76-bf39-4fde8e839c5f",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/breast/treatment",
+      "content_hash": "ee7dd39884a5fd9c5ab0380ef172429b53f4b375a1189182fe7c1c5097572ff2",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "PDQ treatment summaries are written by editorial boards; certain tables and drug descriptions may reference proprietary clinical studies."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368540",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "bb14d44f-ccac-4ee1-b152-c7ffca006afa",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "96b6468b488238ea2b9a5db57e9f88eed9164361600d2fe6fadfc7134ae06e34",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "c2068cd5-144b-4cb2-a999-1a2e4173ff76",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/health-topics/cancer",
+      "content_hash": "980d643723f68f85ef5d68378e6759c3b1030d4f318a65017ae4bd653747be4b",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "c9118948-ee0f-438b-baad-0b4905120cbc",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/lung/symptoms",
+      "content_hash": "b1f8bac685da3e10f8ff33148ea6f4a9016b4aab4e8c5da4e358c0170f23eaee",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of symptom guides and clinical flowcharts."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368541",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "d8ae39a1-5250-4ea5-abe5-8000b36680d6",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/asbestos",
+      "content_hash": "930cc7c6752ca810a64b4380b98306bef10994924ebbe75a496eaffa9990c3a0",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "da26777a-c4f9-4406-aaf7-a39d1f06d4d6",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/lung",
+      "content_hash": "45a42f0c34bd7aebd35b036e778cfd2b05d1a7c5a05bf38c8a3b70ece33e8743",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of thoracic anatomy illustrations and histological subtype classifications."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368541",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "da5e51c9-744e-4200-a99d-48271205bc0b",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/colorectal",
+      "content_hash": "246b097a0336e6b3528179073f37424a7d1d496202abb9defc743c9e745818ad",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of anatomical diagrams and SEER statistical summaries."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368542",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "dab8ea8c-0fc8-4c0f-9188-9b4bc1987623",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-c",
+      "content_hash": "1d7b17a3f5aa1fe14aa5805ef9487691df639e0a5937943a11e138d5ad983815",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "de276638-0102-4e99-a24e-0207ac41e774",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/ovarian-cancer/help-and-support/",
+      "content_hash": "26d899082883d43e188778769495ef640439a516bc51946de50fd0ecdb4c8a8e",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "e0f04da2-a02b-4d6d-87b7-98f77b4782d5",
+      "source_id": "ons-uk",
+      "original_url": "https://www.ons.gov.uk/",
+      "content_hash": "10cdf3a8d8ce4f2fb6d0988a067ba9e814a73b025cd68fe46264fe2ccd33cb09",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "OGL for covered ONS material.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null,
+        "canonical_url": "https://www.ons.gov.uk/"
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368543",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Source: Office for National Statistics licensed under the Open Government Licence v3.0 (https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). Structured statistical extracts; no endorsement implied.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery.",
+        "canonical_url": "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/healthandsocialcare/conditionsanddiseases/datasets/cancerregistrationstatisticscancerregistrationstatisticsengland/2017/finaltables14.xlsx"
+      }
+    },
+    {
+      "id": "e30cb14e-79b2-4aad-9b13-a9d8edb3b546",
+      "source_id": "nhs-uk",
+      "original_url": "https://www.nhs.uk/conditions/ovarian-cancer/symptoms/",
+      "content_hash": "527e4c7c92c1dd7824cc7e1a51d244983e408c32c9169a04b727ca838954c75e",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "REVIEW_REQUIRED",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "e5742fdd-7ed8-48d5-b2e1-2ca0f84d1ef7",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/cancer",
+      "content_hash": "70faf9d5db853b37ff582f823393e2ea1af62a18cd0d9b269e17eda2d7c7aea8",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "ed0458d1-9461-48a0-b226-eb82187dd660",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/health-topics/cancer",
+      "content_hash": "5c4e99f920dacae77d7de8dba6d5a0d71cde39878baed71f1287136824355ff9",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "f184d590-b292-4a77-94a9-29913887a744",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/oral-health",
+      "content_hash": "348e77a595329a02f94ebdce7e3be5dc2b9e7dfa853611094b9d023cc6d25ae5",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "f221bf91-b270-4122-8258-4bf69b4727e6",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/lung-cancer",
+      "content_hash": "3c450c192cb96a8bf83a9dbe91d57a0484dec15bcd61213e24d8933e3079985c",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "f885f7ca-ae0c-4e0c-8a1b-dd266d416fa4",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/ovarian/patient/ovarian-germ-cell-treatment-pdq",
+      "content_hash": "168b703c16b5edb73d57f85c9947771f1dcb3120513b19bfd0b8367d733a4985",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "NCI text reuse policy; PDQ branding conditions apply.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368544",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "faaa97fb-6a0c-43fd-b39f-edf2ea1ba497",
+      "source_id": "who-global",
+      "original_url": "https://www.who.int/news-room/fact-sheets/detail/ultraviolet-radiation",
+      "content_hash": "6156733945929d5a95f1eee1168198d136c5c786832e6a92e4ff1a32e99a8f39",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null
+      },
+      "updates": {
+        "publication_status": "PERMISSION_PENDING",
+        "redistribution_allowed": false,
+        "commercial_redistribution_allowed": false,
+        "noncommercial_redistribution_allowed": false,
+        "approved_publication_content_types": []
+      }
+    },
+    {
+      "id": "fbd75a6d-16f3-4f8d-995d-c96ecc7b0230",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/colorectal/symptoms",
+      "content_hash": "79d6cc76901cb81da6ff55f30b66cd6c78fd187c335d75313e8e7f0bf09b2d2a",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:27:30",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Presumptive U.S. Government work subject to item-level third-party audit",
+        "attribution_text": "Source: National Cancer Institute (NCI), U.S. National Institutes of Health.",
+        "reuse_restrictions": "Subject to verification of clinical symptom lists and patient education media."
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368545",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "fc4e69a3-9517-4f06-9668-fbb940ece6e6",
+      "source_id": "nci-us",
+      "original_url": "https://www.cancer.gov/types/ovarian/patient/ovarian-prevention-pdq",
+      "content_hash": "af18678a5eb8da3fdc0c697a61a66d76d0e9c5aa99d0f4921ecd94f8a70da72d",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "NCI text reuse policy; PDQ branding conditions apply.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368546",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Adapted from National Cancer Institute text. Original publication and title are identified in the source citation. No NCI endorsement is implied; no NCI logo or PDQ trademark is licensed.",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery."
+      }
+    },
+    {
+      "id": "ffa5589f-b7a0-406c-b90a-04346ffbf69e",
+      "source_id": "eurostat-eu",
+      "original_url": "https://ec.europa.eu/eurostat/",
+      "content_hash": "82f1cfd933acda08af273336a8d8ca9b89ae57f1cebf9b0d008951bd0b8ef681",
+      "before": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": 0,
+        "commercial_redistribution_allowed": 0,
+        "noncommercial_redistribution_allowed": null,
+        "approved_publication_content_types": null,
+        "rights_reviewed_at": "2026-11-02 04:52:22",
+        "rights_reviewer": "Jaya Prakash Merepala",
+        "permissible_use": "Commercial data reuse permitted with exceptions; EU-owned editorial content CC BY 4.0.",
+        "attribution_text": "Source citation retained from L027 reviewed corpus.",
+        "reuse_restrictions": null,
+        "canonical_url": "https://ec.europa.eu/eurostat/"
+      },
+      "updates": {
+        "publication_status": "ELIGIBLE",
+        "redistribution_allowed": true,
+        "commercial_redistribution_allowed": true,
+        "noncommercial_redistribution_allowed": true,
+        "approved_publication_content_types": [
+          "STRUCTURED_EXTRACTION",
+          "DERIVED_SUMMARY"
+        ],
+        "rights_reviewed_at": "2026-11-02T20:19:02.368547",
+        "rights_reviewer": "CancerInfo policy reconciliation authorized by owner, 2026-11-02",
+        "permissible_use": "Reviewed structured facts/summaries under the document rights_evidence_url; commercial and noncommercial reuse subject to the stated conditions.",
+        "attribution_text": "Source: Eurostat, European Union. Selected data structured as text; Eurostat is not responsible for this adaptation. https://ec.europa.eu/eurostat/help/copyright-notice",
+        "reuse_restrictions": "Text/data only. Preserve source title, URL, attribution and licence conditions. No logos, images, third-party works or implied endorsement. This approval does not authorize full-text delivery.",
+        "canonical_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/hlth_cd_aro?lang=EN&geo=EU27_2020&sex=T&age=TOTAL&unit=NR&time=2023"
+      }
+    }
+  ],
+  "expected_public_records": [
+    "00ffc156-9312-4efa-95b1-cea9ca091d23",
+    "023be99d-87cb-47c8-bb7a-8c3f2f286ae8",
+    "039030aa-0e33-4b58-b46d-26db2f29bed9",
+    "0392d43c-b11d-4d93-9377-b29a1bb3448b",
+    "0465e976-ab35-4f5a-87ab-5969f84440bc",
+    "07123495-0a9e-40de-b250-8cec0be814ee",
+    "0777dc5c-c814-4c43-9282-e169e952db0b",
+    "0a23525e-de3b-4628-896e-0ec0411e2723",
+    "0a73e1a9-c82f-4244-bfda-4313d77c3a3f",
+    "0ae34ff0-4069-46ca-8feb-20c0befae7cf",
+    "0bc8cb8e-7dfe-400a-81b8-7882ef4863c2",
+    "0cb81a21-7197-4906-9286-fe525e1154cf",
+    "0e31a108-b715-4dc4-b08d-5a8abe0287f0",
+    "0f520ce0-4776-4cf1-b543-6b2631ebf9bb",
+    "1031ccaa-98d3-4cf0-a041-ade6e29ce61e",
+    "10df476a-ea6b-4716-b023-8bb2982b807c",
+    "112d2fa7-502a-45da-bf0c-7ac4541201f7",
+    "12792503-62b8-4ada-b344-9cc61ea792d1",
+    "129811c3-52ef-43dc-82db-975af1ccf486",
+    "13f598c4-4bda-4120-9e8e-b176762eec3b",
+    "140dc7a7-865b-46f5-8a4b-294d879e1823",
+    "1417e82a-1f24-4b5e-a8ec-706cc0edbc11",
+    "14433976-6940-4294-89ce-2204a1f27990",
+    "14b05d06-bc1a-4360-8f4d-58e485745ceb",
+    "160b7989-7fa3-4702-96bb-b3fce2bf0a60",
+    "161a5fb9-83cf-4620-b32c-bcb265ab2269",
+    "1824de1b-6f2b-432f-a3db-addbd1763784",
+    "18d75351-475c-4b6d-9fb9-a2c51c912835",
+    "1b535112-a64c-40de-a285-dbae5f26a430",
+    "1be18547-945c-4688-987b-8ef295c045c2",
+    "1c9f9c7f-b730-4a75-bbe6-c5f493deab84",
+    "1d14fc70-bb59-4101-bbab-c674803c790c",
+    "1d84f80e-e475-47bb-9839-abd6d3ec7565",
+    "1db1b301-ee05-4d44-8dec-dd93db0dd450",
+    "1e1a1ce6-ff7c-4a5d-ba75-bd31d776377f",
+    "1ec08c7a-69db-42bb-895e-976e59b3eeaa",
+    "21cfe8de-b919-431d-8806-20da3a54ab15",
+    "234ae81c-7a5c-4fdc-a68a-ea9804b501b5",
+    "23a8c928-b95e-4666-8460-bd42c7183bd8",
+    "27a658a6-aaa7-4ab4-b326-21dc8dfc8d0c",
+    "286f160d-6b22-4aaa-8da7-a3ab7428e4f4",
+    "296b0c39-c8b7-4c50-a7e1-e8ed9c929f5f",
+    "2a19b114-8007-4280-9839-3e01b1dc995a",
+    "2a86bf28-cf03-4d2c-bd0b-86d8e2d51409",
+    "2ab1fa60-105e-489f-9d14-f7ad43eb19ac",
+    "2bc1228f-44be-4bd3-95cf-3a8db72f0ded",
+    "2e506a90-7d9a-4140-843a-4c1d13c7e6e5",
+    "2eb8aa1c-67e1-4812-b6a5-eadfd19c332c",
+    "314f39a4-50bb-4fed-99e3-e69f4a5fedb7",
+    "33fb98c3-f3f1-4c58-aa47-583aa5fb443c",
+    "34805378-d8bd-41b6-98f6-01048dd374de",
+    "3509d4ec-009a-4c0f-9b0e-0c74ea480a42",
+    "350fd640-93a7-41f7-bda4-244ad82bfb52",
+    "361b3864-fb07-497c-84c8-1c642e8ab52b",
+    "382906ed-70ee-4dd9-b55e-87ca59f4ae87",
+    "383ddbd8-30af-42b1-9a8b-364a0b882e4f",
+    "3b5cf81b-8275-45dc-81fe-a497204d8cef",
+    "3be04c88-bf04-4502-973b-e9a5e432e242",
+    "3f80fc39-ba0b-49bf-92a4-a65a20dc36ef",
+    "3fa0aaf4-a778-41b0-b2c3-f13fcca5d714",
+    "3fca7949-8dc3-400e-9e7d-d8523b3ebe6f",
+    "3fde7fec-a89b-42ff-bc2e-9b2b06d7748f",
+    "413d60c0-cda7-4b56-92f0-c30728e97d14",
+    "43262e23-52de-4ef1-9528-71641251852a",
+    "4479428c-ad07-461b-835b-810510ac1723",
+    "44e1badb-ec48-4386-a40b-5d7fe2a4bd9b",
+    "4583a5cf-d68d-4da6-8384-c480efc33ab8",
+    "464a056b-4e6e-4172-a811-d7d77ff7c796",
+    "471edcc7-6391-4da8-83d4-9c5a66db07e7",
+    "4725fd2a-fbdc-4663-942f-0a162c2faf9c",
+    "47567f24-2d21-4ab3-929b-6fc95ccfe758",
+    "4968c36c-e8b8-411d-8282-b1ac02ca1d79",
+    "4a19e418-afc4-4b60-b83f-ee58b676daf3",
+    "4ba1bee8-ffe5-468f-9f46-6e9675b1084d",
+    "4ccca162-7afb-469f-bbec-0bd8e5a901bb",
+    "4e3775e9-b686-4e0d-980b-cf551eeb0148",
+    "4e59f223-4663-4272-9f2b-57ec023e71c0",
+    "506bf981-63f3-4cab-a045-7f898eb30c64",
+    "53f6bce1-64b1-4ce9-a561-d4a837b89887",
+    "5483f851-6152-4512-a805-b0fc22320948",
+    "5556d458-addc-40bf-bd55-2d2d6fc360d3",
+    "59e6cfa0-d3cc-47dc-9e34-83e5ef70641f",
+    "5b258730-e367-4562-b1b9-a851aea61098",
+    "5d191a78-cfbf-4739-afc6-b514fe6c734b",
+    "5d9f6268-3e1d-4fa4-b35c-398c927621d0",
+    "5dc2897a-7ae8-4fac-a6ed-1d113f459656",
+    "5dc3e713-1020-450c-8946-b9b6dd6e5d02",
+    "5e915371-0fe8-45ba-b10e-24d3ce9d75c3",
+    "6093343e-f93a-49a4-8703-f51f05d1d660",
+    "63313c64-3f1e-4828-a5e3-e71cad040851",
+    "63e19942-25ed-43b8-b65b-9283102ffaf9",
+    "665c1cc1-557b-4700-97f5-217f0e36b410",
+    "66a6e4ea-2c02-4610-a17d-e0bb0450343a",
+    "66e9be34-f177-4af3-b05b-ebb8806b213b",
+    "670aef3c-1478-41b7-91b4-912e59c20ef2",
+    "6911ccf3-c8e0-44c5-8ddb-097413f42e15",
+    "697fd584-3131-4b77-bcfe-cd9cb56e466f",
+    "6b157271-b583-4e17-84a2-f532eb041fbd",
+    "6c5a56b1-502c-4672-9157-45835305b7cd",
+    "6d3a626f-5e0f-4ede-874a-a4c46e77c9a8",
+    "6ec9a167-2247-49d0-ae2b-c8797dae9a1f",
+    "6f0b7dbd-9183-44ab-86ad-cfe67c8f0117",
+    "6f2252be-0256-401c-8759-97e3dec2e881",
+    "7016fa69-62dc-4e30-a337-d2d59869e3da",
+    "7019e372-3613-4b8e-a877-2354fe9ec636",
+    "709a39b9-b3d4-4c72-947c-ec33e7e15186",
+    "7190b801-60d2-478d-8210-201b7bfc24c9",
+    "743d02ed-ec35-4db8-a5cc-aa9014355991",
+    "75658e3f-5ca9-487a-b6f6-14dcafeb75c9",
+    "763f3de8-9f95-4c59-b2be-5fede7c0fd6d",
+    "764d7ae1-c1ef-45ec-8582-807974916c53",
+    "77238d56-df4d-49a2-9e0a-0c7d626f251a",
+    "78460403-692f-48f9-8dc2-78886b1165a1",
+    "79aadff6-96a7-4cfa-80dd-daffe2945894",
+    "79acf5c8-74c0-49e1-aeab-3369bb68e75c",
+    "7a6e879b-82ca-4be2-81ae-b86a94411bf7",
+    "7aa9c649-2dcf-423b-b87d-ae5b9de6612a",
+    "7b1f2aea-2837-47d4-8593-1cacc903d76a",
+    "7bc0913e-edc2-4e8d-9f0b-9cbb3397f77c",
+    "7c5c1e21-0ef2-4b60-83f1-8b91d17ab4e0",
+    "8002ab9b-3db6-4138-889c-168018500ee7",
+    "806d74a7-f433-496f-989c-91dc6936bfd3",
+    "807f6b14-5864-4e00-aa6d-80be65beeb6f",
+    "825d4282-410c-424f-bce9-449fd75cb922",
+    "862b36bc-7088-4752-b5ba-7d703d179d2b",
+    "891c00d6-a8df-45c9-92ed-370430aff264",
+    "8a5f707e-e59e-4ef9-a5ab-9b9d73d8677a",
+    "8aad6a61-0e2d-42da-9194-e1d49980aef3",
+    "8b133dfa-f3e6-4376-9eff-bbdddb931f32",
+    "8b3cc78d-43fc-48bf-8513-4d6441022734",
+    "8bbdb8fa-5c35-4cd3-a927-a093358aaa13",
+    "8d881462-cd5a-4c45-b3f4-3cee0989b010",
+    "8d9a1440-7111-4a6c-a723-6f40738e84c6",
+    "8de144e0-43f8-4b1a-9cfb-f5b7237ff4fd",
+    "8e7f7a3c-c7fe-4a95-b2e6-d4690ab001bf",
+    "8f561b30-754e-4d24-b7c6-6077aa04dd3a",
+    "903f83e3-6d95-407e-8c42-aad0397a6c4b",
+    "913437b7-acd6-445c-8963-359b74836777",
+    "913f8077-71d3-4053-b515-42c092e4e440",
+    "919b81e5-5546-4b68-b170-93ac4db3735b",
+    "92b6afb0-2f19-4a14-88fb-827dff34c1ed",
+    "94d819fb-833e-490e-85f6-1993ad6f6f84",
+    "94f5cc29-7ee3-47b8-91a0-26edf7477ce6",
+    "95689407-1431-4a65-94d8-61969a9178e3",
+    "95a599d7-dd4a-4f15-b2f5-f597b4e8cc8f",
+    "96693823-8d0e-491c-863d-49c02f3ee990",
+    "9a938c80-3511-4b53-be62-c2767dc9039d",
+    "9b62410f-e489-45e4-b794-d792e8f7ec8a",
+    "9c3e263a-15d8-4c18-a99b-f64e242661e9",
+    "9c63c050-7634-4e9c-be59-e47be05f958f",
+    "9d313b3a-ecd5-4d2d-988b-935cc32978fe",
+    "9e68be56-13e3-436c-a525-cfb92c0612c1",
+    "9e950212-5389-47b1-9990-c6ecced33be1",
+    "9f0b2003-1d3a-416f-9b79-ae52f5d3e7f6",
+    "a0305292-5acc-44c6-8733-954a0d83f6ee",
+    "a082146f-b4ab-4fc3-b26b-bc16a355081d",
+    "a4de68b1-ead0-4a73-b5e9-0d8eb8bb4686",
+    "a972f3e6-f0a1-40e9-ac88-8f09188070c0",
+    "a9f159b3-d332-49a8-8eb5-8458bbcf7987",
+    "ab04fe60-75ae-4bf6-a03e-b952f7798e5c",
+    "ab9af33d-0e05-4e8e-bf88-53685cff08df",
+    "af089760-306d-42b4-b6ac-a9eb31a5df7e",
+    "af528ff3-1197-46d9-be09-d8d5f9ffbd00",
+    "b1057e67-b48d-486d-9827-9bee39eccc67",
+    "b16156b3-ffa1-43e4-ae6d-19c85c9609c0",
+    "b37f7ba5-b809-4095-900f-230f51e9aa47",
+    "b486f249-bdfc-4e00-a272-c5867de5f9d7",
+    "b4ec6465-0fe6-49d6-bc51-2cd7cbcaad67",
+    "b58cfd8b-439d-4433-9e66-0fc8a6b2f85a",
+    "b67c1f8e-d221-4270-b3dc-7043f3b618d1",
+    "b6ad6dfb-cc7b-427e-addc-952149d02029",
+    "b8e9a651-ef8d-4d1c-b7ee-93485e6d24d8",
+    "b981ec19-c321-489b-8748-d0214a8b33a3",
+    "ba0206da-2e37-4767-b8f0-1f278616c248",
+    "bb1da61c-765f-4c4e-b0a6-1bc9a3a3e47f",
+    "bb80cbc3-9138-46e5-a3ee-b87b911f1de9",
+    "bd01d0a4-5e78-476d-bb39-e6442a638ac7",
+    "bd02606a-0b7d-466a-bde0-e9b18259b198",
+    "bd430a19-283b-4c35-b29f-d518e4c810ef",
+    "be54eadc-8eb0-420b-8134-d9041f037971",
+    "bebb6737-c294-48f0-8697-6d4e0d42befe",
+    "bebcc1cd-daed-40f2-9b2f-f0a87ff06f1b",
+    "c0e96260-783b-453f-b181-aace5e3ae998",
+    "c14c3590-0cc3-42c8-889a-e054216d44a4",
+    "c31b80e5-1068-411e-a9b2-4f3503fdb9b2",
+    "c380e487-cfbb-4549-9774-678048b5cb5a",
+    "c39b561b-a312-48ad-a563-dddfbd1132ac",
+    "c3c41bb9-a5be-4ddc-adbf-01e9370abe03",
+    "c6e54b57-3b7e-445a-8df9-22b1c4cc966a",
+    "c9785e05-7953-46db-88a5-8f1661515e32",
+    "cbb82ad2-195b-4564-b03e-035ebf48c662",
+    "ccf35a7e-891c-457e-b4c9-726516fd3cbb",
+    "ce03138c-c014-46ba-bba8-c6605a282e2a",
+    "ce61884c-3af9-48d8-86f3-fb8325f29628",
+    "cebe8554-7e7a-45be-a889-ca4d6794983f",
+    "cf00bc1f-8878-450a-aba7-1cd2e0b79cd3",
+    "d00e3efc-2880-4c4f-b77f-c3ad233e9cb4",
+    "d013fa53-882f-45aa-806e-6aa6b2d80dfc",
+    "d02decde-0f23-4e88-a502-d47ec49eaecc",
+    "d0be92ad-cd7b-4954-9a14-fdc6d09147ee",
+    "d1caf1ad-17f3-4ff3-9931-ea31e36dbad3",
+    "d371dd74-9886-4b0e-9a22-1be488329889",
+    "d3ac5838-27b1-4bc8-bcc1-dd68f5fa8c7d",
+    "d3c61adb-efdd-4d52-8b74-e5c6b47984a7",
+    "d6a6a90b-eedb-40f7-8025-fb4232f52c7f",
+    "d8e2959f-804d-4342-9547-bbe34971a19b",
+    "d97df535-3c06-4677-90a1-d122fa37c038",
+    "d989f1ed-bdd4-4960-86bb-24ff8e49d083",
+    "da846b89-abff-41c9-930e-0bd75b1edeb9",
+    "db9754b9-9078-46f1-9b45-c571ea9e3b3f",
+    "de20d678-3414-4b24-8857-ceddbc3b754c",
+    "df16915b-6087-4aa3-b8a7-513501da61ab",
+    "dfab76f3-2919-4ce7-97aa-9720eac3c335",
+    "e0153e18-830a-4467-a5e0-d4587ca69c07",
+    "e0a2e9ec-752d-4a03-b298-da7a823efc07",
+    "e2336a2a-86b9-48c3-bfcb-6e70fedc5925",
+    "e4628482-b8c9-4f68-8886-4558c19d2583",
+    "e606aad3-23e2-41f0-9f06-c46cf0bc2c0d",
+    "e65103b3-474c-4fcd-8a0b-898333c862ba",
+    "e923bf61-5e26-4a06-8b44-31710958b768",
+    "ea24e219-9b38-473b-b134-2f6add099947",
+    "ea8bd6fa-cb65-40e2-8081-d06a656425c4",
+    "eab5f8fb-5bff-4785-958e-896a41bd75e5",
+    "ebd4963c-170b-455f-92d3-ff25aed69d8e",
+    "ebf9bfce-9fa8-41b0-badf-ba4e10e80a61",
+    "ec8951db-f029-42f7-9bb6-664b3b6fc086",
+    "ee9a1594-f05b-4368-90c8-1fc65f023bfb",
+    "f02fa395-f8f2-4e70-8b01-8df2db698150",
+    "f09bb9ae-46ca-4832-8565-6ea51acac793",
+    "f1bb25d3-5ccd-4999-9a6b-12c23ee92119",
+    "f2ecc930-0c37-48b3-b97f-880c39766dd9",
+    "f3b9329e-4aa9-4aa1-9af6-fd104f0f40ea",
+    "f4346967-64cb-42a8-9851-f1128f10db20",
+    "f4647a91-4c7a-4dfb-a73f-c77291f46911",
+    "f4e6df84-bcd7-4a19-ba93-49bf2e6a050a",
+    "f531a3e6-dcf9-48b9-a462-28c7efcc4bb2",
+    "f5ccdc28-c136-4ebb-9394-0759f21ef76c",
+    "f5fd8d88-58b3-4074-8193-18bca3599834",
+    "f88b08eb-b4ce-4ddd-b272-065c3ba0162c",
+    "f89cc72c-8e88-4e6a-bc38-face5233e350",
+    "f98a6e79-80d5-41c0-bdc6-9d18647337d2",
+    "fa044e51-133a-44e5-97a5-657826cb4a9b",
+    "fc10203b-d9d4-4e82-a5c4-f393afde5156",
+    "fc9fcaa7-79ab-4d2e-b195-ba625d776c9f",
+    "fd590f8f-f15b-4fac-8cdb-85fff04eeb80",
+    "ffa42719-a30a-4ee6-9a4d-7cfe559e595d"
+  ]
+}

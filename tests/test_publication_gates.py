@@ -168,3 +168,15 @@ def test_eligible_canonical_url_survives_a_document_redirect(client, db_session,
     result = client.get("/v1/cancers/gate-cancer/symptoms").json()["data"]
     assert len(result["records"]) == 1
     assert len(result["items"]) == 1
+
+
+def test_reviewed_dataset_resource_is_exact_and_not_a_domain_wildcard(client, db_session, gate_data):
+    doc, record, fact, link, citation, _ = gate_data
+    doc.original_url = 'https://example.invalid/catalogue/dataset-1'
+    doc.canonical_url = 'https://example.invalid/download/dataset-1.xlsx'
+    link.source_url = citation.source_url = doc.canonical_url
+    db_session.flush()
+    assert len(client.get('/v1/cancers/gate-cancer/symptoms').json()['data']['records']) == 1
+    link.source_url = citation.source_url = 'https://example.invalid/download/unreviewed.xlsx'
+    db_session.flush()
+    assert_withheld(client)

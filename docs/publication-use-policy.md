@@ -64,3 +64,25 @@ additive migration deliberately; never reseed, restamp or replace the corpus.
 Approve only an evidenced subset, validate the expected public manifest and
 repeat regression checks. Updating schema or rights in production, merging to
 main and deploying require a separate authorized release step.
+
+## November 2 corpus decision
+
+The exact, reviewable transition is in policies/publication-20261102.json.
+It is bound to document IDs, original URLs, content hashes and prior field values,
+and declares the exact public record manifest. The controlled script defaults
+to a transaction rollback; applying it requires the explicit apply option.
+It refuses changed documents, later conflicting decisions, unsupported fields
+and unexpected public visibility. Repeated application is a no-op.
+
+The release subset has 246 active records from 24 reviewed documents: NCI text,
+MedlinePlus's own topic summary, Te Aho o Te Kahu text and reviewed AIHW, CBS,
+Eurostat, ONS and Statistics Canada observations. Attribution and licence
+conditions are included in response provenance. Five dataset documents retain
+the catalogue original_url while canonical_url identifies the exact reviewed
+resource cited by the data. Citations, statistics and all historical data are
+unchanged; unrelated same-publisher URLs still fail.
+
+WHO remains PERMISSION_PENDING. NHS remains REVIEW_REQUIRED pending its
+adaptation/attribution handling; the CDC item remains REVIEW_REQUIRED because
+its policy could not be reverified for this release. No research record is
+removed. This is a deliberately smaller public subset, not loss of corpus data.
