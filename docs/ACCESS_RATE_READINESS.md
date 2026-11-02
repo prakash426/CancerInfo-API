@@ -22,7 +22,7 @@ Migration `0006_shared_rate_limits` creates only `rate_limit_buckets` and its ex
 
 The table remains part of schema parity, bootstrap and foreign-key inventories. Corpus preservation digests exclude request accounting explicitly because serving a request must not change the corpus identifier. Exact backups can still include the operational table. SQLite and development use a thread-safe local limiter with a bounded client map and expired-client cleanup; it is not a shared production backend.
 
-If PostgreSQL accounting fails, ordinary requests receive a sanitized 503 `RATE_LIMIT_UNAVAILABLE` with a five-second retry hint. The API does not fall back to unlimited access. Row-lock waits are bounded to one second and statements to three seconds. Application PostgreSQL connections have bounded connect, pool-wait and statement timeouts, configurable within validated bounds. Health, readiness, root and exact documentation routes are exempt; similarly named paths are not.
+If PostgreSQL accounting fails, ordinary requests receive a sanitized 503 `RATE_LIMIT_UNAVAILABLE` with a five-second retry hint. The API does not fall back to unlimited access. Row-lock waits are bounded to one second and statements to three seconds. Application PostgreSQL connections have bounded connect, pool-wait and statement timeouts, configurable within validated bounds. Health, readiness, root and exact documentation routes are exempt; similarly named paths are not. CORS preflight is handled outside request accounting; allowed browser origins also receive CORS headers on 429 and 503 denials and internal errors.
 
 See the official [PostgreSQL locking clauses](https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE).
 

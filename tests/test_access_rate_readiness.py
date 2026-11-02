@@ -343,3 +343,30 @@ print('PRODUCTION_ACCOUNTING_READINESS_OK')
     result = subprocess.run([sys.executable, "-c", script], env=env, capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stderr
     assert "PRODUCTION_ACCOUNTING_READINESS_OK" in result.stdout
+
+
+@pytest.mark.parametrize("failure", ["rate", "accounting", "internal"])
+def test_allowed_browser_origin_can_read_failure_response(client, monkeypatch, failure):
+    import app.main as main
+    limiter = Mock()
+    if failure == "rate":
+        limiter.check.return_value = (False, 120, 0, 27)
+        expected = 429
+    elif failure == "accounting":
+        limiter.check.side_effect = RuntimeError("private dependency failure")
+        expected = 503
+    else:
+        limiter.check.return_value = (True, 120, 119, 60)
+        def broken_db():
+            raise RuntimeError("private dependency failure")
+            yield
+        monkeypatch.setitem(app.dependency_overrides, get_db, broken_db)
+        expected = 500
+    monkeypatch.setattr(main, "rate_limiter", limiter)
+    r = client.get("/v1/cancers", headers={"Origin": "https://example.invalid"})
+    assert r.status_code == expected
+    assert r.headers["Access-Control-Allow-Origin"] == "*"
+    assert "access-control-allow-credentials" not in r.headers
+    assert "Retry-After" in r.headers["Access-Control-Expose-Headers"]
+    assert_headers(r)
+    assert "private dependency failure" not in r.text

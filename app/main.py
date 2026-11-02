@@ -46,26 +46,6 @@ app = FastAPI(
     responses={code: {"model": ErrorResponse} for code in (400, 401, 404, 405, 409, 422, 429, 500, 503)},
 )
 
-# CORS Configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS if isinstance(settings.CORS_ORIGINS, list) else [settings.CORS_ORIGINS],
-    allow_credentials=settings.CORS_ALLOW_CREDENTIALS,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=[
-        "X-Request-ID",
-        "X-Publication-Use",
-        "X-Response-Time-MS",
-        "X-Medical-Disclaimer",
-        "X-Disclaimer",
-        "X-CancerInfo-API-Version",
-        "X-RateLimit-Limit",
-        "X-RateLimit-Remaining",
-        "X-RateLimit-Reset",
-        "Retry-After",
-    ],
-)
 
 # Exception Handlers
 app.add_exception_handler(APIError, api_error_handler)
@@ -124,6 +104,29 @@ async def request_metrics_and_rate_limit(request: Request, call_next):
     response.headers["X-Medical-Disclaimer"] = "Informational only; not medical advice"
     response.headers["X-CancerInfo-API-Version"] = settings.APP_VERSION
     return response
+
+
+# Keep CORS outside request accounting so browsers can read denial/error responses.
+# CORS Configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS if isinstance(settings.CORS_ORIGINS, list) else [settings.CORS_ORIGINS],
+    allow_credentials=settings.CORS_ALLOW_CREDENTIALS,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=[
+        "X-Request-ID",
+        "X-Publication-Use",
+        "X-Response-Time-MS",
+        "X-Medical-Disclaimer",
+        "X-Disclaimer",
+        "X-CancerInfo-API-Version",
+        "X-RateLimit-Limit",
+        "X-RateLimit-Remaining",
+        "X-RateLimit-Reset",
+        "Retry-After",
+    ],
+)
 
 
 # Root and Platform Health Probes

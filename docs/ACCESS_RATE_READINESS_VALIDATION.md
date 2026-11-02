@@ -4,10 +4,10 @@ Candidate targets `launch_blockers` from `codex/access-rate-readiness`. This cha
 
 ## Local verification, November 2, 2026
 
-- Full suite against SQLite and disposable PostgreSQL 18: 386 passed, one existing Starlette/httpx deprecation warning; no skipped tests in the PostgreSQL-enabled full run.
-- Focused access/readiness suite: 41 passed, including production-mode HTTP behavior, WHO exclusion, worker restart continuity and refusal to start with a damaged schema.
+- Full suite against SQLite and disposable PostgreSQL 18: 389 passed, one existing Starlette/httpx deprecation warning; no skipped tests in the PostgreSQL-enabled full run.
+- Focused access/readiness suite: 44 passed, including production-mode HTTP behavior, WHO exclusion, worker restart continuity and refusal to start with a damaged schema.
 - Shared PostgreSQL concurrency: three limiter instances and 35 concurrent checks permit exactly seven requests under a seven-request window. A new instance inherits the exhausted allowance. Independent addresses retain independent allowances.
-- Expiry, bounded cleanup, one-second lock timeout, forged/duplicate/malformed proxy chains, default-secret refusal, administrator denial and consistent success/error headers passed.
+- Expiry, bounded cleanup, one-second lock timeout, forged/duplicate/malformed proxy chains, default-secret refusal, administrator denial and consistent success/error headers passed. Allowed browser origins can read 429, 503 and 500 responses with the configured CORS headers.
 - Database connection, registry, schema and revision failures return sanitized 503 readiness results; static liveness stays available. A managed table dropped after startup is detected.
 - The existing container validation suite passed image packaging, Python 3.11, OpenAPI generation, default/custom ports, migrations, bootstrap and repeat refusal, endpoint probes and data persistence across container destruction/recreation. The production OpenAPI container receives an explicit disposable test admin key.
 - Dependency consistency, tracked-private-artifact guard and whitespace checks passed.
