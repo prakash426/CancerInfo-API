@@ -246,6 +246,33 @@ class ContentSource(Base):
     source_document = relationship("SourceDocument", back_populates="content_sources")
 
 
+class WhoFactProvenance(Base):
+    """
+    Per-fact provenance extension for WHO review fields that have no home
+    in ContentRecord or ContentSource (heading path, locator, match
+    location, statistical context, limitations, rights status).
+    """
+    __tablename__ = "who_fact_provenance"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    content_record_id = Column(String(36), ForeignKey("content_records.id"),
+                               nullable=False, unique=True, index=True)
+    heading_path = Column(String(1024), nullable=True)
+    source_locator = Column(String(1024), nullable=True)
+    match_locations = Column(String(255), nullable=True)
+    geography = Column(String(255), nullable=True)
+    population = Column(String(255), nullable=True)
+    reference_period = Column(String(64), nullable=True)
+    units = Column(String(255), nullable=True)
+    denominator = Column(String(512), nullable=True)
+    limitations = Column(Text, nullable=True)
+    rights_review_status = Column(String(64), nullable=True)
+    retrieved_at_utc = Column(String(64), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    content_record = relationship("ContentRecord", backref="who_provenance")
+
+
 class ContentVersion(Base):
     """
     Immutable version history for content records (Section 15)

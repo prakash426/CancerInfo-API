@@ -5,7 +5,7 @@ Transitions populated CIAPI-L003 databases to CIAPI-L004 without reseeding, wipi
 or overwriting existing quotes, attributions, content history, or versioned records.
 
 Operations performed:
-1. Verifies that schema is at head (0002_document_rights) with L004 columns.
+1. Verifies that schema is at head (0003_who_provenance) with L004 columns.
 2. Updates or creates candidate SourceDocument records with exact rights metadata
    from the authoritative RIGHTS_INVENTORY without disturbing existing content.
 3. Links existing ConsensusFactSource records to their corresponding SourceDocument
