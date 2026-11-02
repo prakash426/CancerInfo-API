@@ -20,6 +20,7 @@ class NormalizedSection:
     disagreement_status: str = "CONSISTENT"
     quote_snippet: Optional[str] = None
     source_url: Optional[str] = None
+    source_locator: Optional[str] = None
 
 
 @dataclass

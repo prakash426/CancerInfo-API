@@ -387,8 +387,8 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
         ))
         conn.commit()
 
-    # 2. Upgrade to L004 head (0002_document_rights)
-    command.upgrade(cfg, "head")
+    # 2. Upgrade to L004 (0002_document_rights)
+    command.upgrade(cfg, "0002_document_rights")
     assert get_current_revision(engine) == "0002_document_rights"
 
     # Verify existing document received fail-closed server_default 'REVIEW_REQUIRED'
@@ -409,9 +409,9 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
     cfs_cols = {c["name"] for c in inspector.get_columns("consensus_fact_sources")}
     assert "source_document_id" not in cfs_cols
 
-    # 4. Re-upgrade to head
+    # 4. Re-upgrade to head (now 0003_who_provenance)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0002_document_rights"
+    assert get_current_revision(engine) == "0003_who_provenance"
     inspector = inspect(engine)
     sd_cols = {c["name"] for c in inspector.get_columns("source_documents")}
     assert "publication_status" in sd_cols
@@ -790,9 +790,9 @@ def test_populated_l003_database_upgrade_and_transition(tmp_path):
         ))
         conn.commit()
 
-    # 3. Upgrade schema to L004 (0002_document_rights)
+    # 3. Upgrade schema to head (L004 plus provenance)
     command.upgrade(cfg, "head")
-    assert get_current_revision(engine) == "0002_document_rights"
+    assert get_current_revision(engine) == "0003_who_provenance"
 
     # Verify consensus citation source_document_id is currently null
     with sessionmaker(bind=engine)() as s:
@@ -971,7 +971,7 @@ def test_transition_fails_and_rolls_back_on_unresolved_links(tmp_path):
 
 def test_transition_enforces_supported_schema_revision(tmp_path):
     """
-    Issue 3: Transition must strictly enforce the supported schema revision (0002_document_rights).
+    Issue 3: Transition must strictly enforce the supported schema revision (0003_who_provenance).
     Fails fast if database is at 0001_initial_schema or unmigrated.
     """
     from alembic import command
