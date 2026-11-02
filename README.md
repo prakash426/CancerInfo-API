@@ -83,6 +83,10 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 3000
 
 Check out the reviewed Python branch before running these commands if the repository default differs. The root `.env.example` documents the Python API settings only. Gemini and AI Studio hosting variables are not required. Set a unique admin secret in your deployment environment before exposing any administrative endpoint; never commit the real value.
 
+Database files, backups, WHO research packages and private permission documents stay local and are not versioned. Checkouts do not restore a corpus. Use an explicitly selected database and preserve a backup before any data operation. Bootstrap is for an empty development database, not the recovered staging or release corpus.
+
+Public CORS requests do not allow browser credentials by default. If a consumer requires cookies, set `CORS_ALLOW_CREDENTIALS=true` with an explicit `CORS_ORIGINS` allowlist; wildcard origins with credentials are rejected at startup.
+
 ### 1. Test via cURL
 
 ```bash
