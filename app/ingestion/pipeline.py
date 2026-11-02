@@ -4,7 +4,7 @@ Ingestion Pipeline (Sections 31-35)
 from datetime import datetime
 from typing import Any, Dict, Optional
 from sqlalchemy.orm import Session
-from app.core.constants import ChangeType, IngestionStatus
+from app.core.constants import ChangeType, IngestionStatus, LicenseStatus, PublicationStatus
 from app.models import (
     Cancer,
     ContentRecord,
@@ -133,7 +133,12 @@ async def run_ingestion_for_source(
                     jurisdiction_scope=norm_doc.jurisdiction_scope,
                     content_hash=content_hash,
                     processing_status="PROCESSED",
-                    license_status=source.license_status,
+                    publication_status=PublicationStatus.REVIEW_REQUIRED.value,
+                    license_status=LicenseStatus.REVIEW_REQUIRED.value,
+                    quarantine_reason="Newly discovered document pending rights review",
+                    third_party_permission_status="UNREVIEWED",
+                    redistribution_allowed=False,
+                    commercial_redistribution_allowed=False,
                     retrieved_at=datetime.utcnow(),
                     last_verified_at=datetime.utcnow(),
                 )

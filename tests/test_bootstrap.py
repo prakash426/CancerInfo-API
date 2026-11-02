@@ -132,11 +132,11 @@ print("INGESTION_SERVING_RESTART_OK")
 
 
 def test_controlled_bootstrap_creates_expected_data(migrated_db):
-    """Test 1: Controlled bootstrap populates all 11 current-model tables with baseline content (191 rows)."""
+    """Test 1: Controlled bootstrap populates all 11 current-model tables with baseline content (203 rows)."""
     res = execute_bootstrap(migrated_db, dry_run=False)
 
     assert res["status"] == "SUCCESS"
-    assert res["total_records_created"] == 191
+    assert res["total_records_created"] == 203
 
     Session = sessionmaker(bind=migrated_db)
     session = Session()
@@ -146,7 +146,7 @@ def test_controlled_bootstrap_creates_expected_data(migrated_db):
         assert session.query(SourceHealth).count() == 5
         assert session.query(Cancer).count() == 7
         assert session.query(CancerAlias).count() == 22
-        assert session.query(SourceDocument).count() == 20
+        assert session.query(SourceDocument).count() == 32
         assert session.query(ContentRecord).count() == 21
         assert session.query(ContentSource).count() == 21
         assert session.query(ContentVersion).count() == 21
@@ -258,9 +258,9 @@ def test_repeated_bootstrap_refuses_safely(migrated_db):
     with pytest.raises(RuntimeError, match="Refusing to bootstrap: Current-model database is already populated"):
         execute_bootstrap(migrated_db, dry_run=False)
 
-    # Verify row counts remain unchanged (exactly 191)
+    # Verify row counts remain unchanged (exactly 203)
     state = inspect_database_state(migrated_db)
-    assert state["total_current_model_rows"] == 191
+    assert state["total_current_model_rows"] == 203
 
 
 def test_simulated_bootstrap_failure_rolls_back_completely(migrated_db):
@@ -295,7 +295,7 @@ def test_bootstrap_dry_run_does_not_mutate(migrated_db):
     res = execute_bootstrap(migrated_db, dry_run=True)
 
     assert res["status"] == "VALIDATED_NO_MUTATION"
-    assert res["planned_baseline_records"] == 191
+    assert res["planned_baseline_records"] == 203
 
     state = inspect_database_state(migrated_db)
     assert state["total_current_model_rows"] == 0
@@ -406,7 +406,7 @@ def test_bootstrap_preserves_legacy_cancer_content_table(migrated_db):
     assert res["status"] == "SUCCESS"
     assert res["legacy_table_found"] is True
     assert res["legacy_rows"] == 2
-    assert res["total_records_created"] == 191
+    assert res["total_records_created"] == 203
 
     # Capture post-bootstrap legacy audit and compare
     post_audit = audit_legacy_cancer_content(engine)
@@ -429,7 +429,7 @@ def test_starting_api_twice_in_production_mode_does_not_mutate_data(migrated_db)
 
     # 2. Capture baseline manifest before any startup
     manifest_before = capture_current_model_manifest(migrated_db)
-    assert manifest_before["total_rows"] == 191
+    assert manifest_before["total_rows"] == 203
 
     # 3. Prepare subprocess script that boots API with environment variables set before import
     db_url = migrated_db.url.render_as_string(hide_password=False)

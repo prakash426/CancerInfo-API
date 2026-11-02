@@ -159,6 +159,45 @@ def test_search_filters_and_consensus_country_policy(client, contract_data):
             assert [c["country_code"] for c in r["consensus_item"]["corroborated_by"]] == ["GLOBAL"]
 
 
+def test_filtered_search_retains_document_rights(client, contract_data, db_session):
+    from app.models import SourceDocument
+
+    doc = SourceDocument(
+        id="contract-document", source_id="nci-us",
+        original_url="https://example.invalid/us", title="Synthetic rights fixture",
+        country_code="US", content_hash="0" * 64,
+        publication_status="REVIEW_REQUIRED", attribution_text="Document attribution",
+        reuse_restrictions="Synthetic restriction", commercial_redistribution_allowed=False,
+        rights_evidence_url="https://example.invalid/rights",
+    )
+    db_session.add(doc)
+    db_session.flush()
+    for model in (ConsensusFactSource, ContentSource):
+        links = db_session.query(model).filter(model.source_id == "nci-us").all()
+        for link in links:
+            if link.source_url.startswith("https://example.invalid/"):
+                link.source_document = doc
+                link.attribution_text = "Link fallback attribution"
+    db_session.flush()
+
+    payload = client.get(
+        "/v1/search?q=contractneedle&source=nci-us&country=US&limit=50"
+    ).json()
+    assert payload["pagination"]["total_records"] == 6
+    for result in payload["data"]["results"]:
+        consensus = result["consensus_item"]
+        citations = consensus["corroborated_by"] if consensus else result["record"]["sources"]
+        assert citations
+        for citation in citations:
+            assert citation["source_id"] == "nci-us"
+            assert citation["document_title"] == doc.title
+            assert citation["attribution_text"] == doc.attribution_text
+            assert citation["publication_status"] == "REVIEW_REQUIRED"
+            assert citation["reuse_conditions"] == doc.reuse_restrictions
+            assert citation["commercial_redistribution_allowed"] is False
+            assert citation["rights_evidence_url"] == doc.rights_evidence_url
+
+
 @pytest.mark.parametrize("url", ["/v1/search?q=x&page=0", "/v1/search?q=x&limit=0",
     "/v1/search?q=x&limit=51", "/v1/search?q=%20%20", "/v1/cancers?page=0", "/v1/cancers?limit=101"])
 def test_validation_envelope(client, url):

@@ -3,7 +3,8 @@ Initial Database Seeder for Source Registry, Canonical Taxonomy, and Seed Record
 """
 from datetime import datetime
 from sqlalchemy.orm import Session
-from app.core.constants import TrustTier, LicenseStatus
+from app.core.constants import TrustTier, LicenseStatus, PublicationStatus
+from app.ingestion.rights_inventory import get_rights_inventory_entry
 from app.models import (
     Cancer,
     CancerAlias,
@@ -69,9 +70,9 @@ def _seed_initial_core(db: Session) -> None:
             "source_type": "international_agency",
             "trust_tier": TrustTier.TIER_1.value,
             "authority_type": "United Nations Specialized International Public Health Agency",
-            "license_type": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 IGO (CC BY-NC-SA 3.0 IGO)",
-            "license_status": LicenseStatus.APPROVED.value,
-            "reuse_allowed": True,
+            "license_type": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 IGO (CC BY-NC-SA 3.0 IGO) - Commercial/API reuse unresolved",
+            "license_status": LicenseStatus.REVIEW_REQUIRED.value,
+            "reuse_allowed": False,
             "full_text_storage_allowed": True,
             "derived_summary_allowed": True,
             "attribution_required": True,
@@ -113,9 +114,9 @@ def _seed_initial_core(db: Session) -> None:
             "source_type": "government_agency",
             "trust_tier": TrustTier.TIER_1.value,
             "authority_type": "Australian Government Statutory Cancer Agency",
-            "license_type": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
-            "license_status": LicenseStatus.APPROVED.value,
-            "reuse_allowed": True,
+            "license_type": "Creative Commons Attribution 4.0 International (CC BY 4.0) - Subject to third-party & Crown copyright exceptions",
+            "license_status": LicenseStatus.REVIEW_REQUIRED.value,
+            "reuse_allowed": False,
             "full_text_storage_allowed": True,
             "derived_summary_allowed": True,
             "attribution_required": True,
@@ -135,9 +136,9 @@ def _seed_initial_core(db: Session) -> None:
             "source_type": "government_agency",
             "trust_tier": TrustTier.TIER_1.value,
             "authority_type": "U.S. Federal Health Protection Agency",
-            "license_type": "Public Domain (U.S. Government Work)",
-            "license_status": LicenseStatus.APPROVED.value,
-            "reuse_allowed": True,
+            "license_type": "Public Domain (U.S. Government Work, 17 U.S.C. § 105) - Subject to third-party exceptions",
+            "license_status": LicenseStatus.REVIEW_REQUIRED.value,
+            "reuse_allowed": False,
             "full_text_storage_allowed": True,
             "derived_summary_allowed": True,
             "attribution_required": True,
@@ -581,6 +582,7 @@ def _seed_initial_core(db: Session) -> None:
         # Create or fetch SourceDocument
         doc = db.query(SourceDocument).filter(SourceDocument.original_url == item["source_url"]).first()
         if not doc:
+            rights = get_rights_inventory_entry(item["source_url"])
             doc = SourceDocument(
                 source_id=src.id,
                 original_url=item["source_url"],
@@ -593,7 +595,22 @@ def _seed_initial_core(db: Session) -> None:
                 jurisdiction_scope=item["jurisdiction_scope"],
                 content_hash=c_hash,
                 processing_status="PROCESSED",
-                license_status=src.license_status,
+                publication_status=rights.publication_status.value if rights else PublicationStatus.REVIEW_REQUIRED.value,
+                license_status=rights.publication_status.value if rights else PublicationStatus.REVIEW_REQUIRED.value,
+                rights_evidence_url=rights.rights_evidence_url if rights else None,
+                rights_reviewed_at=rights.rights_reviewed_at if rights else None,
+                rights_reviewer=rights.rights_reviewer if rights else None,
+                permissible_use=rights.permissible_use if rights else None,
+                commercial_redistribution_allowed=rights.commercial_redistribution_allowed if rights else False,
+                redistribution_allowed=rights.redistribution_allowed if rights else False,
+                full_text_storage_allowed=rights.full_text_storage_allowed if rights else False,
+                derived_summary_allowed=rights.derived_summary_allowed if rights else False,
+                attribution_required=rights.attribution_required if rights else True,
+                attribution_text=rights.attribution_text if (rights and rights.attribution_text) else item["attribution"],
+                reuse_restrictions=rights.reuse_restrictions if rights else None,
+                quarantine_reason=rights.quarantine_reason if rights else "Awaiting exact-document rights review",
+                third_party_permission_status=rights.third_party_permission_status if rights else "UNREVIEWED",
+                third_party_permission_notes=rights.third_party_permission_notes if rights else None,
                 retrieved_at=datetime.utcnow(),
                 last_verified_at=datetime.utcnow(),
             )
@@ -1248,13 +1265,55 @@ def seed_consensus_facts(db: Session, commit: bool = True) -> None:
             if not src:
                 continue
 
+            url = c_data["source_url"]
+            # CIAPI-L004: Create or retrieve exact SourceDocument for consensus citation
+            doc = db.query(SourceDocument).filter(SourceDocument.original_url == url).first()
+            if not doc:
+                rights = get_rights_inventory_entry(url)
+                doc_title = rights.title if rights else f"{cancer_obj.canonical_name} Symptoms - {src.source_name}"
+                c_hash = compute_content_hash(url)
+                doc = SourceDocument(
+                    source_id=src.id,
+                    original_url=url,
+                    canonical_url=url,
+                    title=doc_title,
+                    canonical_cancer_id=cancer_obj.id,
+                    source_cancer_name=cancer_obj.canonical_name,
+                    language="en",
+                    country_code=c_data.get("country_code", src.country_code),
+                    jurisdiction_scope="GLOBAL" if src.country_code == "GLOBAL" else "COUNTRY",
+                    content_hash=c_hash,
+                    processing_status="PROCESSED",
+                    publication_status=rights.publication_status.value if rights else PublicationStatus.REVIEW_REQUIRED.value,
+                    license_status=rights.publication_status.value if rights else PublicationStatus.REVIEW_REQUIRED.value,
+                    rights_evidence_url=rights.rights_evidence_url if rights else None,
+                    rights_reviewed_at=rights.rights_reviewed_at if rights else None,
+                    rights_reviewer=rights.rights_reviewer if rights else None,
+                    permissible_use=rights.permissible_use if rights else None,
+                    commercial_redistribution_allowed=rights.commercial_redistribution_allowed if rights else False,
+                    redistribution_allowed=rights.redistribution_allowed if rights else False,
+                    full_text_storage_allowed=rights.full_text_storage_allowed if rights else False,
+                    derived_summary_allowed=rights.derived_summary_allowed if rights else False,
+                    attribution_required=rights.attribution_required if rights else True,
+                    attribution_text=rights.attribution_text if (rights and rights.attribution_text) else src.attribution_text,
+                    reuse_restrictions=rights.reuse_restrictions if rights else None,
+                    quarantine_reason=rights.quarantine_reason if rights else "Awaiting exact-document rights review",
+                    third_party_permission_status=rights.third_party_permission_status if rights else "UNREVIEWED",
+                    third_party_permission_notes=rights.third_party_permission_notes if rights else None,
+                    retrieved_at=datetime.utcnow(),
+                    last_verified_at=datetime.utcnow(),
+                )
+                db.add(doc)
+                db.flush()
+
             cfs = ConsensusFactSource(
                 consensus_fact_id=fact.id,
                 source_id=src.id,
-                source_url=c_data["source_url"],
+                source_document_id=doc.id,
+                source_url=url,
                 quote_snippet=c_data["quote_snippet"],
-                attribution_text=src.attribution_text,
-                country_code=c_data.get("country_code", src.country_code),
+                attribution_text=doc.attribution_text or c_data.get("attribution_text") or src.attribution_text,
+                country_code=c_data.get("country_code", doc.country_code or src.country_code),
                 display_order=c_data.get("display_order", 0),
                 last_verified_at=datetime.utcnow(),
             )

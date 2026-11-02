@@ -156,7 +156,7 @@ def execute_bootstrap(
             "legacy_table_found": state["legacy_table_found"],
             "legacy_rows": state["legacy_rows"],
             "pre_counts": state["current_model_counts"],
-            "planned_baseline_records": 191,
+            "planned_baseline_records": 203,
             "message": "Database is verified and ready for bootstrap. No mutation performed.",
         }
 
