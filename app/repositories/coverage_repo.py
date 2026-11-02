@@ -1,95 +1,51 @@
-"""
-Coverage Repository (Section 39)
-"""
-from typing import Any, Dict, List, Optional
-from sqlalchemy import func
-from sqlalchemy.orm import Session
-from app.models import Cancer, ContentRecord, ContentSource, Source, SourceDocument
+"""Coverage of publishable evidence, distinct from the source registry."""
+from typing import Any, Dict, Optional
+
+from app.models import Cancer, ContentRecord
+from app.repositories.publication import PublicEvidence
 
 
 class CoverageRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db):
         self.db = db
 
     def get_coverage(self, cancer_slug: Optional[str] = None) -> Dict[str, Any]:
+        evidence = PublicEvidence(self.db)
         cancers_query = self.db.query(Cancer)
         if cancer_slug:
             cancers_query = cancers_query.filter(Cancer.slug == cancer_slug.strip().lower())
-
         cancers = cancers_query.all()
-
-        total_sources = self.db.query(func.count(Source.id)).filter(Source.active == True).scalar() or 0
-        total_documents = self.db.query(func.count(SourceDocument.id)).scalar() or 0
-
-        # Trust tiers breakdown
-        tier_counts = (
-            self.db.query(Source.trust_tier, func.count(Source.id))
-            .filter(Source.active == True)
-            .group_by(Source.trust_tier)
-            .all()
-        )
-        sources_by_tier = {tier: count for tier, count in tier_counts}
-
-        # Global countries represented
-        countries = [
-            r[0] for r in self.db.query(ContentRecord.country_code).filter(ContentRecord.active == True).distinct().all()
-        ]
-
-        # Available categories
-        categories = [
-            r[0] for r in self.db.query(ContentRecord.category).filter(ContentRecord.active == True).distinct().all()
-        ]
-
-        cancers_coverage_list = []
-        total_content_records = 0
-
+        records = self.db.query(ContentRecord).filter(
+            ContentRecord.canonical_cancer_id.in_([c.id for c in cancers]),
+            evidence.records(),
+        ).all()
+        sources = {link.source_id: link.source for rec in records for link in rec.sources}
+        documents = {link.source_document_id for rec in records for link in rec.sources}
+        tiers = {}
+        for source in sources.values():
+            tiers[source.trust_tier] = tiers.get(source.trust_tier, 0) + 1
+        coverage = []
         for cancer in cancers:
-            records = (
-                self.db.query(ContentRecord)
-                .filter(ContentRecord.canonical_cancer_id == cancer.id, ContentRecord.active == True)
-                .all()
-            )
-            total_content_records += len(records)
-
-            cancer_categories = list(set(r.category for r in records))
-            cancer_countries = list(set(r.country_code for r in records))
-
-            # Supporting sources for this cancer
-            source_names = [
-                s.source_name for s in (
-                    self.db.query(Source)
-                    .join(ContentSource, ContentSource.source_id == Source.id)
-                    .join(ContentRecord, ContentRecord.id == ContentSource.content_record_id)
-                    .filter(ContentRecord.canonical_cancer_id == cancer.id)
-                    .distinct()
-                    .all()
-                )
-            ]
-
-            last_verified = (
-                self.db.query(func.max(ContentSource.last_verified_at))
-                .join(ContentRecord, ContentRecord.id == ContentSource.content_record_id)
-                .filter(ContentRecord.canonical_cancer_id == cancer.id)
-                .scalar()
-            )
-
-            cancers_coverage_list.append({
+            visible = [rec for rec in records if rec.canonical_cancer_id == cancer.id]
+            links = [link for rec in visible for link in rec.sources]
+            verified = max((link.last_verified_at for link in links
+                            if link.last_verified_at is not None), default=None)
+            coverage.append({
                 "slug": cancer.slug,
                 "canonical_name": cancer.canonical_name,
-                "total_records": len(records),
-                "categories_covered": cancer_categories,
-                "countries": cancer_countries,
-                "supporting_sources": source_names,
-                "last_verified_at": last_verified.isoformat() + "Z" if last_verified else None,
+                "total_records": len(visible),
+                "categories_covered": sorted({rec.category for rec in visible}),
+                "countries": sorted({rec.country_code for rec in visible if rec.country_code}),
+                "supporting_sources": sorted({link.source.source_name for link in links}),
+                "last_verified_at": verified.isoformat() + "Z" if verified else None,
             })
-
         return {
             "total_cancers": len(cancers),
-            "total_sources": total_sources,
-            "total_content_records": total_content_records,
-            "total_source_documents": total_documents,
-            "countries_represented": countries,
-            "categories_available": categories,
-            "sources_by_trust_tier": sources_by_tier,
-            "cancers": cancers_coverage_list,
+            "total_sources": len(sources),
+            "total_content_records": len(records),
+            "total_source_documents": len(documents),
+            "countries_represented": sorted({rec.country_code for rec in records if rec.country_code}),
+            "categories_available": sorted({rec.category for rec in records}),
+            "sources_by_trust_tier": tiers,
+            "cancers": coverage,
         }

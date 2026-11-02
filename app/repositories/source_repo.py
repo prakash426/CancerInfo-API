@@ -4,6 +4,7 @@ Source Registry Repository
 from typing import List, Optional, Tuple
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from app.repositories.publication import PublicEvidence
 from app.models import ContentRecord, ContentSource, Source, SourceDocument, SourceHealth
 
 
@@ -38,10 +39,12 @@ class SourceRepository:
         return self.db.query(Source).filter(Source.id == source_id).first()
 
     def get_source_metrics(self, source_id: str) -> dict:
-        doc_count = self.db.query(func.count(SourceDocument.id)).filter(SourceDocument.source_id == source_id).scalar() or 0
+        evidence = PublicEvidence(self.db)
+        doc_count = self.db.query(func.count(SourceDocument.id)).filter(SourceDocument.source_id == source_id, SourceDocument.id.in_(evidence.documents)).scalar() or 0
         record_count = (
-            self.db.query(func.count(ContentSource.id))
-            .filter(ContentSource.source_id == source_id)
+            self.db.query(func.count(func.distinct(ContentRecord.id)))
+            .join(ContentSource, ContentSource.content_record_id == ContentRecord.id)
+            .filter(ContentSource.source_id == source_id, evidence.records())
             .scalar() or 0
         )
         health = (

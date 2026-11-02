@@ -4,6 +4,7 @@ Cancer Repository
 from typing import List, Optional, Tuple
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, joinedload
+from app.repositories.publication import PublicEvidence
 from app.models import Cancer, CancerAlias, ContentRecord
 
 
@@ -65,6 +66,7 @@ class CancerRepository:
         Returns list of categories that have active content records for this cancer,
         along with record counts and countries represented.
         """
+        evidence = PublicEvidence(self.db)
         results = (
             self.db.query(
                 ContentRecord.category,
@@ -72,7 +74,7 @@ class CancerRepository:
             )
             .filter(
                 ContentRecord.canonical_cancer_id == cancer_id,
-                ContentRecord.active == True
+                evidence.records()
             )
             .group_by(ContentRecord.category)
             .all()
@@ -85,7 +87,7 @@ class CancerRepository:
                 .filter(
                     ContentRecord.canonical_cancer_id == cancer_id,
                     ContentRecord.category == cat,
-                    ContentRecord.active == True
+                    evidence.records()
                 )
                 .distinct().all()
             ]

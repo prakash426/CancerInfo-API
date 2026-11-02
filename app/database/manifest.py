@@ -1,7 +1,7 @@
 """
 Current-Model Manifest Module (CIAPI-L003)
 
-Captures and compares exact ordered manifests for all 11 current-model tables:
+Captures and compares exact ordered manifests for all current-model tables:
 - sources
 - source_health
 - cancers
@@ -13,6 +13,7 @@ Captures and compares exact ordered manifests for all 11 current-model tables:
 - ingestion_jobs
 - consensus_facts
 - consensus_fact_sources
+- who_fact_provenance
 
 Includes primary keys, foreign-key values, aliases, citation fields,
 content hashes, version numbers, created/updated timestamps, consensus
@@ -25,19 +26,7 @@ from typing import Any, Dict, List
 from sqlalchemy import inspect, text
 from sqlalchemy.engine import Engine
 
-CURRENT_MODEL_TABLES = [
-    "sources",
-    "source_health",
-    "cancers",
-    "cancer_aliases",
-    "source_documents",
-    "content_records",
-    "content_sources",
-    "content_versions",
-    "ingestion_jobs",
-    "consensus_facts",
-    "consensus_fact_sources",
-]
+from app.database.model_tables import CURRENT_MODEL_TABLES
 
 
 def _serialize_value(val: Any) -> Any:
@@ -126,7 +115,7 @@ def compare_current_model_manifests(
 
 def verify_foreign_key_integrity(engine: Engine) -> Dict[str, Any]:
     """
-    Verifies foreign-key integrity across all 11 current-model tables.
+    Verifies foreign-key integrity across all current-model tables.
     Asserts that zero orphaned foreign-key references exist in the database.
     """
     inspector = inspect(engine)

@@ -321,6 +321,10 @@ def test_rights_inventory_includes_consensus_citations_and_quotes(test_db_sessio
 
 def test_consumer_provenance_schema_mapping(test_db_session):
     """Requirement 16: Document-level attribution and rights metadata maps into API responses."""
+    from publication_support import approve_test_document
+    for doc in test_db_session.query(SourceDocument):
+        approve_test_document(doc)
+    test_db_session.flush()
     app.dependency_overrides[get_db] = lambda: test_db_session
     try:
         client = TestClient(app)

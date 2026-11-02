@@ -15,9 +15,11 @@ from datetime import datetime
 from app.core.constants import PublicationStatus, ThirdPartyPermissionStatus
 from app.ingestion.refresh import refresh_document
 from app.ingestion.who_validate import load_package
-from app.models import (Cancer, ContentRecord, ContentSource, Source,
+from app.models import (Cancer, ContentRecord, ContentSource, ContentVersion,
+                        ConsensusFact, ConsensusFactSource, Source,
                         SourceDocument, WhoFactProvenance)
 from app.sources.base import NormalizedDocument, NormalizedSection
+from app.normalization.hash import compute_content_hash
 
 SOURCE_ID = "who-global"
 AUDIENCE = "general_public"
@@ -241,6 +243,37 @@ def _stamp_rights(doc, sheet, approved, third_party):
         doc.quarantine_reason = note or "No recorded approval for content."
 
 
+def _withdraw_document(db, doc, reason):
+    """Retire linked evidence without deleting citations or immutable history.
+
+    A shared record or consensus fact cannot safely separate withdrawn source
+    text from other contributors, so the whole affected item is withheld.
+    Other records from those contributors remain untouched. Caller commits.
+    """
+    retired = 0
+    records = db.query(ContentRecord).filter(ContentRecord.sources.any(
+        ContentSource.source_document_id == doc.id
+    )).all()
+    for record in records:
+        if not record.active:
+            continue
+        record.active = False
+        record.version_number += 1
+        db.add(ContentVersion(
+            content_record_id=record.id, version_number=record.version_number,
+            content=record.content, content_hash=compute_content_hash(record.content),
+            change_type="RIGHTS_WITHDRAWN",
+            change_reason=json.dumps({"document_id": doc.id, "reason": reason}),
+        ))
+        retired += 1
+    facts = db.query(ConsensusFact).filter(ConsensusFact.corroborating_sources.any(
+        ConsensusFactSource.source_document_id == doc.id
+    )).all()
+    for fact in facts:
+        fact.active = False
+    return retired
+
+
 def run_import(db, pkg, decisions, parser_version="who-handoff-v1"):
     """Execute the load inside the caller transaction. Returns a manifest."""
     documents, provenance, metadata_pairs, skipped, warnings = \
@@ -292,6 +325,22 @@ def run_import(db, pkg, decisions, parser_version="who-handoff-v1"):
                 for field, value in payload.items():
                     setattr(existing, field, value)
 
+    # Explicit rejection (including loss of qualifying relevance) also revokes
+    # previously loaded content. A skipped new URL creates no document.
+    for cid, url, reason in skipped:
+        cancer = db.query(Cancer).filter(Cancer.slug == cancers[cid][0]).one()
+        doc = db.query(SourceDocument).filter_by(
+            source_id=source.id, original_url=url, canonical_cancer_id=cancer.id,
+        ).one_or_none()
+        if doc is not None:
+            _stamp_rights(doc, decisions.get(url, {}), False,
+                          page_by_pair[(cid, url)]["third_party_content_flag"] == "TRUE")
+            doc.publication_status = PublicationStatus.QUARANTINED.value
+            doc.processing_status = "REJECTED"
+            doc.derived_summary_allowed = False
+            doc.quarantine_reason = reason
+            manifest["retired"] += _withdraw_document(db, doc, reason)
+
     seen_meta = set()
     for cid, url in metadata_pairs:
         if (cid, url) in seen_meta:
@@ -318,9 +367,12 @@ def run_import(db, pkg, decisions, parser_version="who-handoff-v1"):
             db.add(doc)
             db.flush()
             manifest["metadata_docs"] += 1
+        doc.processing_status = "METADATA_ONLY"
         sheet = decisions.get(url, {})
         _stamp_rights(doc, sheet, False,
                       page["third_party_content_flag"] == "TRUE")
         if doc.publication_status == PublicationStatus.REVIEW_REQUIRED.value:
             doc.publication_status = PublicationStatus.QUARANTINED.value
+        manifest["retired"] += _withdraw_document(db, doc, doc.quarantine_reason)
+    db.flush()
     return manifest

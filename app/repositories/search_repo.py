@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, joinedload
 from app.core.constants import CANONICAL_CATEGORIES, CATEGORY_ALIASES
+from app.repositories.publication import PublicEvidence
 from app.models import (
     Cancer,
     CancerAlias,
@@ -30,6 +31,7 @@ class SearchRepository:
         limit: Optional[int] = 20,
         skip: int = 0,
     ) -> List[Dict[str, Any]]:
+        evidence = PublicEvidence(self.db)
         query_clean = query_str.strip()
         tokens = [t.lower() for t in query_clean.split() if t]
         results: List[Dict[str, Any]] = []
@@ -104,7 +106,7 @@ class SearchRepository:
                 joinedload(ConsensusFact.cancer).joinedload(Cancer.aliases),
                 joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source),
             )
-            .filter(ConsensusFact.active == True)
+            .filter(evidence.consensus())
         )
 
         if detected_category:
@@ -175,7 +177,7 @@ class SearchRepository:
                 joinedload(ContentRecord.cancer),
                 joinedload(ContentRecord.sources).joinedload(ContentSource.source),
             )
-            .filter(ContentRecord.active == True)
+            .filter(evidence.records())
         )
 
         if detected_category:

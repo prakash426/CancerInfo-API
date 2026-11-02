@@ -11,7 +11,7 @@ Tests:
 7. Production configuration rejects SQLite and empty URL, and redacts connection URLs from exceptions.
 8. Production startup fails fast if database is unmigrated.
 9. Admin /seed endpoint is disabled (HTTP 403) in production.
-10. Pre-Alembic schema adoption verifies schema parity across all 11 tables before stamping.
+10. Pre-Alembic schema adoption verifies schema parity across all managed tables before stamping.
 11. Controlled migration failure proves process failure, API startup failure, data safety, and recovery.
 12. Automated model-to-migration drift check ensures zero discrepancy between models and migrations.
 """
@@ -90,7 +90,7 @@ def alembic_cfg(test_db_url):
 
 
 def test_empty_database_upgrades_to_head_and_creates_all_tables(test_db_url, alembic_cfg):
-    """Test 1 & 2: Empty database upgrades to Alembic head and creates all 11 current-model tables."""
+    """Test 1 & 2: Empty database upgrades to Alembic head and creates all current-model tables."""
     engine = create_engine(test_db_url)
 
     # 1. Run migration
@@ -401,7 +401,7 @@ def test_pre_alembic_schema_adoption_with_parity_verification(test_db_url, alemb
     # 4. Run dry-run adoption check
     dry_run_report = adopt_existing_schema(engine, dry_run=True)
     assert dry_run_report["status"] == "PARITY_VERIFIED_DRY_RUN"
-    assert dry_run_report["tables_verified"] == 11
+    assert dry_run_report["tables_verified"] == len(CURRENT_MODEL_TABLES)
     # Confirm still unstamped
     assert get_current_revision(engine) is None
 
@@ -502,6 +502,9 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
     command.upgrade(alembic_cfg, "head")
     execute_bootstrap(engine)
     with sessionmaker(bind=engine)() as session:
+        from app.models import WhoFactProvenance, ContentRecord
+        session.add(WhoFactProvenance(content_record_id=session.query(ContentRecord.id).first()[0],
+                                      heading_path="Synthetic preserved WHO locator", units="cases"))
         session.add(IngestionJob(id="l003-preserved-job", source_id="nci-us",
                                  status="SUCCESS", records_created=1))
         session.commit()
@@ -570,7 +573,7 @@ def test_migration_failure_and_recovery(test_db_url, alembic_cfg, tmp_path):
 
     def verify_restored(restored):
         assert verify_database_schema_at_head(restored) == "0003_who_provenance"
-        assert verify_schema_parity(restored)["tables_verified"] == 11
+        assert verify_schema_parity(restored)["tables_verified"] == len(CURRENT_MODEL_TABLES)
         compare_current_model_manifests(baseline, capture_current_model_manifest(restored))
         compare_legacy_audits(legacy_before, audit_legacy_cancer_content(restored))
         assert verify_foreign_key_integrity(restored)["violations"] == 0

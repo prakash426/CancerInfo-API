@@ -224,7 +224,8 @@ def get_cancer_content_versions(
             version_number=v.version_number,
             content=v.content,
             change_type=v.change_type,
-            change_reason=v.change_reason,
+            # Internal audit snapshots may contain earlier, withdrawn quotes.
+            change_reason="Reviewed content version.",
             content_hash=v.content_hash,
             created_at=v.created_at.isoformat() + "Z",
         )

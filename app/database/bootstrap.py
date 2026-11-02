@@ -38,19 +38,7 @@ from app.models import (
 
 DATASET_VERSION = "1.0.0"
 
-CURRENT_MODEL_TABLES = [
-    "sources",
-    "source_health",
-    "cancers",
-    "cancer_aliases",
-    "source_documents",
-    "content_records",
-    "content_sources",
-    "content_versions",
-    "ingestion_jobs",
-    "consensus_facts",
-    "consensus_fact_sources",
-]
+from app.database.model_tables import CURRENT_MODEL_TABLES
 
 
 def get_application_commit() -> str:

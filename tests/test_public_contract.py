@@ -5,6 +5,7 @@ import pytest
 from app.models import Cancer, CancerAlias, ContentRecord, ContentSource, ConsensusFact, ConsensusFactSource
 from app.main import app
 from app.core.errors import generic_exception_handler
+from publication_support import add_public_document, approve_test_document
 
 
 @pytest.fixture(params=["sqlite"] + (["postgresql"] if os.environ.get("POSTGRES_TEST_URL") else []))
@@ -54,8 +55,12 @@ def contract_data(db_session):
         db.add(record)
         db.flush()
         # Two citations from the same source prove joins cannot duplicate totals.
-        db.add_all([ContentSource(content_record_id=record.id, source_id="nci-us",
-                                  source_url=f"https://example.invalid/{record_id}/{i}") for i in range(2)])
+        for i in range(2):
+            url = f"https://example.invalid/{record_id}/{i}"
+            doc = add_public_document(db, "nci-us", url)
+            db.add(ContentSource(content_record_id=record.id, source_id="nci-us",
+                                 source_url=url, source_document=doc))
+
     for i in range(4):
         fact = ConsensusFact(id=f"contract-fact-{i}", cancer_id=cancer.id, category="symptoms",
                              fact_key=f"contract-fact-{i}", title="contractneedle synthetic fact",
@@ -63,12 +68,14 @@ def contract_data(db_session):
         db.add(fact)
         db.flush()
         # GLOBAL deliberately inserted first to verify country ordering.
-        db.add_all([
-            ConsensusFactSource(consensus_fact_id=fact.id, source_id="who-global",
-                                country_code="GLOBAL", source_url="https://example.invalid/global"),
-            ConsensusFactSource(consensus_fact_id=fact.id, source_id="nci-us",
-                                country_code="US", source_url="https://example.invalid/us"),
-        ])
+        for source_id, country, suffix in [("who-global", "GLOBAL", "global"),
+                                           ("nci-us", "US", "us")]:
+            url = f"https://example.invalid/{suffix}/{i}"
+            doc = add_public_document(db, source_id, url, country)
+            db.add(ConsensusFactSource(consensus_fact_id=fact.id, source_id=source_id,
+                                       country_code=country, source_url=url,
+                                       source_document=doc))
+
     db.flush()
     yield
     db.rollback()
@@ -160,23 +167,15 @@ def test_search_filters_and_consensus_country_policy(client, contract_data):
 
 
 def test_filtered_search_retains_document_rights(client, contract_data, db_session):
-    from app.models import SourceDocument
-
-    doc = SourceDocument(
-        id="contract-document", source_id="nci-us",
-        original_url="https://example.invalid/us", title="Synthetic rights fixture",
-        country_code="US", content_hash="0" * 64,
-        publication_status="REVIEW_REQUIRED", attribution_text="Document attribution",
-        reuse_restrictions="Synthetic restriction", commercial_redistribution_allowed=False,
-        rights_evidence_url="https://example.invalid/rights",
-    )
-    db_session.add(doc)
-    db_session.flush()
     for model in (ConsensusFactSource, ContentSource):
         links = db_session.query(model).filter(model.source_id == "nci-us").all()
         for link in links:
             if link.source_url.startswith("https://example.invalid/"):
-                link.source_document = doc
+                doc = link.source_document
+                doc.title = "Synthetic rights fixture"
+                doc.attribution_text = "Document attribution"
+                doc.reuse_restrictions = "Synthetic restriction"
+                doc.rights_evidence_url = "https://example.invalid/rights"
                 link.attribution_text = "Link fallback attribution"
     db_session.flush()
 
@@ -190,12 +189,12 @@ def test_filtered_search_retains_document_rights(client, contract_data, db_sessi
         assert citations
         for citation in citations:
             assert citation["source_id"] == "nci-us"
-            assert citation["document_title"] == doc.title
-            assert citation["attribution_text"] == doc.attribution_text
-            assert citation["publication_status"] == "REVIEW_REQUIRED"
-            assert citation["reuse_conditions"] == doc.reuse_restrictions
-            assert citation["commercial_redistribution_allowed"] is False
-            assert citation["rights_evidence_url"] == doc.rights_evidence_url
+            assert citation["document_title"] == "Synthetic rights fixture"
+            assert citation["attribution_text"] == "Document attribution"
+            assert citation["publication_status"] == "ELIGIBLE"
+            assert citation["reuse_conditions"] == "Synthetic restriction"
+            assert citation["commercial_redistribution_allowed"] is True
+            assert citation["rights_evidence_url"] == "https://example.invalid/rights"
 
 
 @pytest.mark.parametrize("url", ["/v1/search?q=x&page=0", "/v1/search?q=x&limit=0",
