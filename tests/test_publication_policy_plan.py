@@ -52,3 +52,60 @@ def test_plan_refuses_unreviewed_changes(plan_db, damage):
     if damage == 'manifest': plan['expected_public_records'] = ['not-reviewed']
     with pytest.raises(ValueError): apply_plan(db, plan)
     db.rollback()
+
+
+def test_submitted_is_valid_but_not_a_third_party_grant(plan_db):
+    from app.core.rights_validation import evaluate_publication_eligibility
+    db, doc_id, original = plan_db
+    plan = copy.deepcopy(original)
+    plan['documents'][0]['before'] = {'third_party_permission_status': db.get(SourceDocument, doc_id).third_party_permission_status}
+    plan['documents'][0]['updates'] = {'third_party_permission_status': 'SUBMITTED'}
+    plan['expected_noncommercial_public_records'] = []
+    apply_plan(db, plan)
+    doc = db.get(SourceDocument, doc_id)
+    assert doc.third_party_permission_status == 'SUBMITTED'
+    allowed, reasons = evaluate_publication_eligibility(doc, content_type='STRUCTURED_EXTRACTION', publication_use='NONCOMMERCIAL')
+    assert not allowed
+    assert any('SUBMITTED' in reason and 'only NOT_APPLICABLE or GRANTED' in reason for reason in reasons)
+    db.rollback()
+
+
+def test_noncommercial_manifest_is_verified_separately_and_scope_restored(plan_db):
+    from app.core.publication_access import publication_use
+    db, doc_id, plan = plan_db
+    plan['expected_noncommercial_public_records'] = ['unexpected']
+    token = publication_use.set('NONCOMMERCIAL')
+    try:
+        with pytest.raises(ValueError, match='NONCOMMERCIAL public record manifest'):
+            apply_plan(db, plan)
+        assert publication_use.get() == 'NONCOMMERCIAL'
+    finally:
+        publication_use.reset(token)
+        db.rollback()
+
+
+def test_invalid_third_party_status_is_rejected(plan_db):
+    db, doc_id, plan = plan_db
+    plan['documents'][0]['before'] = {'third_party_permission_status': db.get(SourceDocument, doc_id).third_party_permission_status}
+    plan['documents'][0]['updates'] = {'third_party_permission_status': 'TYPO'}
+    with pytest.raises(ValueError):
+        apply_plan(db, plan)
+    db.rollback()
+
+
+def test_third_party_text_only_determination_is_exact_and_reversible(plan_db):
+    db, doc_id, original = plan_db
+    doc=db.get(SourceDocument,doc_id)
+    doc.third_party_permission_status='SUBMITTED'
+    doc.third_party_permission_notes='Previous pending note'
+    db.commit()
+    plan=copy.deepcopy(original)
+    plan['documents'][0]['before']={'third_party_permission_status':'SUBMITTED','third_party_permission_notes':'Previous pending note'}
+    plan['documents'][0]['updates']={'third_party_permission_status':'NOT_APPLICABLE','third_party_permission_notes':'Owner confirmed that only WHO-owned text is used and third-party components are excluded.'}
+    plan['expected_noncommercial_public_records']=[]
+    assert apply_plan(db,plan)['changed_fields']==2
+    assert doc.third_party_permission_status=='NOT_APPLICABLE'
+    db.rollback()
+    assert doc.third_party_permission_status=='SUBMITTED'
+    apply_plan(db,plan);db.commit()
+    assert apply_plan(db,plan)['changed_fields']==0
