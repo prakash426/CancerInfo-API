@@ -91,3 +91,21 @@ def test_invalid_third_party_status_is_rejected(plan_db):
     with pytest.raises(ValueError):
         apply_plan(db, plan)
     db.rollback()
+
+
+def test_third_party_text_only_determination_is_exact_and_reversible(plan_db):
+    db, doc_id, original = plan_db
+    doc=db.get(SourceDocument,doc_id)
+    doc.third_party_permission_status='SUBMITTED'
+    doc.third_party_permission_notes='Previous pending note'
+    db.commit()
+    plan=copy.deepcopy(original)
+    plan['documents'][0]['before']={'third_party_permission_status':'SUBMITTED','third_party_permission_notes':'Previous pending note'}
+    plan['documents'][0]['updates']={'third_party_permission_status':'NOT_APPLICABLE','third_party_permission_notes':'Owner confirmed that only WHO-owned text is used and third-party components are excluded.'}
+    plan['expected_noncommercial_public_records']=[]
+    assert apply_plan(db,plan)['changed_fields']==2
+    assert doc.third_party_permission_status=='NOT_APPLICABLE'
+    db.rollback()
+    assert doc.third_party_permission_status=='SUBMITTED'
+    apply_plan(db,plan);db.commit()
+    assert apply_plan(db,plan)['changed_fields']==0

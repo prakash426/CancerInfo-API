@@ -125,3 +125,16 @@ def test_plan_records_exact_requested_values():
         assert u['approved_publication_content_types']==['STRUCTURED_EXTRACTION']
         assert u['permissible_use']=='Confirmed, Non-commercial research and educational use only under CC BY-NC-SA 3.0 IGO;'
         assert 'attribution_text' not in u and 'rights_evidence_url' not in u
+
+
+def test_followup_clears_exact_sixteen_pending_reviews_only():
+    original=json.loads(Path('policies/who-noncommercial-20261103.json').read_text())
+    followup=json.loads(Path('policies/who-text-only-20261103.json').read_text())
+    expected={d['id'] for d in original['documents'] if d['updates'].get('third_party_permission_status')=='SUBMITTED'}
+    assert len(followup['documents'])==16
+    assert {d['id'] for d in followup['documents']}==expected
+    assert followup['expected_public_records']==original['expected_public_records']
+    assert len(followup['expected_noncommercial_public_records'])==324
+    for d in followup['documents']:
+        assert d['before']['third_party_permission_status']=='SUBMITTED'
+        assert d['updates']=={'third_party_permission_status':'NOT_APPLICABLE','third_party_permission_notes':'Owner confirmed that only WHO-owned text is used and third-party components are excluded.'}

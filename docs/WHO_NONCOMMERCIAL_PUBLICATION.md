@@ -1,41 +1,36 @@
 # Owner-directed WHO noncommercial publication metadata
 
-The owner reviewed all 48 WHO document entries and instructed the exact values in `policies/who-noncommercial-20261103.json` on November 3, 2026. This plan records that decision; it does not claim a new WHO permission or a third-party grant.
+The owner reviewed all 48 WHO document entries and instructed the exact noncommercial values on November 3, 2026. A follow-up instruction confirmed that only WHO-owned text is used and third-party components are excluded for the 16 previously pending component reviews. The plans record those owner decisions; they do not claim a new WHO permission or a third-party grant.
 
-For all 48 documents, the plan sets ELIGIBLE, redistribution and noncommercial redistribution true, commercial redistribution false, and the approved content-type array to STRUCTURED_EXTRACTION. It records the owner's exact permissible-use statement. Existing attribution flags/text and evidence URLs stay unchanged. The 16 REQUIRED_NOT_SUBMITTED values become SUBMITTED as requested. Other fields and all content remain unchanged.
+## Current applied state
 
-## Access outcome
+All 48 WHO documents are ELIGIBLE, with redistribution and noncommercial redistribution true, commercial redistribution false, and STRUCTURED_EXTRACTION in their approved content-type array. All 48 third-party statuses are now NOT_APPLICABLE. The specified 16 have the note: Owner confirmed that only WHO-owned text is used and third-party components are excluded.
 
-SUBMITTED is a recognized pending state, not GRANTED. The public gate continues to accept only NOT_APPLICABLE or GRANTED third-party decisions. On the reviewed corpus, 32 WHO documents pass the noncommercial document gate; 16 SUBMITTED documents remain withheld. There are 24 active WHO records eligible for approved noncommercial delivery, and 36 active WHO records still withheld. The three inactive historical WHO records remain inactive.
+All 60 active WHO records pass the existing noncommercial publication gate. The three inactive historical WHO records remain inactive. The exact commercial/default manifest remains 264 records and contains no WHO content. The approved noncommercial manifest is 324 records, including 60 WHO records. A reviewed key configured through NONCOMMERCIAL_API_KEY_SHA256 is required for noncommercial access. No key is issued or approved by these plans; the admin key grants no publication access.
 
-The exact commercial/default manifest remains 264 records and contains no WHO records. The approved noncommercial manifest is 288 records, including 24 WHO records. These are access-specific counts, not a promise that anonymous callers can retrieve the noncommercial material. No developer key is created or approved by this plan. A key already reviewed and configured through NONCOMMERCIAL_API_KEY_SHA256 is required for noncommercial access. The admin key does not provide that access.
+Attribution flags/text, evidence URLs, permissible-use text, storage/derivative decisions and all other non-requested fields remain unchanged by the follow-up. The existing evidence URL and Creative Commons attribution wording are retained on the owner's explicit instruction. No third-party permission request is sent and no third-party receipt is fabricated. Earlier review CSVs remain unchanged historical artifacts; separate private applied-values CSVs record each resulting state.
 
-The existing evidence URL and Creative Commons attribution wording are retained on the owner's explicit instruction. They are not independently expanded or reinterpreted by this implementation. No third-party permission request is sent and no third-party receipt is fabricated. The earlier WHO review CSV remains an unchanged pre-update review artifact.
+## Exact plans and sequence
 
-## Exact update tool
+1. `policies/who-noncommercial-20261103.json` records the original 48-document update. It initially moved 16 REQUIRED_NOT_SUBMITTED states to SUBMITTED, with 24 WHO records eligible for noncommercial delivery.
+2. `policies/who-text-only-20261103.json` records the follow-up: exactly those 16 SUBMITTED states become NOT_APPLICABLE and receive the owner-confirmed exclusion note. This changes 32 field values and enables the remaining 36 active WHO records for approved noncommercial delivery.
 
-The policy tool checks document ID, source, exact URL, source hash and every changed field's expected prior value. It checks separate commercial and noncommercial record manifests and restores the caller's original use context. A mismatch aborts the operation. The CLI is dry-run by default and commits only on explicit application. Replay is a no-op. The new SUBMITTED enum does not weaken the publication gate; the previously deployed code also withholds that state.
+The plans check document ID, source, exact URL, source hash and expected prior values. Separate commercial and noncommercial manifests are verified. The CLI is dry-run by default and commits only on explicit application. The follow-up is repeat-safe. Replaying the older plan after the follow-up intentionally refuses to restore the superseded SUBMITTED decisions.
 
-## Local synchronization
+SUBMITTED remains a valid pending state in the enum and is still withheld by the unchanged public gate. Only NOT_APPLICABLE or GRANTED passes the third-party check. The notes field is now supported by the exact policy-plan tool. No publication predicate was weakened.
 
-`scripts/sync_local_from_live.py` explicitly selects an existing local SQLite file and a new backup path. It reads PostgreSQL through a read-only, repeatable-read snapshot. The source is never written by synchronization.
+## Preserving local synchronization
 
-It backs up the local database, prepares a working copy, upgrades that copy through Alembic head, imports or updates each source row by primary key and checks every source value across supported types. It does not delete local-only rows or tables. The known recovered SQLite NOT NULL country constraint is reconciled to the current nullable model only in the working copy. Unknown incompatible schemas fail without replacing the original file.
+`scripts/sync_local_from_live.py` explicitly selects an existing local SQLite file and a new backup path. It reads PostgreSQL through a read-only, repeatable-read snapshot, backs up the local file and prepares a migrated working copy. It imports or updates source rows by primary key and verifies every source value, schema and foreign key. Local-only rows/tables are retained.
 
-The prepared copy must pass schema parity and foreign-key checks. Before replacing destination pages, the tool holds an exclusive SQLite lock and compares the local database with its initial digest. Intervening local edits cause refusal. SQLite's backup API updates the existing database inode; original recovery backups remain separate and private. The tool is a deliberate local operation, never an automatic startup task.
+The known recovered SQLite NOT NULL country constraint is reconciled to the current nullable model only in the working copy. Unknown incompatible schemas fail without replacing the original. Before replacing destination pages, an exclusive SQLite lock and initial-digest comparison prevent overwriting intervening local edits. SQLite's backup API updates the existing database inode; original recovery backups remain private.
 
-The main local `cancerinfo.db` is the requested sync target. Staging databases and research files are not modified. Local schema head includes migration 0006 and its empty operational rate-limit table. Live remains at 0005 until a separately authorized application release. All live corpus and legacy rows are compared, regardless of that operational schema difference.
+The main local `cancerinfo.db` is synchronized with live, including the newer noncommercial and content-type columns and the follow-up notes. Staging databases and research files remain untouched. Local schema head includes 0006 and its empty operational rate-limit table. Live remains at 0005 until a separately authorized application release. No production schema migration is performed by either metadata plan.
 
-## Release boundary
+## Validation and preservation
 
-Live metadata application and local synchronization are explicitly authorized in this task. Code is proposed into launch_blockers for review. Do not merge into main or deploy. No content is re-ingested, reseeded, deleted or reactivated; no consent, commercial access, or caller approval is inferred.
+The follow-up passed 398 full SQLite/PostgreSQL tests with one existing Starlette/httpx warning, plus container packaging, ports, migrations, bootstrap/repeat refusal, API endpoints and persistence. A restored-production HTTP rehearsal verified 264 anonymous/commercial records, 324 approved-noncommercial records, withholding from anonymous WHO requests and retrieval of newly eligible WHO records with a temporary approved test key. The test key is not issued or configured in production.
 
-## Applied and verified, November 3, 2026
+The exact live follow-up and replay were verified. All 365 records, 365 citations, 365 versions, 60 WHO provenance rows and 5,628 legacy rows are unchanged. Only the requested 16 statuses and 16 notes changed. Every other live value matched the baseline. Main-local synchronization passed source-value comparisons; 81 other local database/research files matched their previous fingerprints.
 
-The exact live plan committed 256 changed field values across the 48 WHO documents. All content, citations, versions, WHO provenance, legacy data and other document fields remained exact. Attribution and evidence URLs were not changed. Replay reported zero changes.
-
-The main local database now contains all 365 live records, 365 citations, 365 versions, 60 WHO provenance rows, 5,628 legacy rows, 83 documents and 25 cancers, with the new noncommercial and content-type columns. Source values were compared field by field. No local-only rows required deletion. Original local backups remain private; 81 other local database/research artifacts matched their previous fingerprints.
-
-Validation: 396 local SQLite/PostgreSQL tests passed with one existing Starlette/httpx warning. The container suite passed packaging, ports, migrations, bootstrap/repeat refusal, API endpoints and persistence. The restored-production API rehearsal confirmed 264 anonymous/commercial records, 288 approved-noncommercial records, unapproved-key denial and withholding of SUBMITTED documents. Live anonymous coverage stayed at 264 and WHO source-filtered search stayed empty. No noncommercial developer key was issued. Dependency and private-artifact guards passed.
-
-Private backups, full before/after preservation evidence and the applied 48-row CSV are retained outside Git under the project outputs directory. The PR and its exact-head CI results provide the code review boundary. No merge into main, application deployment or production schema migration was performed.
+Private production/local backups, before/after snapshots, applied 48-row CSVs and preservation evidence are retained outside Git. The PR's exact-head CI is the authoritative final remote result. Code remains proposed into launch_blockers through PR #21. Do not merge into main or deploy. No content is re-ingested, reseeded, deleted or reactivated, and commercial WHO access remains blocked.

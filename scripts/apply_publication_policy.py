@@ -17,7 +17,7 @@ from app.core.publication_access import publication_use
 FIELDS = {"publication_status", "redistribution_allowed", "commercial_redistribution_allowed",
           "noncommercial_redistribution_allowed", "approved_publication_content_types",
           "rights_reviewed_at", "rights_reviewer", "permissible_use", "attribution_text",
-          "reuse_restrictions", "canonical_url", "publication_record_reviews", "full_text_storage_allowed", "derived_summary_allowed", "third_party_permission_status"}
+          "reuse_restrictions", "canonical_url", "publication_record_reviews", "full_text_storage_allowed", "derived_summary_allowed", "third_party_permission_status", "third_party_permission_notes"}
 
 
 def apply_plan(db, plan):
