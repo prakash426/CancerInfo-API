@@ -21,6 +21,50 @@ class SearchRepository:
     def __init__(self, db: Session):
         self.db = db
 
+    def by_ids(self, ids: List[str]) -> List[Dict[str, Any]]:
+        """Resolve public records and consensus facts in caller order."""
+        evidence = PublicEvidence(self.db)
+        records = {
+            record.id: record for record in self.db.query(ContentRecord)
+            .options(
+                joinedload(ContentRecord.cancer).joinedload(Cancer.aliases),
+                joinedload(ContentRecord.sources).joinedload(ContentSource.source),
+                joinedload(ContentRecord.sources).joinedload(ContentSource.source_document),
+            )
+            .filter(ContentRecord.id.in_(ids), evidence.records()).all()
+        }
+        consensus = {
+            fact.id: fact for fact in self.db.query(ConsensusFact)
+            .options(
+                joinedload(ConsensusFact.cancer).joinedload(Cancer.aliases),
+                joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source),
+                joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source_document),
+            )
+            .filter(ConsensusFact.id.in_(ids), evidence.consensus()).all()
+        }
+        results = []
+        for identifier in dict.fromkeys(ids):
+            record = records.get(identifier)
+            if record is not None:
+                snippet = record.content
+                if record.content_type != "SOURCE_CONTENT" and len(snippet) > 280:
+                    snippet = snippet[:280].rsplit(" ", 1)[0] + "..."
+                results.append({
+                    "match_type": "content_record", "score": 1.5,
+                    "cancer": record.cancer, "category": record.category,
+                    "snippet": snippet, "consensus_item": None,
+                    "record": record, "matched_terms": [],
+                })
+            fact = consensus.get(identifier)
+            if fact is not None:
+                results.append({
+                    "match_type": "consensus_item", "score": 3.8,
+                    "cancer": fact.cancer, "category": fact.category,
+                    "snippet": f"{fact.title}: {fact.clinical_detail or ''}".strip(),
+                    "consensus_item": fact, "record": None, "matched_terms": [],
+                })
+        return results
+
     def search(
         self,
         query_str: str,

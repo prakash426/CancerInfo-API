@@ -55,156 +55,7 @@ def search(
     total = len(raw_results)
     raw_results = raw_results[(page - 1) * limit:page * limit]
 
-    items = []
-    for r in raw_results:
-        cancer_obj = r["cancer"]
-        cancer_out = CancerSummaryOut(
-            id=cancer_obj.id,
-            slug=cancer_obj.slug,
-            canonical_name=cancer_obj.canonical_name,
-            anatomical_site=cancer_obj.anatomical_site,
-            aliases=[a.alias for a in cancer_obj.aliases],
-        )
-
-        consensus_item_out = None
-        if r.get("consensus_item"):
-            cf = r["consensus_item"]
-
-            # L010: Filter and prioritize citations
-            links = [
-                cs for cs in cf.corroborating_sources
-                if not source or cs.source_id == source
-            ]
-
-            preferred = [
-                cs for cs in links
-                if (cs.country_code or cs.source.country_code)
-                in (country, "GLOBAL")
-            ]
-
-            if country and preferred:
-                links = preferred
-
-            links = sorted(
-                links,
-                key=lambda cs: (
-                    (cs.country_code or cs.source.country_code) != country,
-                    cs.source_id,
-                    cs.source_url,
-                ),
-            )
-
-            # L004: Preserve source-document rights and attribution
-            corrob_sources = []
-
-            for cs in links:
-                s_doc = getattr(cs, "source_document", None)
-
-                corrob_sources.append(
-                    CorroboratingSourceOut(
-                        source_id=cs.source.id,
-                        organization=cs.source.organization_name,
-                        authority_type=cs.source.authority_type,
-                        trust_tier=cs.source.trust_tier,
-                        country_code=cs.country_code or cs.source.country_code,
-                        url=cs.source_url,
-                        quote=cs.quote_snippet,
-                        attribution_text=(
-                            s_doc.attribution_text
-                            if s_doc and s_doc.attribution_text
-                            else None
-                        ) or cs.attribution_text or cs.source.attribution_text,
-                        document_title=s_doc.title if s_doc else None,
-                        publication_status=(
-                            s_doc.publication_status if s_doc else None
-                        ),
-                        reuse_conditions=(
-                            s_doc.reuse_restrictions if s_doc else None
-                        ),
-                        commercial_redistribution_allowed=(
-                            s_doc.commercial_redistribution_allowed
-                            if s_doc else False
-                        ),
-                        noncommercial_redistribution_allowed=s_doc.noncommercial_redistribution_allowed if s_doc else None,
-                        approved_publication_content_types=s_doc.approved_publication_content_types if s_doc else None,
-                        rights_evidence_url=(
-                            s_doc.rights_evidence_url if s_doc else None
-                        ),
-                    )
-                )
-
-            consensus_item_out = ConsensusItemOut(
-                id=cf.id,
-                fact_key=cf.fact_key,
-                sign=cf.title,
-                clinical_detail=cf.clinical_detail,
-                corroboration_count=cf.corroboration_count,
-                corroborated_by=corrob_sources,
-            )
-
-        record_out = None
-        if r.get("record"):
-            rec = r["record"]
-            sources_out = []
-            for cs in rec.sources:
-                s_doc = getattr(cs, "source_document", None)
-                sources_out.append(
-                    ProvenanceSourceOut(
-                        source_id=cs.source.id,
-                        organization=cs.source.organization_name,
-                        source_name=cs.source.source_name,
-                        url=cs.source_url,
-                        trust_tier=cs.source.trust_tier,
-                        source_updated_at=cs.source_updated_at.isoformat() + "Z" if cs.source_updated_at else None,
-                        retrieved_at=cs.retrieved_at.isoformat() + "Z",
-                        last_verified_at=cs.last_verified_at.isoformat() + "Z",
-                        license_status=s_doc.publication_status if s_doc else cs.source.license_status,
-                        attribution_text=(s_doc.attribution_text if s_doc and s_doc.attribution_text else None) or cs.attribution_text or cs.source.attribution_text,
-                        quote_snippet=cs.quote_snippet,
-                        document_title=s_doc.title if s_doc else None,
-                        publication_status=s_doc.publication_status if s_doc else None,
-                        reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
-                        commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
-                        noncommercial_redistribution_allowed=s_doc.noncommercial_redistribution_allowed if s_doc else None,
-                        approved_publication_content_types=s_doc.approved_publication_content_types if s_doc else None,
-                        rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
-                    )
-                )
-            jurisdiction_out = None
-            if rec.country_code:
-                jurisdiction_out = JurisdictionOut(
-                    scope=rec.jurisdiction_scope,
-                    country=rec.country_code,
-                    region=rec.region_code,
-                )
-            record_out = ContentRecordOut(
-                id=rec.id,
-                category=rec.category,
-                subcategory=rec.subcategory,
-                content=rec.content,
-                content_type=rec.content_type,
-                jurisdiction=jurisdiction_out,
-                language=rec.language,
-                audience=rec.audience,
-                disagreement_status=rec.disagreement_status,
-                disagreement_notes=rec.disagreement_notes,
-                version_number=rec.version_number,
-                updated_at=rec.updated_at.isoformat() + "Z",
-                sources=sources_out,
-            )
-
-        items.append(
-            SearchResultItem(
-                match_type=r["match_type"],
-                score=r["score"],
-                cancer=cancer_out,
-                category=r.get("category"),
-                snippet=r.get("snippet"),
-                consensus_item=consensus_item_out,
-                record=record_out,
-                matched_terms=r.get("matched_terms", []),
-            )
-        )
+    items = [serialize_search_result(r, source=source, country=country) for r in raw_results]
 
     filters = {k: v for k, v in {"category": category, "country": country, "source": source, "audience": audience}.items() if v}
     payload = SearchResultsOut(
@@ -219,4 +70,154 @@ def search(
         pagination=PaginationMeta(page=page, limit=limit, total_records=total,
                                   total_pages=math.ceil(total / limit),
                                   has_next=page * limit < total, has_prev=page > 1),
+    )
+
+
+def serialize_search_result(r, source=None, country=None) -> SearchResultItem:
+    """One serializer for search and citation revalidation results."""
+    cancer_obj = r["cancer"]
+    cancer_out = CancerSummaryOut(
+        id=cancer_obj.id,
+        slug=cancer_obj.slug,
+        canonical_name=cancer_obj.canonical_name,
+        anatomical_site=cancer_obj.anatomical_site,
+        aliases=[a.alias for a in cancer_obj.aliases],
+    )
+
+    consensus_item_out = None
+    if r.get("consensus_item"):
+        cf = r["consensus_item"]
+
+        # L010: Filter and prioritize citations
+        links = [
+            cs for cs in cf.corroborating_sources
+            if not source or cs.source_id == source
+        ]
+
+        preferred = [
+            cs for cs in links
+            if (cs.country_code or cs.source.country_code)
+            in (country, "GLOBAL")
+        ]
+
+        if country and preferred:
+            links = preferred
+
+        links = sorted(
+            links,
+            key=lambda cs: (
+                (cs.country_code or cs.source.country_code) != country,
+                cs.source_id,
+                cs.source_url,
+            ),
+        )
+
+        # L004: Preserve source-document rights and attribution
+        corrob_sources = []
+
+        for cs in links:
+            s_doc = getattr(cs, "source_document", None)
+
+            corrob_sources.append(
+                CorroboratingSourceOut(
+                    source_id=cs.source.id,
+                    organization=cs.source.organization_name,
+                    authority_type=cs.source.authority_type,
+                    trust_tier=cs.source.trust_tier,
+                    country_code=cs.country_code or cs.source.country_code,
+                    url=cs.source_url,
+                    quote=cs.quote_snippet,
+                    attribution_text=(
+                        s_doc.attribution_text
+                        if s_doc and s_doc.attribution_text
+                        else None
+                    ) or cs.attribution_text or cs.source.attribution_text,
+                    document_title=s_doc.title if s_doc else None,
+                    publication_status=(
+                        s_doc.publication_status if s_doc else None
+                    ),
+                    reuse_conditions=(
+                        s_doc.reuse_restrictions if s_doc else None
+                    ),
+                    commercial_redistribution_allowed=(
+                        s_doc.commercial_redistribution_allowed
+                        if s_doc else False
+                    ),
+                    noncommercial_redistribution_allowed=s_doc.noncommercial_redistribution_allowed if s_doc else None,
+                    approved_publication_content_types=s_doc.approved_publication_content_types if s_doc else None,
+                    rights_evidence_url=(
+                        s_doc.rights_evidence_url if s_doc else None
+                    ),
+                )
+            )
+
+        consensus_item_out = ConsensusItemOut(
+            id=cf.id,
+            fact_key=cf.fact_key,
+            sign=cf.title,
+            clinical_detail=cf.clinical_detail,
+            corroboration_count=cf.corroboration_count,
+            corroborated_by=corrob_sources,
+        )
+
+    record_out = None
+    if r.get("record"):
+        rec = r["record"]
+        sources_out = []
+        for cs in rec.sources:
+            s_doc = getattr(cs, "source_document", None)
+            sources_out.append(
+                ProvenanceSourceOut(
+                    source_id=cs.source.id,
+                    organization=cs.source.organization_name,
+                    source_name=cs.source.source_name,
+                    url=cs.source_url,
+                    trust_tier=cs.source.trust_tier,
+                    source_updated_at=cs.source_updated_at.isoformat() + "Z" if cs.source_updated_at else None,
+                    retrieved_at=cs.retrieved_at.isoformat() + "Z",
+                    last_verified_at=cs.last_verified_at.isoformat() + "Z",
+                    license_status=s_doc.publication_status if s_doc else cs.source.license_status,
+                    attribution_text=(s_doc.attribution_text if s_doc and s_doc.attribution_text else None) or cs.attribution_text or cs.source.attribution_text,
+                    quote_snippet=cs.quote_snippet,
+                    document_title=s_doc.title if s_doc else None,
+                    publication_status=s_doc.publication_status if s_doc else None,
+                    reuse_conditions=s_doc.reuse_restrictions if s_doc else None,
+                    commercial_redistribution_allowed=s_doc.commercial_redistribution_allowed if s_doc else False,
+                    noncommercial_redistribution_allowed=s_doc.noncommercial_redistribution_allowed if s_doc else None,
+                    approved_publication_content_types=s_doc.approved_publication_content_types if s_doc else None,
+                    rights_evidence_url=s_doc.rights_evidence_url if s_doc else None,
+                )
+            )
+        jurisdiction_out = None
+        if rec.country_code:
+            jurisdiction_out = JurisdictionOut(
+                scope=rec.jurisdiction_scope,
+                country=rec.country_code,
+                region=rec.region_code,
+            )
+        record_out = ContentRecordOut(
+            id=rec.id,
+            category=rec.category,
+            subcategory=rec.subcategory,
+            content=rec.content,
+            content_type=rec.content_type,
+            jurisdiction=jurisdiction_out,
+            language=rec.language,
+            audience=rec.audience,
+            disagreement_status=rec.disagreement_status,
+            disagreement_notes=rec.disagreement_notes,
+            version_number=rec.version_number,
+            updated_at=rec.updated_at.isoformat() + "Z",
+            sources=sources_out,
+        )
+
+    return SearchResultItem(
+        match_type=r["match_type"],
+        score=r["score"],
+        cancer=cancer_out,
+        category=r.get("category"),
+        snippet=r.get("snippet"),
+        consensus_item=consensus_item_out,
+        record=record_out,
+        matched_terms=r.get("matched_terms", []),
     )
