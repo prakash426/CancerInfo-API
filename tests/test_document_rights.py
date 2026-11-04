@@ -439,7 +439,7 @@ def test_documented_candidate_urls_match_registry_and_seed(test_db_session):
     with open("docs/HANDOFF_TO_MITHRA.md") as f:
         handoff_urls = extract_candidate_urls_from_markdown(f.read())
 
-    with open("candidate_report_CIAPI-L004.md") as f:
+    with open("docs/candidate_report_CIAPI-L004.md") as f:
         report_urls = extract_candidate_urls_from_markdown(f.read())
 
     assert len(inv_urls) == 32

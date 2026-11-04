@@ -468,8 +468,23 @@ def test_concurrent_readiness_probes_stay_bounded_under_hang(monkeypatch):
     import time
     from fastapi.testclient import TestClient
     release = threading.Event()
+    lock = threading.Lock()
+    active = 0
+    peak_active = 0
     db = Mock()
-    db.execute.side_effect = lambda *args, **kwargs: release.wait(30)
+
+    def hanging_execute(*args, **kwargs):
+        nonlocal active, peak_active
+        with lock:
+            active += 1
+            peak_active = max(peak_active, active)
+        try:
+            release.wait(30)
+        finally:
+            with lock:
+                active -= 1
+
+    db.execute.side_effect = hanging_execute
 
     def override():
         yield db
@@ -493,6 +508,7 @@ def test_concurrent_readiness_probes_stay_bounded_under_hang(monkeypatch):
     assert all(retry == "5" for _, retry, _ in results)
     assert all(elapsed < 10 for _, _, elapsed in results)
     assert total < 12
+    assert peak_active <= 4
     assert db.rollback.called
 
 

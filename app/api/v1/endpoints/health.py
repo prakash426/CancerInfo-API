@@ -57,12 +57,15 @@ def _rollback_when_probe_unwinds(future, session):
     # Runs in the probe worker thread: same-thread session use stays safe
     # while the request thread has already returned its 503.
     try:
-        future.result()
-    except Exception:
         try:
-            session.rollback()
+            future.result()
         except Exception:
-            pass
+            try:
+                session.rollback()
+            except Exception:
+                pass
+    finally:
+        _ready_permits.release()
 
 
 @router.get("/ready", response_model=HealthResponseOut,
@@ -72,24 +75,31 @@ def _rollback_when_probe_unwinds(future, session):
 def get_health(request: Request, response: Response, db: Session = Depends(get_db)):
     source_count = cancer_count = 0
     db_status = "connected"
+    pending_probe = False
+    acquired = False
     try:
         if not _ready_permits.acquire(blocking=False):
             raise TimeoutError("readiness probe concurrency guard")
+        acquired = True
         try:
             future = _ready_executor.submit(_probe_database, db)
             try:
                 source_count, cancer_count = future.result(timeout=READINESS_DEADLINE_SECONDS)
-            finally:
+            except TimeoutError:
                 if not future.done():
+                    pending_probe = True
                     future.add_done_callback(
                         lambda fut, session=db: _rollback_when_probe_unwinds(fut, session))
+                raise
         finally:
-            _ready_permits.release()
+            if acquired and not pending_probe:
+                _ready_permits.release()
     except Exception:
-        try:
-            db.rollback()
-        except Exception:
-            pass
+        if not pending_probe:
+            try:
+                db.rollback()
+            except Exception:
+                pass
         source_count = cancer_count = 0
         db_status = "unavailable"
         response.status_code = 503
