@@ -20,6 +20,23 @@ class IngestRequest(BaseModel):
     source_id: str
 
 
+class AdminVerification(BaseModel):
+    authenticated: bool
+
+
+@router.get("/verify", response_model=StandardResponse[AdminVerification])
+def verify_administrator():
+    """Verify administrator credentials without reading or changing corpus data.
+
+    Normal request accounting still applies. No credentials or configuration
+    values are returned. Authentication is enforced by the router dependency.
+    """
+    return StandardResponse(
+        data=AdminVerification(authenticated=True),
+        meta=MetaInfo(result_count=1),
+    )
+
+
 @router.post("/ingest", response_model=StandardResponse[dict])
 async def trigger_source_ingestion(
     request: IngestRequest,

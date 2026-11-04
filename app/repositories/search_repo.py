@@ -74,9 +74,19 @@ class SearchRepository:
             )
             .all()
         )
+        matched_ids = {c.id for c in matched_cancers}
+        missing_ids = [am.cancer_id for am in alias_matches if am.cancer_id not in matched_ids]
+        cancers_by_id = {}
+        if missing_ids:
+            cancers_by_id = {
+                c.id: c for c in self.db.query(Cancer)
+                .options(joinedload(Cancer.aliases))
+                .filter(Cancer.id.in_(missing_ids)).all()
+            }
         for am in alias_matches:
-            c = self.db.query(Cancer).filter(Cancer.id == am.cancer_id).first()
-            if c and c not in matched_cancers:
+            c = cancers_by_id.get(am.cancer_id)
+            if c is not None and c.id not in matched_ids:
+                matched_ids.add(c.id)
                 matched_cancers.append(c)
 
         for c in matched_cancers:

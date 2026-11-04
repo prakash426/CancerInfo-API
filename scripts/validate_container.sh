@@ -102,6 +102,7 @@ echo "PASSED (${PY_VER})."
 echo -n "  - Checking OpenAPI spec generation inside image... "
 docker run --rm \
     -e ENVIRONMENT=production \
+    -e ADMIN_API_KEY="ciapi-disposable-container-test-key-2026" \
     -e DATABASE_URL="postgresql+psycopg2://openapi_check:openapi_check@127.0.0.1:5432/openapi_check" \
     "$IMAGE_NAME" \
     python -c "from app.main import app; spec = app.openapi(); assert len(spec['paths']) > 0; print(f'OK ({len(spec[\"paths\"])} paths)')"
@@ -204,7 +205,7 @@ if [ "$STATUS_CODE" != "200" ]; then
     echo "FAILED! Expected HTTP 200, got ${STATUS_CODE}."
     exit 1
 fi
-echo "$BODY" | grep -q "\"openapi\":" || { echo "FAILED! Missing openapi key."; exit 1; }
+grep -q "\"openapi\":" <<< "$BODY" || { echo "FAILED! Missing openapi key."; exit 1; }
 echo "PASSED."
 
 # Clean up default container & volume

@@ -231,9 +231,9 @@ async def test_internal_error_details_are_not_exposed():
 def test_public_path_inventory():
     paths = app.openapi()["paths"]
     admin = {p for p in paths if p.startswith("/v1/admin/")}
-    assert len(paths) == 15
-    assert len(admin) == 2
-    assert len(set(paths) - admin) == 13
+    assert len(paths) == 17
+    assert len(admin) == 3
+    assert len(set(paths) - admin) == 14
     for code in ("404", "409", "422", "429", "500"):
         assert paths["/v1/search"]["get"]["responses"][code]["content"]["application/json"]["schema"] == {
             "$ref": "#/components/schemas/ErrorResponse"
