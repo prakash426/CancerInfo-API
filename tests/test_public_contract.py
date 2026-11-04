@@ -239,3 +239,15 @@ def test_public_path_inventory():
         assert paths["/v1/search"]["get"]["responses"][code]["content"]["application/json"]["schema"] == {
             "$ref": "#/components/schemas/ErrorResponse"
         }
+
+
+def test_public_openapi_export_matches_runtime_without_admin_routes():
+    import json
+    from pathlib import Path
+    from scripts.export_public_openapi import build_public_openapi
+
+    exported = json.loads(Path("rapidapi/rapidapi-openapi.json").read_text())
+    assert exported == build_public_openapi()
+    assert len(exported["paths"]) == 15
+    assert "/v1/facts" in exported["paths"]
+    assert not any(path.startswith("/v1/admin/") for path in exported["paths"])

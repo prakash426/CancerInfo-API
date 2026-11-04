@@ -40,8 +40,9 @@ Ordinary application responses carry request ID, response time, rate limits, dis
 
 ## Runtime route inventory
 
-The current runtime OpenAPI contains 15 paths: 13 public and 2 administrative. Framework documentation, root and probe aliases are separate routes excluded from that inventory.
+The current runtime OpenAPI contains 18 paths: 15 public and 3 administrative. Framework documentation, root and probe aliases are separate routes excluded from that inventory. The newer fact ID lookup retains the `SearchResultItem` shape for saved citations, returns `data` and `meta` without pagination, omits unknown or withdrawn IDs with HTTP 200, and accepts up to 50 comma separated IDs. See [fact ID lookup](FACT_ID_LOOKUP.md).
 
+- Administrative: `POST /v1/admin/verify`
 - Administrative: `POST /v1/admin/ingest`
 - Administrative: `POST /v1/admin/seed`
 - Public: `GET /v1/cancers`
@@ -54,6 +55,8 @@ The current runtime OpenAPI contains 15 paths: 13 public and 2 administrative. F
 - Public: `GET /v1/countries`
 - Public: `GET /v1/coverage`
 - Public: `GET /v1/health`
+- Public: `GET /v1/ready`
 - Public: `GET /v1/search`
+- Public: `GET /v1/facts`
 - Public: `GET /v1/sources`
 - Public: `GET /v1/sources/{id}`

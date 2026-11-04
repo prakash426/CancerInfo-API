@@ -1,5 +1,7 @@
 # Demo readiness check, November 4, 2026
 
+This is a dated pre-release snapshot. The later `main` merge deployed `/v1/facts`; see [fact ID lookup](FACT_ID_LOOKUP.md) and the root README for current route status.
+
 ## Candidate and checks
 
 The reviewed local branch was `launch_blockers` at `cd9ed1c4fd5a04bd1eefd64b7cb5fc9872a62763`. GitHub `main` was `3f12f6ab346bd11b3604d747ebd625def3cf6790` and had the same tracked file tree before the local changes below. Its [quality pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41862478553) completed successfully.

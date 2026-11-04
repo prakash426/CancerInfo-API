@@ -1,8 +1,12 @@
 # CancerInfo API Validation & Quality Assurance Guide
 
-## Current guidance, September 22, 2026
+## Current update, November 4, 2026
 
-This guide applies to Python refactor `1199f735e3d77b5c1ada35e6451c7a5b4e36d063`. Current guidance below supersedes the prior draft retained at the end.
+The runtime OpenAPI now has 18 paths: 15 public and 3 administrative. The checked in public OpenAPI export contains the 15 public paths, including `GET /v1/facts`, and has a regression check against runtime generation. The full local Python 3.11 suite passed with 304 tests and 10 PostgreSQL dependent skips; the merged `main` commit's [GitHub pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41894530644) passed PostgreSQL and container checks. Live `/v1/facts` returned 200 for a public record and an unknown ID, and 422 for an empty ID list. The dated September assessment below is retained as history. See [fact ID lookup](FACT_ID_LOOKUP.md) for the current route contract.
+
+## Historical guidance, September 22, 2026
+
+This section applies to Python refactor `1199f735e3d77b5c1ada35e6451c7a5b4e36d063`. It superseded the prior draft retained at the end; the November update above now supersedes its route counts and test status.
 
 ### Acceptance evidence baseline
 

@@ -10,6 +10,11 @@
       "key": "baseUrl",
       "value": "http://localhost:3000",
       "type": "string"
+    },
+    {
+      "key": "factId",
+      "value": "replace-with-search-result-id",
+      "type": "string"
     }
   ],
   "item": [
@@ -18,12 +23,20 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/health",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "health"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "health"
+          ]
         },
         "description": "Check service health and registry counts."
       }
@@ -33,12 +46,20 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/cancers",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "cancers"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "cancers"
+          ]
         }
       }
     },
@@ -47,12 +68,21 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/cancers/breast-cancer",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "cancers", "breast-cancer"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "cancers",
+            "breast-cancer"
+          ]
         }
       }
     },
@@ -61,14 +91,27 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/cancers/breast-cancer/symptoms?country=US",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "cancers", "breast-cancer", "symptoms"],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "cancers",
+            "breast-cancer",
+            "symptoms"
+          ],
           "query": [
-            { "key": "country", "value": "US" }
+            {
+              "key": "country",
+              "value": "US"
+            }
           ]
         }
       }
@@ -78,14 +121,27 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/cancers/colorectal-cancer/screening?country=GB",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "cancers", "colorectal-cancer", "screening"],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "cancers",
+            "colorectal-cancer",
+            "screening"
+          ],
           "query": [
-            { "key": "country", "value": "GB" }
+            {
+              "key": "country",
+              "value": "GB"
+            }
           ]
         }
       }
@@ -95,16 +151,56 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/search?q=CRC",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "search"],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "search"
+          ],
           "query": [
-            { "key": "q", "value": "CRC" }
+            {
+              "key": "q",
+              "value": "CRC"
+            }
           ]
         }
+      }
+    },
+    {
+      "name": "Revalidate Saved Fact IDs",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/v1/facts?ids={{factId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "facts"
+          ],
+          "query": [
+            {
+              "key": "ids",
+              "value": "{{factId}}"
+            }
+          ]
+        },
+        "description": "Copy a public record.id or consensus_item.id from a search result into factId. Unknown or withdrawn IDs return an empty data array with HTTP 200."
       }
     },
     {
@@ -112,12 +208,20 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/sources",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "sources"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "sources"
+          ]
         }
       }
     },
@@ -126,12 +230,20 @@
       "request": {
         "method": "GET",
         "header": [
-          { "key": "Accept", "value": "application/json" }
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
         ],
         "url": {
           "raw": "{{baseUrl}}/v1/coverage",
-          "host": ["{{baseUrl}}"],
-          "path": ["v1", "coverage"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "coverage"
+          ]
         }
       }
     }

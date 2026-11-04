@@ -2,50 +2,225 @@
   "openapi": "3.1.0",
   "info": {
     "title": "CancerInfo API",
-    "description": "A cancer information API designed to organize structured information with source citations. Available topics and coverage vary by source and release. For informational use only; not medical advice.",
-    "version": "1.0.0",
-    "contact": {
-      "name": "CancerInfo Open API Initiative",
-      "email": "community@cancerinfo-api.org",
-      "url": "https://github.com/cancerinfo-api/cancerinfo-api"
-    },
-    "license": {
-      "name": "MIT with Public Health Attributions",
-      "url": "https://opensource.org/licenses/MIT"
-    },
-    "x-rapidapi-category": "Health & Fitness"
+    "description": "A free, structured, global, source-transparent public REST API aggregating normalized cancer knowledge with fact-level provenance from authoritative health organizations.\n\n**Medical Disclaimer:** CancerInfo API provides public informational data aggregated from authoritative health organizations for developers and researchers. It does not provide medical diagnosis, personal treatment recommendations, individualized drug selection or dosage, or replace licensed medical professionals.\n\nInformation from the NHS website is licensed under the Open Government Licence v3.0 (https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). Unchanged excerpts carry their copy date and original source link. No NHS endorsement is implied. A paid service must not levy a specific charge for NHS content. Source: Centers for Disease Control and Prevention (CDC). Use of this material and its links does not imply endorsement by CDC, ATSDR, HHS or the United States Government of CancerInfo, its users, companies, products or services. The original material is available on the CDC website for no charge. Preserve substantive content, source attribution and this notice; do not use agency logos or frame CDC pages.",
+    "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "https://cancerinfo-api.onrender.com",
-      "description": "Production Cloud Service"
-    },
-    {
-      "url": "http://localhost:3000",
-      "description": "Local Development Server"
-    }
-  ],
   "paths": {
     "/v1/health": {
       "get": {
-        "summary": "Health and System Status",
-        "description": "Returns current API health, database connectivity, uptime, and loaded authoritative source metrics.",
-        "operationId": "getHealth",
+        "tags": [
+          "Health"
+        ],
+        "summary": "Get Health",
+        "operationId": "get_health_v1_health_get",
         "responses": {
           "200": {
-            "description": "Successful health check",
+            "description": "Successful Response",
             "content": {
               "application/json": {
-                "example": {
-                  "status": "healthy",
-                  "api_name": "CancerInfo API",
-                  "api_version": "1.0.0",
-                  "database": "connected",
-                  "timestamp": "2026-09-12T07:02:17Z",
-                  "uptime_seconds": 1240.5,
-                  "environment": "production",
-                  "source_registry_count": 5,
-                  "approved_cancers_count": 7
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseOut"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or required schema unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ready": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Get Health",
+        "operationId": "get_health_v1_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseOut"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or required schema unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseOut"
                 }
               }
             }
@@ -55,152 +230,3863 @@
     },
     "/v1/cancers": {
       "get": {
-        "summary": "List Canonical Cancers",
-        "description": "Retrieve catalog of approved canonical cancers with aliases, anatomy sites, and available category sections.",
-        "operationId": "listCancers",
+        "tags": [
+          "Cancers"
+        ],
+        "summary": "List Cancers",
+        "description": "List all canonical cancers with pagination and optional anatomical site filtering.",
+        "operationId": "list_cancers_v1_cancers_get",
         "parameters": [
           {
             "name": "site",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" },
-            "description": "Filter by anatomical site (e.g., 'Breast', 'Lung', 'Colon and Rectum')"
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by anatomical site, e.g. 'Breast', 'Lung'",
+              "title": "Site"
+            },
+            "description": "Filter by anatomical site, e.g. 'Breast', 'Lung'"
           },
           {
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": { "type": "integer", "default": 1 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
           },
           {
             "name": "limit",
             "in": "query",
             "required": false,
-            "schema": { "type": "integer", "default": 20 }
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Records per page",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Records per page"
           }
         ],
         "responses": {
           "200": {
-            "description": "Paginated list of cancers"
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_CancerSummaryOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         }
       }
     },
     "/v1/cancers/{cancer}": {
       "get": {
-        "summary": "Get Canonical Cancer Details",
-        "description": "Resolves slug or alias to canonical record with taxonomy codes and available categories.",
-        "operationId": "getCancerBySlug",
+        "tags": [
+          "Cancers"
+        ],
+        "summary": "Get Cancer",
+        "description": "Retrieve comprehensive details for a specific cancer.\nAccepts slug, UUID, canonical name, or recognized alias (e.g. 'breast-cancer', 'bowel-cancer', 'CRC').",
+        "operationId": "get_cancer_v1_cancers__cancer__get",
         "parameters": [
           {
             "name": "cancer",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
-            "description": "Slug, canonical name, or alias (e.g., 'breast-cancer', 'CRC', 'lung-cancer')"
+            "schema": {
+              "type": "string",
+              "title": "Cancer"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Cancer metadata" },
-          "404": { "description": "Cancer not found" }
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_CancerDetailOut_"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/cancers/{cancer}/sections": {
+      "get": {
+        "tags": [
+          "Cancers"
+        ],
+        "summary": "Get Cancer Sections",
+        "description": "List all knowledge sections/categories available for this cancer with record counts and countries.",
+        "operationId": "get_cancer_sections_v1_cancers__cancer__sections_get",
+        "parameters": [
+          {
+            "name": "cancer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cancer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_CancerCategorySectionOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/cancers/{cancer}/sources": {
+      "get": {
+        "tags": [
+          "Cancers"
+        ],
+        "summary": "Get Cancer Sources",
+        "description": "List all authoritative sources that have provided verified records for this cancer.",
+        "operationId": "get_cancer_sources_v1_cancers__cancer__sources_get",
+        "parameters": [
+          {
+            "name": "cancer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cancer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_SourceRegistryOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/cancers/{cancer}/versions": {
+      "get": {
+        "tags": [
+          "Cancers"
+        ],
+        "summary": "Get Cancer Content Versions",
+        "description": "Historical version audit log for content records of this cancer.",
+        "operationId": "get_cancer_content_versions_v1_cancers__cancer__versions_get",
+        "parameters": [
+          {
+            "name": "cancer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Cancer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_ContentVersionOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
         }
       }
     },
     "/v1/cancers/{cancer}/{category}": {
       "get": {
-        "summary": "Get Normalized Category Knowledge with Provenance",
-        "description": "Fetches verified medical records for a specific category (symptoms, screening, risk_factors, etc.) with source citations, URLs, jurisdiction, and legal attributions.",
-        "operationId": "getCancerCategoryKnowledge",
+        "tags": [
+          "Cancers"
+        ],
+        "summary": "Get Cancer Category Content",
+        "description": "Retrieve normalized content records with full fact-level provenance for a specific cancer and category.\nExample: `/v1/cancers/breast-cancer/symptoms?country=US`",
+        "operationId": "get_cancer_category_content_v1_cancers__cancer___category__get",
         "parameters": [
           {
             "name": "cancer",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
-            "description": "Cancer identifier (e.g. 'breast-cancer', 'colorectal-cancer')"
+            "schema": {
+              "type": "string",
+              "title": "Cancer"
+            }
           },
           {
             "name": "category",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
-            "description": "Standardized category (e.g. 'symptoms', 'screening', 'risk_factors', 'treatment', 'overview')"
+            "schema": {
+              "type": "string",
+              "title": "Category"
+            }
           },
           {
             "name": "country",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" },
-            "description": "Jurisdiction filter (e.g., 'US', 'GB', 'AU', 'GLOBAL')"
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country filter: 'US', 'GB', 'AU', 'GLOBAL'",
+              "title": "Country"
+            },
+            "description": "Country filter: 'US', 'GB', 'AU', 'GLOBAL'"
+          },
+          {
+            "name": "audience",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Audience filter: 'patient', 'health_professionals', 'general_public'",
+              "title": "Audience"
+            },
+            "description": "Audience filter: 'patient', 'health_professionals', 'general_public'"
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Specific source ID, e.g. 'nci-us', 'who-global', 'nhs-uk'",
+              "title": "Source"
+            },
+            "description": "Specific source ID, e.g. 'nci-us', 'who-global', 'nhs-uk'"
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ISO language code",
+              "default": "en",
+              "title": "Language"
+            },
+            "description": "ISO language code"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Normalized category content records with provenance"
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_CancerCategoryDataOut_"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
           }
         }
       }
     },
     "/v1/search": {
       "get": {
-        "summary": "Search Cancer Knowledge",
-        "description": "Multi-factor full-text and alias search across cancers, clinical acronyms (e.g., CRC, NSCLC), and symptoms.",
-        "operationId": "searchCancerKnowledge",
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search",
+        "description": "Search across canonical cancer names, aliases, and fact-level content records.\nUnderstands canonical names, abbreviations, and common names.",
+        "operationId": "search_v1_search_get",
         "parameters": [
           {
             "name": "q",
             "in": "query",
             "required": true,
-            "schema": { "type": "string" },
-            "description": "Search query text or acronym"
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query string, e.g. 'bowel cancer', 'CRC', 'cough with blood'",
+              "title": "Q"
+            },
+            "description": "Search query string, e.g. 'bowel cancer', 'CRC', 'cough with blood'"
           },
           {
             "name": "category",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional canonical category filter",
+              "title": "Category"
+            },
+            "description": "Optional canonical category filter"
           },
           {
             "name": "country",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country filter, e.g. 'US', 'GB', 'AU', 'GLOBAL'",
+              "title": "Country"
+            },
+            "description": "Country filter, e.g. 'US', 'GB', 'AU', 'GLOBAL'"
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Source ID filter, e.g. 'nci-us', 'who-global'",
+              "title": "Source"
+            },
+            "description": "Source ID filter, e.g. 'nci-us', 'who-global'"
+          },
+          {
+            "name": "audience",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Audience filter, e.g. 'patient'",
+              "title": "Audience"
+            },
+            "description": "Audience filter, e.g. 'patient'"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Ranked search results" }
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_SearchResultsOut_"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/facts": {
+      "get": {
+        "tags": [
+          "Facts"
+        ],
+        "summary": "Get Facts",
+        "operationId": "get_facts_v1_facts_get",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Comma separated content record or consensus item IDs, up to 50",
+              "title": "Ids"
+            },
+            "description": "Comma separated content record or consensus item IDs, up to 50"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FactsResponseOut"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
         }
       }
     },
     "/v1/sources": {
       "get": {
-        "summary": "List Authoritative Sources",
-        "description": "Registry of approved health organizations, trust tier ratings, licenses, and verified domains.",
-        "operationId": "listSources",
+        "tags": [
+          "Sources"
+        ],
+        "summary": "List Sources",
+        "description": "List approved authoritative sources registered in the Source Registry.",
+        "operationId": "list_sources_v1_sources_get",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Country filter, e.g. 'US', 'GB', 'GLOBAL'",
+              "title": "Country"
+            },
+            "description": "Country filter, e.g. 'US', 'GB', 'GLOBAL'"
+          },
+          {
+            "name": "tier",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Trust Tier, e.g. 'Tier 1'",
+              "title": "Tier"
+            },
+            "description": "Trust Tier, e.g. 'Tier 1'"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter active sources",
+              "default": true,
+              "title": "Active"
+            },
+            "description": "Filter active sources"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
         "responses": {
-          "200": { "description": "List of sources" }
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_SourceRegistryOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/sources/{id}": {
+      "get": {
+        "tags": [
+          "Sources"
+        ],
+        "summary": "Get Source",
+        "description": "Get detailed information, licensing terms, operational metrics, and health status for a specific source.",
+        "operationId": "get_source_v1_sources__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_SourceDetailOut_"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
         }
       }
     },
     "/v1/categories": {
       "get": {
-        "summary": "List 37 Standard Knowledge Categories",
-        "description": "Canonical classification schema across all cancer knowledge types.",
-        "operationId": "listCategories",
+        "tags": [
+          "Taxonomy & Categories"
+        ],
+        "summary": "List Canonical Categories",
+        "description": "List all 37 canonical knowledge categories supported by CancerInfo API.",
+        "operationId": "list_canonical_categories_v1_categories_get",
         "responses": {
-          "200": { "description": "List of categories" }
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_CanonicalCategoryOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/countries": {
+      "get": {
+        "tags": [
+          "Jurisdictions"
+        ],
+        "summary": "List Countries",
+        "description": "List countries and jurisdictions represented across normalized cancer knowledge records.",
+        "operationId": "list_countries_v1_countries_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_List_CountryInfoOut__"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
         }
       }
     },
     "/v1/coverage": {
       "get": {
-        "summary": "Global Knowledge Coverage Transparency",
-        "description": "Detailed transparency metrics across covered cancers, sections, jurisdictions, and verified documents.",
-        "operationId": "getCoverage",
+        "tags": [
+          "Coverage & Transparency"
+        ],
+        "summary": "Get Coverage",
+        "description": "Returns global or cancer-specific coverage transparency information.\nEnables developers to inspect what CancerInfo API actually knows, sources represented,\navailable categories, and last verification dates.",
+        "operationId": "get_coverage_v1_coverage_get",
+        "parameters": [
+          {
+            "name": "cancer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional cancer slug to get specific coverage, e.g. 'breast-cancer'",
+              "title": "Cancer"
+            },
+            "description": "Optional cancer slug to get specific coverage, e.g. 'breast-cancer'"
+          }
+        ],
         "responses": {
-          "200": { "description": "Coverage statistics" }
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardResponse_CoverageResponseOut_"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Method Not Allowed"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
         }
       }
     }
-  }
+  },
+  "components": {
+    "schemas": {
+      "CancerAliasOut": {
+        "properties": {
+          "alias": {
+            "type": "string",
+            "title": "Alias"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "alias_type": {
+            "type": "string",
+            "title": "Alias Type"
+          },
+          "country_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country Code"
+          },
+          "confidence": {
+            "type": "number",
+            "title": "Confidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "alias",
+          "language",
+          "alias_type",
+          "confidence"
+        ],
+        "title": "CancerAliasOut"
+      },
+      "CancerCategoryDataOut": {
+        "properties": {
+          "cancer": {
+            "$ref": "#/components/schemas/CancerSummaryOut"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "category_name": {
+            "type": "string",
+            "title": "Category Name"
+          },
+          "category_description": {
+            "type": "string",
+            "title": "Category Description"
+          },
+          "category_type": {
+            "type": "string",
+            "title": "Category Type"
+          },
+          "consensus_summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConsensusSummaryOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "items": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ConsensusItemOut"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Items"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/ContentRecordOut"
+            },
+            "type": "array",
+            "title": "Records"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cancer",
+          "category",
+          "category_name",
+          "category_description",
+          "category_type"
+        ],
+        "title": "CancerCategoryDataOut"
+      },
+      "CancerCategorySectionOut": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "record_count": {
+            "type": "integer",
+            "title": "Record Count"
+          },
+          "countries_represented": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Countries Represented"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "name",
+          "description",
+          "record_count",
+          "countries_represented"
+        ],
+        "title": "CancerCategorySectionOut"
+      },
+      "CancerCoverageItem": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "canonical_name": {
+            "type": "string",
+            "title": "Canonical Name"
+          },
+          "total_records": {
+            "type": "integer",
+            "title": "Total Records"
+          },
+          "categories_covered": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories Covered"
+          },
+          "countries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Countries"
+          },
+          "supporting_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supporting Sources"
+          },
+          "last_verified_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Verified At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "canonical_name",
+          "total_records",
+          "categories_covered",
+          "countries",
+          "supporting_sources"
+        ],
+        "title": "CancerCoverageItem"
+      },
+      "CancerDetailOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "canonical_name": {
+            "type": "string",
+            "title": "Canonical Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "anatomical_site": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anatomical Site"
+          },
+          "aliases": {
+            "items": {
+              "$ref": "#/components/schemas/CancerAliasOut"
+            },
+            "type": "array",
+            "title": "Aliases"
+          },
+          "taxonomy_codes": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Taxonomy Codes"
+          },
+          "available_categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Categories"
+          },
+          "record_counts_by_category": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Record Counts By Category"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "canonical_name"
+        ],
+        "title": "CancerDetailOut"
+      },
+      "CancerSummaryOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "canonical_name": {
+            "type": "string",
+            "title": "Canonical Name"
+          },
+          "anatomical_site": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anatomical Site"
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "canonical_name"
+        ],
+        "title": "CancerSummaryOut"
+      },
+      "CanonicalCategoryOut": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "recognized_aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Recognized Aliases"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "name",
+          "description",
+          "recognized_aliases"
+        ],
+        "title": "CanonicalCategoryOut"
+      },
+      "ConsensusItemOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "fact_key": {
+            "type": "string",
+            "title": "Fact Key"
+          },
+          "sign": {
+            "type": "string",
+            "title": "Sign"
+          },
+          "clinical_detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinical Detail"
+          },
+          "corroboration_count": {
+            "type": "integer",
+            "title": "Corroboration Count"
+          },
+          "corroborated_by": {
+            "items": {
+              "$ref": "#/components/schemas/CorroboratingSourceOut"
+            },
+            "type": "array",
+            "title": "Corroborated By"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "fact_key",
+          "sign",
+          "corroboration_count"
+        ],
+        "title": "ConsensusItemOut"
+      },
+      "ConsensusSummaryOut": {
+        "properties": {
+          "total_items": {
+            "type": "integer",
+            "title": "Total Items"
+          },
+          "consensus_status": {
+            "type": "string",
+            "title": "Consensus Status"
+          },
+          "participating_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Participating Sources"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_items",
+          "consensus_status"
+        ],
+        "title": "ConsensusSummaryOut"
+      },
+      "ContentRecordOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "subcategory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subcategory"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type"
+          },
+          "jurisdiction": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JurisdictionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "audience": {
+            "type": "string",
+            "title": "Audience"
+          },
+          "disagreement_status": {
+            "type": "string",
+            "title": "Disagreement Status"
+          },
+          "disagreement_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disagreement Notes"
+          },
+          "version_number": {
+            "type": "integer",
+            "title": "Version Number"
+          },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/ProvenanceSourceOut"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "content",
+          "content_type",
+          "language",
+          "audience",
+          "disagreement_status",
+          "version_number",
+          "updated_at"
+        ],
+        "title": "ContentRecordOut"
+      },
+      "ContentVersionOut": {
+        "properties": {
+          "version_number": {
+            "type": "integer",
+            "title": "Version Number"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "change_type": {
+            "type": "string",
+            "title": "Change Type"
+          },
+          "change_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Reason"
+          },
+          "content_hash": {
+            "type": "string",
+            "title": "Content Hash"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/VersionSourceNoticeOut"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version_number",
+          "content",
+          "change_type",
+          "content_hash",
+          "created_at"
+        ],
+        "title": "ContentVersionOut"
+      },
+      "CorroboratingSourceOut": {
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "title": "Source Id"
+          },
+          "organization": {
+            "type": "string",
+            "title": "Organization"
+          },
+          "authority_type": {
+            "type": "string",
+            "title": "Authority Type"
+          },
+          "trust_tier": {
+            "type": "string",
+            "title": "Trust Tier"
+          },
+          "country_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country Code"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          },
+          "attribution_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution Text"
+          },
+          "document_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Title"
+          },
+          "publication_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publication Status"
+          },
+          "reuse_conditions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reuse Conditions"
+          },
+          "commercial_redistribution_allowed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commercial Redistribution Allowed"
+          },
+          "noncommercial_redistribution_allowed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Noncommercial Redistribution Allowed"
+          },
+          "approved_publication_content_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved Publication Content Types"
+          },
+          "rights_evidence_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Evidence Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_id",
+          "organization",
+          "authority_type",
+          "trust_tier",
+          "url"
+        ],
+        "title": "CorroboratingSourceOut"
+      },
+      "CountryInfoOut": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "default_language": {
+            "type": "string",
+            "title": "Default Language"
+          },
+          "has_active_records": {
+            "type": "boolean",
+            "title": "Has Active Records"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "region",
+          "default_language",
+          "has_active_records"
+        ],
+        "title": "CountryInfoOut"
+      },
+      "CoverageResponseOut": {
+        "properties": {
+          "total_cancers": {
+            "type": "integer",
+            "title": "Total Cancers"
+          },
+          "total_sources": {
+            "type": "integer",
+            "title": "Total Sources"
+          },
+          "total_content_records": {
+            "type": "integer",
+            "title": "Total Content Records"
+          },
+          "total_source_documents": {
+            "type": "integer",
+            "title": "Total Source Documents"
+          },
+          "countries_represented": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Countries Represented"
+          },
+          "categories_available": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories Available"
+          },
+          "sources_by_trust_tier": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Sources By Trust Tier"
+          },
+          "cancers": {
+            "items": {
+              "$ref": "#/components/schemas/CancerCoverageItem"
+            },
+            "type": "array",
+            "title": "Cancers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_cancers",
+          "total_sources",
+          "total_content_records",
+          "total_source_documents",
+          "countries_represented",
+          "categories_available",
+          "sources_by_trust_tier",
+          "cancers"
+        ],
+        "title": "CoverageResponseOut"
+      },
+      "ErrorDetail": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorDetail"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "FactsResponseOut": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResultItem"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "FactsResponseOut"
+      },
+      "HealthResponseOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "api_name": {
+            "type": "string",
+            "title": "Api Name"
+          },
+          "api_version": {
+            "type": "string",
+            "title": "Api Version"
+          },
+          "database": {
+            "type": "string",
+            "title": "Database"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "source_registry_count": {
+            "type": "integer",
+            "title": "Source Registry Count"
+          },
+          "approved_cancers_count": {
+            "type": "integer",
+            "title": "Approved Cancers Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "api_name",
+          "api_version",
+          "database",
+          "timestamp",
+          "uptime_seconds",
+          "environment",
+          "source_registry_count",
+          "approved_cancers_count"
+        ],
+        "title": "HealthResponseOut"
+      },
+      "JurisdictionOut": {
+        "properties": {
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "country": {
+            "type": "string",
+            "title": "Country"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scope",
+          "country"
+        ],
+        "title": "JurisdictionOut"
+      },
+      "MetaInfo": {
+        "properties": {
+          "api_version": {
+            "type": "string",
+            "title": "Api Version",
+            "description": "CancerInfo API version",
+            "default": "v1"
+          },
+          "generated_at": {
+            "type": "string",
+            "title": "Generated At"
+          },
+          "result_count": {
+            "type": "integer",
+            "title": "Result Count",
+            "description": "Number of results in this response"
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer",
+            "default": "CancerInfo API provides public informational data aggregated from authoritative health organizations for developers and researchers. It does not provide medical diagnosis, personal treatment recommendations, individualized drug selection or dosage, or replace licensed medical professionals."
+          }
+        },
+        "type": "object",
+        "required": [
+          "result_count"
+        ],
+        "title": "MetaInfo"
+      },
+      "PaginationMeta": {
+        "properties": {
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "description": "Current page number (1-indexed)"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Number of records per page"
+          },
+          "total_records": {
+            "type": "integer",
+            "title": "Total Records",
+            "description": "Total number of matching records"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages",
+            "description": "Total pages available"
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next",
+            "description": "Whether a subsequent page exists"
+          },
+          "has_prev": {
+            "type": "boolean",
+            "title": "Has Prev",
+            "description": "Whether a preceding page exists"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page",
+          "limit",
+          "total_records",
+          "total_pages",
+          "has_next",
+          "has_prev"
+        ],
+        "title": "PaginationMeta"
+      },
+      "ProvenanceSourceOut": {
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "title": "Source Id"
+          },
+          "organization": {
+            "type": "string",
+            "title": "Organization"
+          },
+          "source_name": {
+            "type": "string",
+            "title": "Source Name"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "trust_tier": {
+            "type": "string",
+            "title": "Trust Tier"
+          },
+          "source_updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Updated At"
+          },
+          "retrieved_at": {
+            "type": "string",
+            "title": "Retrieved At"
+          },
+          "last_verified_at": {
+            "type": "string",
+            "title": "Last Verified At"
+          },
+          "license_status": {
+            "type": "string",
+            "title": "License Status"
+          },
+          "attribution_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution Text"
+          },
+          "quote_snippet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote Snippet"
+          },
+          "document_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Title"
+          },
+          "publication_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publication Status"
+          },
+          "reuse_conditions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reuse Conditions"
+          },
+          "commercial_redistribution_allowed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commercial Redistribution Allowed"
+          },
+          "noncommercial_redistribution_allowed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Noncommercial Redistribution Allowed"
+          },
+          "approved_publication_content_types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved Publication Content Types"
+          },
+          "rights_evidence_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rights Evidence Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_id",
+          "organization",
+          "source_name",
+          "url",
+          "trust_tier",
+          "retrieved_at",
+          "last_verified_at",
+          "license_status"
+        ],
+        "title": "ProvenanceSourceOut"
+      },
+      "SearchResultItem": {
+        "properties": {
+          "match_type": {
+            "type": "string",
+            "title": "Match Type",
+            "description": "'cancer', 'consensus_item', or 'content_record'"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score",
+            "default": 1.0
+          },
+          "cancer": {
+            "$ref": "#/components/schemas/CancerSummaryOut"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "snippet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Snippet"
+          },
+          "consensus_item": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConsensusItemOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "record": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContentRecordOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "matched_terms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Matched Terms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "match_type",
+          "cancer"
+        ],
+        "title": "SearchResultItem"
+      },
+      "SearchResultsOut": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "filters_applied": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Filters Applied"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResultItem"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "SearchResultsOut"
+      },
+      "SourceDetailOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "organization_name": {
+            "type": "string",
+            "title": "Organization Name"
+          },
+          "source_name": {
+            "type": "string",
+            "title": "Source Name"
+          },
+          "base_url": {
+            "type": "string",
+            "title": "Base Url"
+          },
+          "country_code": {
+            "type": "string",
+            "title": "Country Code"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "trust_tier": {
+            "type": "string",
+            "title": "Trust Tier"
+          },
+          "authority_type": {
+            "type": "string",
+            "title": "Authority Type"
+          },
+          "license_type": {
+            "type": "string",
+            "title": "License Type"
+          },
+          "license_status": {
+            "type": "string",
+            "title": "License Status"
+          },
+          "reuse_allowed": {
+            "type": "boolean",
+            "title": "Reuse Allowed"
+          },
+          "full_text_storage_allowed": {
+            "type": "boolean",
+            "title": "Full Text Storage Allowed"
+          },
+          "attribution_required": {
+            "type": "boolean",
+            "title": "Attribution Required"
+          },
+          "attribution_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution Text"
+          },
+          "reuse_policy_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reuse Policy Url"
+          },
+          "crawl_frequency": {
+            "type": "string",
+            "title": "Crawl Frequency"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "last_reviewed": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reviewed"
+          },
+          "terms_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terms Url"
+          },
+          "robots_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Robots Url"
+          },
+          "supported_languages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Languages"
+          },
+          "document_count": {
+            "type": "integer",
+            "title": "Document Count",
+            "default": 0
+          },
+          "records_supported_count": {
+            "type": "integer",
+            "title": "Records Supported Count",
+            "default": 0
+          },
+          "health_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Health Status",
+            "default": "HEALTHY"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "organization_name",
+          "source_name",
+          "base_url",
+          "country_code",
+          "source_type",
+          "trust_tier",
+          "authority_type",
+          "license_type",
+          "license_status",
+          "reuse_allowed",
+          "full_text_storage_allowed",
+          "attribution_required",
+          "crawl_frequency",
+          "active"
+        ],
+        "title": "SourceDetailOut"
+      },
+      "SourceRegistryOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "organization_name": {
+            "type": "string",
+            "title": "Organization Name"
+          },
+          "source_name": {
+            "type": "string",
+            "title": "Source Name"
+          },
+          "base_url": {
+            "type": "string",
+            "title": "Base Url"
+          },
+          "country_code": {
+            "type": "string",
+            "title": "Country Code"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "trust_tier": {
+            "type": "string",
+            "title": "Trust Tier"
+          },
+          "authority_type": {
+            "type": "string",
+            "title": "Authority Type"
+          },
+          "license_type": {
+            "type": "string",
+            "title": "License Type"
+          },
+          "license_status": {
+            "type": "string",
+            "title": "License Status"
+          },
+          "reuse_allowed": {
+            "type": "boolean",
+            "title": "Reuse Allowed"
+          },
+          "full_text_storage_allowed": {
+            "type": "boolean",
+            "title": "Full Text Storage Allowed"
+          },
+          "attribution_required": {
+            "type": "boolean",
+            "title": "Attribution Required"
+          },
+          "attribution_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution Text"
+          },
+          "reuse_policy_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reuse Policy Url"
+          },
+          "crawl_frequency": {
+            "type": "string",
+            "title": "Crawl Frequency"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "last_reviewed": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reviewed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "organization_name",
+          "source_name",
+          "base_url",
+          "country_code",
+          "source_type",
+          "trust_tier",
+          "authority_type",
+          "license_type",
+          "license_status",
+          "reuse_allowed",
+          "full_text_storage_allowed",
+          "attribution_required",
+          "crawl_frequency",
+          "active"
+        ],
+        "title": "SourceRegistryOut"
+      },
+      "StandardResponse_CancerCategoryDataOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CancerCategoryDataOut"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[CancerCategoryDataOut]"
+      },
+      "StandardResponse_CancerDetailOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CancerDetailOut"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[CancerDetailOut]"
+      },
+      "StandardResponse_CoverageResponseOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CoverageResponseOut"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[CoverageResponseOut]"
+      },
+      "StandardResponse_List_CancerCategorySectionOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CancerCategorySectionOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[List[CancerCategorySectionOut]]"
+      },
+      "StandardResponse_List_CancerSummaryOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CancerSummaryOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[List[CancerSummaryOut]]"
+      },
+      "StandardResponse_List_CanonicalCategoryOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CanonicalCategoryOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[List[CanonicalCategoryOut]]"
+      },
+      "StandardResponse_List_ContentVersionOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/ContentVersionOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[List[ContentVersionOut]]"
+      },
+      "StandardResponse_List_CountryInfoOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/CountryInfoOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[List[CountryInfoOut]]"
+      },
+      "StandardResponse_List_SourceRegistryOut__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SourceRegistryOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[List[SourceRegistryOut]]"
+      },
+      "StandardResponse_SearchResultsOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SearchResultsOut"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[SearchResultsOut]"
+      },
+      "StandardResponse_SourceDetailOut_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SourceDetailOut"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/MetaInfo"
+          },
+          "pagination": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMeta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "StandardResponse[SourceDetailOut]"
+      },
+      "VersionSourceNoticeOut": {
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "title": "Source Id"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "document_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Title"
+          },
+          "attribution_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution Text"
+          },
+          "reuse_conditions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reuse Conditions"
+          },
+          "copied_at": {
+            "type": "string",
+            "title": "Copied At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_id",
+          "url",
+          "copied_at"
+        ],
+        "title": "VersionSourceNoticeOut"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://cancerinfo-api.onrender.com"
+    }
+  ]
 }
