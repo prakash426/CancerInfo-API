@@ -18,6 +18,17 @@ def client_address(request: Request) -> str:
         address = ip_address(peer)
     except ValueError:
         return peer
+    if settings.TRUST_RENDER_CF_CONNECTING_IP:
+        # Explicit public-Render boundary: Cloudflare overwrites this header.
+        # Do not enable on a service with untrusted private/direct ingress.
+        values = request.headers.getlist("cf-connecting-ip")
+        if len(values) == 1 and len(values[0]) <= 45 and "%" not in values[0]:
+            try:
+                return str(ip_address(values[0].strip()))
+            except ValueError:
+                pass
+        # Never fall back to a caller-supplied forwarding chain in this mode.
+        return str(address)
     networks = [ip_network(cidr) for cidr in settings.TRUSTED_PROXY_CIDRS]
     trusted = lambda ip: any(ip in network for network in networks)
     if not trusted(address):

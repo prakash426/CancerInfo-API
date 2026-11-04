@@ -74,6 +74,61 @@ def test_duplicate_forwarding_headers_and_no_trust_fail_closed(monkeypatch):
     assert client_address(request("10.0.0.2", [(b"x-forwarded-for", b"198.51.100.1")])) == "10.0.0.2"
 
 
+@pytest.mark.parametrize("render,kind", [(None, None), ("false", "web"), ("true", "pserv")])
+def test_render_identity_requires_public_render_runtime(monkeypatch, render, kind):
+    for name, value in [("RENDER", render), ("RENDER_SERVICE_TYPE", kind)]:
+        if value is None:
+            monkeypatch.delenv(name, raising=False)
+        else:
+            monkeypatch.setenv(name, value)
+    with pytest.raises(ValueError, match="Render public web service"):
+        Settings(_env_file=None, TRUST_RENDER_CF_CONNECTING_IP=True)
+
+
+def test_render_identity_explicit_opt_in(monkeypatch):
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_SERVICE_TYPE", "web")
+    assert Settings(_env_file=None, TRUST_RENDER_CF_CONNECTING_IP=True).TRUST_RENDER_CF_CONNECTING_IP
+    assert not Settings(_env_file=None).TRUST_RENDER_CF_CONNECTING_IP
+
+
+@pytest.mark.parametrize("value", ["198.51.100.1", "2001:db8::1"])
+def test_render_header_takes_precedence_over_forged_forwarding(monkeypatch, value):
+    monkeypatch.setattr(settings, "TRUST_RENDER_CF_CONNECTING_IP", True)
+    headers = [(b"cf-connecting-ip", value.encode()),
+               (b"x-forwarded-for", b"192.0.2.99"), (b"true-client-ip", b"192.0.2.98")]
+    assert client_address(request("10.0.0.2", headers)) == value
+
+
+@pytest.mark.parametrize("headers", [[], [(b"cf-connecting-ip", b"bad")],
+    [(b"cf-connecting-ip", b"198.51.100.1, 192.0.2.1")],
+    [(b"cf-connecting-ip", b"198.51.100.1")] * 2,
+    [(b"cf-connecting-ip", b"a" * 1024)], [(b"cf-connecting-ip", b"fe80::1%eth0")]])
+def test_bad_render_header_uses_socket_not_forged_chain(monkeypatch, headers):
+    monkeypatch.setattr(settings, "TRUST_RENDER_CF_CONNECTING_IP", True)
+    monkeypatch.setattr(settings, "TRUSTED_PROXY_CIDRS", ["10.0.0.0/24"])
+    assert client_address(request("10.0.0.2", headers + [
+        (b"x-forwarded-for", b"192.0.2.99")])) == "10.0.0.2"
+
+
+def test_render_header_ignored_when_disabled(monkeypatch):
+    monkeypatch.setattr(settings, "TRUST_RENDER_CF_CONNECTING_IP", False)
+    monkeypatch.setattr(settings, "TRUSTED_PROXY_CIDRS", [])
+    assert client_address(request("10.0.0.2", [
+        (b"cf-connecting-ip", b"198.51.100.1")])) == "10.0.0.2"
+
+
+def test_render_clients_have_independent_quotas(monkeypatch):
+    monkeypatch.setattr(settings, "TRUST_RENDER_CF_CONNECTING_IP", True)
+    limiter = InMemoryRateLimiter(1)
+    def call(ip):
+        return limiter.check(client_address(request("10.0.0.2", [
+            (b"cf-connecting-ip", ip.encode())])))[0]
+    assert call("198.51.100.1")
+    assert not call("198.51.100.1")
+    assert call("198.51.100.2")
+
+
 def test_sliding_window_reset_and_idle_cleanup():
     clock = [100.0]
     limiter = InMemoryRateLimiter(2, max_clients=2, clock=lambda: clock[0])
