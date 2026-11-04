@@ -23,17 +23,19 @@ class ContentRepository:
         self,
         cancer_id: str,
         category: str,
+        evidence: Optional[PublicEvidence] = None,
     ) -> List[ConsensusFact]:
         """
         Retrieve pre-computed atomic consensus items for a cancer and category,
         with multi-source corroboration links eagerly loaded.
         """
+        evidence = evidence if evidence is not None else PublicEvidence(self.db)
         return (
             self.db.query(ConsensusFact)
             .filter(
                 ConsensusFact.cancer_id == cancer_id,
                 ConsensusFact.category == category,
-                PublicEvidence(self.db).consensus(),
+                evidence.consensus(),
             )
             .options(
                 joinedload(ConsensusFact.corroborating_sources).joinedload(ConsensusFactSource.source),
@@ -58,13 +60,15 @@ class ContentRepository:
         language: Optional[str] = None,
         skip: int = 0,
         limit: int = 50,
+        evidence: Optional[PublicEvidence] = None,
     ) -> Tuple[List[ContentRecord], int]:
+        evidence = evidence if evidence is not None else PublicEvidence(self.db)
         query = (
             self.db.query(ContentRecord)
             .filter(
                 ContentRecord.canonical_cancer_id == cancer_id,
                 ContentRecord.category == category,
-                PublicEvidence(self.db).records(),
+                evidence.records(),
             )
             .options(
                 joinedload(ContentRecord.sources).joinedload(ContentSource.source),
@@ -103,9 +107,10 @@ class ContentRepository:
         )
         return records, total
 
-    def get_sources_for_cancer(self, cancer_id: str) -> List[Source]:
+    def get_sources_for_cancer(self, cancer_id: str,
+                               evidence: Optional[PublicEvidence] = None) -> List[Source]:
         """Returns all distinct sources that have provided content for this cancer"""
-        evidence = PublicEvidence(self.db)
+        evidence = evidence if evidence is not None else PublicEvidence(self.db)
         source_ids = (
             self.db.query(ContentSource.source_id)
             .join(ContentRecord, ContentRecord.id == ContentSource.content_record_id)
@@ -116,9 +121,10 @@ class ContentRepository:
         return self.db.query(Source).filter(Source.id.in_(source_ids)).order_by(Source.id).all()
 
 
-    def get_content_versions(self, cancer_id: str, limit: int = 50) -> List[ContentVersion]:
+    def get_content_versions(self, cancer_id: str, limit: int = 50,
+                             evidence: Optional[PublicEvidence] = None) -> List[ContentVersion]:
         """Returns version audit log for content of this cancer"""
-        evidence = PublicEvidence(self.db)
+        evidence = evidence if evidence is not None else PublicEvidence(self.db)
         versions = (
             self.db.query(ContentVersion)
             .join(ContentRecord, ContentRecord.id == ContentVersion.content_record_id)

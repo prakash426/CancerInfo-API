@@ -61,39 +61,36 @@ class CancerRepository:
         cancers = query.order_by(Cancer.canonical_name.asc(), Cancer.id.asc()).offset(skip).limit(limit).all()
         return cancers, total
 
-    def get_cancer_sections(self, cancer_id: str) -> List[dict]:
+    def get_cancer_sections(self, cancer_id: str,
+                            evidence: Optional[PublicEvidence] = None) -> List[dict]:
         """
         Returns list of categories that have active content records for this cancer,
         along with record counts and countries represented.
         """
-        evidence = PublicEvidence(self.db)
-        results = (
+        evidence = evidence if evidence is not None else PublicEvidence(self.db)
+        rows = (
             self.db.query(
                 ContentRecord.category,
+                ContentRecord.country_code,
                 func.count(ContentRecord.id).label("count"),
             )
             .filter(
                 ContentRecord.canonical_cancer_id == cancer_id,
                 evidence.records()
             )
-            .group_by(ContentRecord.category)
+            .group_by(ContentRecord.category, ContentRecord.country_code)
+            .order_by(ContentRecord.category.asc(), ContentRecord.country_code.asc())
             .all()
         )
 
-        sections = []
-        for cat, count in results:
-            countries = [
-                r[0] for r in self.db.query(ContentRecord.country_code)
-                .filter(
-                    ContentRecord.canonical_cancer_id == cancer_id,
-                    ContentRecord.category == cat,
-                    evidence.records()
-                )
-                .distinct().all()
-            ]
-            sections.append({
-                "category": cat,
-                "count": count,
-                "countries": countries
-            })
+        sections: List[dict] = []
+        by_category = {}
+        for cat, country, count in rows:
+            section = by_category.get(cat)
+            if section is None:
+                section = by_category[cat] = {"category": cat, "count": 0, "countries": []}
+                sections.append(section)
+            section["count"] += count
+            if country is not None:
+                section["countries"].append(country)
         return sections

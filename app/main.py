@@ -22,12 +22,26 @@ from app.database.session import engine
 from app.schemas.common import ErrorResponse
 
 
+# Startup schema verification must fail fast instead of hanging the boot
+# sequence on an unresponsive database. Failures keep raising RuntimeError.
+_STARTUP_VERIFY_TIMEOUT_SECONDS = 15.0
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Enforce database schema verification in production or when explicitly configured
     if settings.is_production or settings.CHECK_MIGRATIONS_ON_STARTUP:
+        import asyncio
         from app.database.migration_check import verify_database_schema_at_head
-        verify_database_schema_at_head(engine)
+        try:
+            await asyncio.wait_for(
+                asyncio.to_thread(verify_database_schema_at_head, engine),
+                timeout=_STARTUP_VERIFY_TIMEOUT_SECONDS)
+        except TimeoutError as exc:
+            raise RuntimeError(
+                "Database schema validation failed: verification timed out after "
+                f"{_STARTUP_VERIFY_TIMEOUT_SECONDS:g}s; refusing to serve on an unverified schema."
+            ) from exc
 
     yield
 

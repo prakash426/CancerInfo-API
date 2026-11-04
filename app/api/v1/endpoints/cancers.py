@@ -221,8 +221,10 @@ def get_cancer_content_versions(
     content_repo = ContentRepository(db)
     versions = content_repo.get_content_versions(cancer_obj.id, limit=limit)
 
-    data = [
-        ContentVersionOut(
+    data = []
+    for v in versions:
+        snapshot = json.loads(v.change_reason)
+        data.append(ContentVersionOut(
             version_number=v.version_number,
             content=v.content,
             change_type=v.change_type,
@@ -238,11 +240,9 @@ def get_cancer_content_versions(
                 copied_at=link.retrieved_at.isoformat() + "Z",
             ) for link in v.content_record.sources
                 if link.source_document is not None
-                and link.source_document_id == json.loads(v.change_reason)["document_id"]
-                and link.source_url == json.loads(v.change_reason)["url"]],
-        )
-        for v in versions
-    ]
+                and link.source_document_id == snapshot["document_id"]
+                and link.source_url == snapshot["url"]],
+        ))
 
     return StandardResponse(
         data=data,
@@ -275,9 +275,15 @@ def get_cancer_category_content(
     if norm_category not in CANONICAL_CATEGORIES:
         raise CategoryNotFoundError(category)
 
+    from app.repositories.publication import PublicEvidence
     content_repo = ContentRepository(db)
     cat_nature = get_category_nature(norm_category)
-    consensus_facts = content_repo.get_consensus_facts(cancer_obj.id, norm_category)
+    # One evidence snapshot for the whole read-only request: identical gates
+    # with a single corpus evaluation instead of one per repository call.
+    # Nothing is cached across requests, so revocation still takes effect on
+    # the next read.
+    evidence = PublicEvidence(db)
+    consensus_facts = content_repo.get_consensus_facts(cancer_obj.id, norm_category, evidence=evidence)
 
     items_out: Optional[List[ConsensusItemOut]] = None
     consensus_summary_out: Optional[ConsensusSummaryOut] = None
@@ -363,6 +369,7 @@ def get_cancer_category_content(
         language=language,
         skip=skip,
         limit=limit,
+        evidence=evidence,
     )
 
     for r in records:

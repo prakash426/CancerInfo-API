@@ -112,18 +112,27 @@ class PostgresRateLimiter:
             bucket.expires_at = events[-1] + 60
             reset = max(1, math.ceil(events[0] + 60 - now))
             db.flush()
-            expired = (select(RateLimitBucket.id)
-                       .where(RateLimitBucket.expires_at <= now, RateLimitBucket.id != key)
-                       .order_by(RateLimitBucket.expires_at, RateLimitBucket.id).limit(100)
-                       .with_for_update(skip_locked=True))
-            db.execute(delete(RateLimitBucket).where(RateLimitBucket.id.in_(expired)),
-                       execution_options={"synchronize_session": False})
-            return allowed, self.requests_per_minute, max(0, self.requests_per_minute - len(events)), reset
+        # Expired-bucket cleanup runs after the row lock is released so all
+        # same-bucket requests stop serializing behind it. It stays bounded
+        # (100 rows, skip-locked) and must never fail request accounting.
+        try:
+            with Session(self.engine) as db, db.begin():
+                db.execute(text("SET LOCAL lock_timeout = '500ms'"))
+                db.execute(text("SET LOCAL statement_timeout = '3000ms'"))
+                expired = (select(RateLimitBucket.id)
+                           .where(RateLimitBucket.expires_at <= now, RateLimitBucket.id != key)
+                           .order_by(RateLimitBucket.expires_at, RateLimitBucket.id).limit(100)
+                           .with_for_update(skip_locked=True))
+                db.execute(delete(RateLimitBucket).where(RateLimitBucket.id.in_(expired)),
+                           execution_options={"synchronize_session": False})
+        except Exception:
+            pass
+        return allowed, self.requests_per_minute, max(0, self.requests_per_minute - len(events)), reset
 
 
 if settings.is_production:
-    from app.database.session import engine
-    rate_limiter = PostgresRateLimiter(engine, settings.RATE_LIMIT_PER_MINUTE)
+    from app.database.session import engine, limiter_engine
+    rate_limiter = PostgresRateLimiter(limiter_engine or engine, settings.RATE_LIMIT_PER_MINUTE)
 else:
     rate_limiter = InMemoryRateLimiter(settings.RATE_LIMIT_PER_MINUTE)
 

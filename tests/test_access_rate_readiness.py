@@ -425,3 +425,144 @@ def test_allowed_browser_origin_can_read_failure_response(client, monkeypatch, f
     assert "Retry-After" in r.headers["Access-Control-Expose-Headers"]
     assert_headers(r)
     assert "private dependency failure" not in r.text
+
+
+def test_hung_database_readiness_fails_closed_within_deadline(client, monkeypatch):
+    import threading
+    import time
+    release = threading.Event()
+
+    def hanging_execute(*args, **kwargs):
+        release.wait(30)
+        raise RuntimeError("late database failure")
+
+    db = Mock()
+    db.execute.side_effect = hanging_execute
+
+    def override():
+        yield db
+
+    monkeypatch.setitem(app.dependency_overrides, get_db, override)
+    try:
+        started = time.monotonic()
+        r = client.get("/v1/ready")
+        elapsed = time.monotonic() - started
+        assert r.status_code == 503
+        assert r.json()["database"] == "unavailable"
+        assert r.json()["source_registry_count"] == 0
+        assert r.headers["Retry-After"] == "5"
+        assert elapsed < 10
+        assert_headers(r)
+        assert client.get("/health").json() == {"status": "ok"}
+    finally:
+        release.set()
+    # The hung probe unwinds in its own worker and still cleans up.
+    deadline = time.monotonic() + 10
+    while not db.rollback.called and time.monotonic() < deadline:
+        time.sleep(0.05)
+    assert db.rollback.called
+
+
+def test_concurrent_readiness_probes_stay_bounded_under_hang(monkeypatch):
+    import threading
+    import time
+    from fastapi.testclient import TestClient
+    release = threading.Event()
+    db = Mock()
+    db.execute.side_effect = lambda *args, **kwargs: release.wait(30)
+
+    def override():
+        yield db
+
+    monkeypatch.setitem(app.dependency_overrides, get_db, override)
+
+    def probe(_):
+        with TestClient(app) as probe_client:
+            started = time.monotonic()
+            r = probe_client.get("/v1/ready")
+            return r.status_code, r.headers.get("Retry-After"), time.monotonic() - started
+
+    try:
+        started = time.monotonic()
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            results = list(pool.map(probe, range(8)))
+        total = time.monotonic() - started
+    finally:
+        release.set()
+    assert [status for status, _, _ in results] == [503] * 8
+    assert all(retry == "5" for _, retry, _ in results)
+    assert all(elapsed < 10 for _, _, elapsed in results)
+    assert total < 12
+    assert db.rollback.called
+
+
+def test_shared_request_evidence_matches_fresh_builds(db_session, public_seed_evidence):
+    from app.models import ContentRecord, SourceDocument
+    from app.repositories.cancer_repo import CancerRepository
+    from app.repositories.content_repo import ContentRepository
+    from app.repositories.publication import PublicEvidence
+    record = db_session.query(ContentRecord).first()
+    assert record is not None
+    cancer_id, category = record.canonical_cancer_id, record.category
+    content_repo = ContentRepository(db_session)
+    cancer_repo = CancerRepository(db_session)
+    shared = PublicEvidence(db_session)
+    try:
+        assert content_repo.get_records(cancer_id, category, evidence=shared)[1] == \
+            content_repo.get_records(cancer_id, category)[1]
+        assert [f.id for f in content_repo.get_consensus_facts(cancer_id, category, evidence=shared)] == \
+            [f.id for f in content_repo.get_consensus_facts(cancer_id, category)]
+        assert cancer_repo.get_cancer_sections(cancer_id, evidence=shared) == \
+            cancer_repo.get_cancer_sections(cancer_id)
+        snapshot_view = content_repo.get_records(cancer_id, category, evidence=shared)[1]
+        doc = db_session.query(SourceDocument).first()
+        assert doc is not None
+        doc.publication_status = "QUARANTINED"
+        db_session.flush()
+        # The in-request snapshot is stable, while every fresh build re-evaluates.
+        assert content_repo.get_records(cancer_id, category, evidence=shared)[1] == snapshot_view
+        assert content_repo.get_records(cancer_id, category)[1] == \
+            content_repo.get_records(cancer_id, category, evidence=PublicEvidence(db_session))[1]
+    finally:
+        db_session.rollback()
+
+
+def test_shared_postgres_readiness_bounded_under_limiter_contention(shared_pg, monkeypatch):
+    import threading
+    import time
+    from fastapi.testclient import TestClient
+    from app.database.manifest import capture_current_model_manifest, compare_current_model_manifests
+    from app.ingestion.seed import seed_database
+    with Session(shared_pg) as db:
+        seed_database(db)
+
+    def override():
+        with Session(shared_pg) as db:
+            yield db
+
+    monkeypatch.setitem(app.dependency_overrides, get_db, override)
+    limiter = PostgresRateLimiter(shared_pg, 10000)
+    stop = threading.Event()
+
+    def churn(_):
+        while not stop.is_set():
+            limiter.check("198.51.100.9")
+
+    def probe(_):
+        with TestClient(app) as probe_client:
+            return probe_client.get("/v1/ready").status_code
+
+    before = capture_current_model_manifest(shared_pg)
+    started = time.monotonic()
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        churners = [pool.submit(churn, i) for i in range(4)]
+        try:
+            statuses = list(pool.map(probe, range(12)))
+        finally:
+            stop.set()
+        for churner in churners:
+            churner.result(timeout=20)
+    elapsed = time.monotonic() - started
+    assert statuses == [200] * 12
+    assert elapsed < 30
+    compare_current_model_manifests(before, capture_current_model_manifest(shared_pg))
