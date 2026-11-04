@@ -27,7 +27,7 @@
 
 Checked November 4, 2026. The API runs on FastAPI with SQLAlchemy storage. The former Node JSON server is removed. React is archived in `cancerinfo-explorer-ui/` for possible later use and is not required to run the API.
 
-The latest `main` commit passed the [GitHub quality pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41862478553), including PostgreSQL and container validation. The local Python 3.11 suite passed with 295 tests and 10 PostgreSQL dependent skips. A fresh disposable SQLite database migrated, bootstrapped and passed HTTP smoke checks. The [deployed API](https://cancerinfo-api.onrender.com/v1/ready) returned healthy readiness with 25 cancers, and its OpenAPI document matched the local application. These checks do not establish clinical approval, rights approval for new content, RapidAPI acceptance or sustained load capacity. Earlier dated assessments below are historical; use current tests and release evidence for launch decisions.
+The latest verified `main` release passed the [GitHub quality pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41862478553), including PostgreSQL and container validation. The current local Python 3.11 suite passed with 303 tests and 10 PostgreSQL dependent skips. A fresh disposable SQLite database migrated, bootstrapped and passed HTTP smoke checks. At the last deployment check, the [deployed API](https://cancerinfo-api.onrender.com/v1/ready) returned healthy readiness with 25 cancers. The new `/v1/facts` route requires deployment before it is available there. These checks do not establish clinical approval, rights approval for new content, RapidAPI acceptance or sustained load capacity. Earlier dated assessments below are historical; use current tests and release evidence for launch decisions.
 
 ## 💜 Why This Exists: The Story Behind the Code
 
@@ -213,6 +213,7 @@ This fragment is abbreviated. The homepage above is illustrative, not an accepta
 | `GET`  | `/v1/cancers/{cancer}/versions`   | Stored version entries; uniqueness and historical provenance need repair    |
 | `GET`  | `/v1/cancers/{cancer}/{category}` | **Core Knowledge**: Normalized facts with citation URLs and country filters |
 | `GET`  | `/v1/search`                      | Multi-factor search resolving abbreviations (`CRC`), aliases, and symptoms  |
+| `GET`  | `/v1/facts?ids=id1,id2`           | Revalidate up to 50 saved content record or consensus item IDs              |
 | `GET`  | `/v1/sources`                     | Seeded registry metadata; permission labels require document review         |
 | `GET`  | `/v1/sources/{id}`                | Detailed profile for an individual health authority                         |
 | `GET`  | `/v1/categories`                  | Catalog of all 37 standardized cancer knowledge categories                  |

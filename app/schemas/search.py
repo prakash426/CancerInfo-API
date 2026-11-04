@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 from app.schemas.cancer import CancerSummaryOut
 from app.schemas.content import ConsensusItemOut, ContentRecordOut
+from app.schemas.common import MetaInfo
 
 
 class SearchResultItem(BaseModel):
@@ -22,6 +23,11 @@ class SearchResultsOut(BaseModel):
     query: str
     filters_applied: Dict[str, Any] = Field(default_factory=dict)
     results: List[SearchResultItem] = Field(default_factory=list)
+
+
+class FactsResponseOut(BaseModel):
+    data: List[SearchResultItem]
+    meta: MetaInfo
 
 
 class CancerCoverageItem(BaseModel):
