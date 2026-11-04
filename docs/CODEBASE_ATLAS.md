@@ -1,5 +1,9 @@
 # CancerInfo API: codebase atlas and launch assessment
 
+## Current route update, November 4, 2026
+
+This atlas preserves its September architecture assessment below. The current runtime OpenAPI has 18 paths: 15 public GET routes, including `GET /v1/facts`, and 3 administrative routes. The checked in marketplace export contains the 15 public paths and excludes admin operations. See [fact ID lookup](FACT_ID_LOOKUP.md) and [public response contract](PUBLIC_RESPONSE_CONTRACT.md) for the current consumer contract. Older path counts and launch status statements below are historical snapshots.
+
 Source reviewed: `1199f735e3d77b5c1ada35e6451c7a5b4e36d063` on `fix/CIAPI-001-ci-dependency-setup`. Review date: September 22, 2026. This is an implementation map and launch assessment, not a deployment certificate.
 
 ## Current system context

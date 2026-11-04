@@ -1,5 +1,9 @@
 # RapidAPI Publisher Guide for CancerInfo API
 
+## Public contract update, November 4, 2026
+
+The [hosted API](https://cancerinfo-api.onrender.com/openapi.json) serves 18 runtime paths, including `GET /v1/facts` for saved citation revalidation. `rapidapi/rapidapi-openapi.json` is regenerated from that runtime contract with all 15 public paths and no administrative routes. `rapidapi/postman_collection.json` includes a fact ID lookup example. Regenerate the public file with `python scripts/export_public_openapi.py` after future route changes. The repository artifact is ready for review; this update does not verify a RapidAPI import, gateway behavior, listing approval or consumer subscription. Earlier path counts and launch dates below are historical.
+
 ## Subscription and usage copy correction, October 2, 2026
 
 Use [Hosted API access and usage](../docs/ACCESS_AND_USAGE.md) for the owner-confirmed Basic subscription, quota, rate limit and separate RapidAPI bandwidth charges. Earlier pricing promises in this guide have been corrected, including in the historical draft, so they cannot be reused as unrestricted-access instructions. Product descriptions and the dedication do not need price claims.
@@ -12,7 +16,7 @@ This guide applies to Python refactor `1199f735e3d77b5c1ada35e6451c7a5b4e36d063`
 
 Owner target: public launch October 4, 2026. To preserve at least one full week, complete the accepted candidate and submit through RapidAPI by September 27. September 28 remains the owner’s adjustable readiness fallback, but is six days before launch. The buffer is a project planning requirement, not a verified platform approval SLA.
 
-Prepare account ownership, listing metadata and a private draft now. Import only the reviewed public contract after fixing the 8-path static file; runtime generation includes admin routes, which must be excluded from the public export. Use the actual tested HTTPS origin, not the example hostname embedded in the current file. Confirm quotas, origin/gateway controls, admin exclusion and consumer subscription behavior in the real account.
+Prepare account ownership, listing metadata and a private draft now. Import the reviewed public contract only after checking the regenerated 15-path export and its live target. The export excludes admin routes and uses the tested HTTPS origin. Confirm quotas, origin/gateway controls, admin exclusion and consumer subscription behavior in the real account.
 
 Official listing documentation describes visibility and publication controls; it does not establish a guaranteed approval duration for this account. Account access, import, review submission and external consumer tests were not performed in this assessment. Keep September 28 through October 3 for platform feedback, monitoring and defect recovery; do not make an incomplete service public to meet the calendar.
 
@@ -21,11 +25,11 @@ Official listing documentation describes visibility and publication controls; it
 
 ### API specification status
 
-FastAPI generates OpenAPI 3.1.0 with 15 paths: 13 public GET and 2 admin POST. The static rapidapi/rapidapi-openapi.json remains at 8 paths and includes an unverified example production hostname. It must not be imported as a complete release contract.
+FastAPI generates OpenAPI 3.1.0 with 18 paths: 15 public GET and 3 admin POST. The checked in `rapidapi/rapidapi-openapi.json` contains the 15 public paths and the verified hosted origin. The public export has a regression check against the runtime schema. Marketplace import and gateway acceptance still require separate verification.
 
 Generate a public-only artifact from the chosen candidate, removing admin operations and checking response/error schemas, query bounds, headers, server URL and examples against HTTP tests. Keep the full internal contract distinct. A successful app.openapi() call only proves generation, not marketplace compatibility or complete schema validation.
 
-The Python CI now generates a schema but does not compare it against the committed marketplace file. Add a drift gate under CIAPI-014/013. The Postman collection also needs parity verification against the accepted contract before external sharing.
+The Python tests compare the public export to the runtime contract, including the fact lookup and exclusion of admin routes. The Postman collection includes a fact lookup example; its remaining examples and marketplace behavior still need consumer validation before external sharing.
 
 ### Launch scope and non goals
 

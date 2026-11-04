@@ -6,7 +6,7 @@
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-6BA539?style=for-the-badge&logo=openapiinitiative&logoColor=white)](rapidapi/rapidapi-openapi.json)
+[![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-6BA539?style=for-the-badge&logo=openapiinitiative&logoColor=white)](https://cancerinfo-api.onrender.com/openapi.json)
 [![RapidAPI](https://img.shields.io/badge/RapidAPI-launch_planned-0052CC?style=for-the-badge&logo=rapidapi&logoColor=white)](rapidapi/RAPIDAPI_LISTING_GUIDE.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Tests: pytest suite](https://img.shields.io/badge/pytest-passing-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](#automated-testing)
@@ -27,7 +27,7 @@
 
 Checked November 4, 2026. The API runs on FastAPI with SQLAlchemy storage. The former Node JSON server is removed. React is archived in `cancerinfo-explorer-ui/` for possible later use and is not required to run the API.
 
-The latest verified `main` release passed the [GitHub quality pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41862478553), including PostgreSQL and container validation. The current local Python 3.11 suite passed with 303 tests and 10 PostgreSQL dependent skips. A fresh disposable SQLite database migrated, bootstrapped and passed HTTP smoke checks. At the last deployment check, the [deployed API](https://cancerinfo-api.onrender.com/v1/ready) returned healthy readiness with 25 cancers. The new `/v1/facts` route requires deployment before it is available there. These checks do not establish clinical approval, rights approval for new content, RapidAPI acceptance or sustained load capacity. Earlier dated assessments below are historical; use current tests and release evidence for launch decisions.
+The merged `main` release passed the [GitHub quality pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41894530644), including PostgreSQL and container validation. The [deployed API](https://cancerinfo-api.onrender.com/v1/ready) now serves the [fact ID lookup](docs/FACT_ID_LOOKUP.md) alongside search and the other public routes. A live lookup of a public record returned HTTP 200 with the expected `data` and `meta` fields. The local Python 3.11 suite passed with 304 tests and 10 PostgreSQL dependent skips, including a public OpenAPI export check. These checks do not establish clinical approval, rights approval for new content, RapidAPI marketplace acceptance or sustained load capacity. Earlier dated assessments below are historical; use current tests and release evidence for launch decisions.
 
 ## 💜 Why This Exists: The Story Behind the Code
 
@@ -206,6 +206,7 @@ This fragment is abbreviated. The homepage above is illustrative, not an accepta
 | Method | Endpoint                          | Description                                                                 |
 | :----- | :-------------------------------- | :-------------------------------------------------------------------------- |
 | `GET`  | `/v1/health`                      | System health, database connectivity, uptime, and loaded registry metrics   |
+| `GET`  | `/v1/ready`                       | Database and schema readiness for deployment checks                         |
 | `GET`  | `/v1/cancers`                     | List all canonical cancers with pagination and anatomical site filter       |
 | `GET`  | `/v1/cancers/{cancer}`            | Detail view: canonical name, ICD codes, aliases, and available sections     |
 | `GET`  | `/v1/cancers/{cancer}/sections`   | Summary of populated categories, record counts, and jurisdictions           |
@@ -229,7 +230,7 @@ This fragment is abbreviated. The homepage above is illustrative, not an accepta
 
 Publication is planned and remains conditional on the acceptance gates:
 
-- **[RapidAPI Publishing Guide](rapidapi/RAPIDAPI_LISTING_GUIDE.md)**: The static specification has 8 paths while FastAPI generates 15 including admin routes. Generate and test a public-only export before import; verify the collection separately.
+- **[RapidAPI Publishing Guide](rapidapi/RAPIDAPI_LISTING_GUIDE.md)**: The checked in specification has all 15 public paths, including `/v1/facts`, and excludes the 3 admin paths. Verify marketplace import and gateway behavior separately.
 - **[Migrations & Controlled Initialization Guide](docs/MIGRATIONS_AND_INITIALIZATION.md)**: Alembic PostgreSQL schema versioning, non-mutating startup validation, legacy table preservation (`cancer_content`), and deployment runbook for Render and Neon.
 - **[Free Cloud Hosting Guide](docs/FREE_HOSTING_DEPLOYMENT.md)**: Deployment checklist and provider decision notes. Hosting cost, persistence and capacity require verification for the chosen service.
 - **[Validation & Testing Guide](docs/VALIDATION_GUIDE.md)**: Quality assurance runbook for CI/CD and production verification.
