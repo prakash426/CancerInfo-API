@@ -6,30 +6,27 @@ GET /v1/admin/verify accepts the existing X-Admin-Key or Authorization: Bearer h
 
 Use it after an authorized credential rotation to verify the replacement succeeds and the retired credential fails. Use a secret manager or secure HTTP client; do not place keys in URLs, chat, logs, screenshots or shell history. Generate a random 64-character hexadecimal replacement and update authorized admin consumers at cutover. Render Save only stages a value; the running process uses its previous value until a deployment activates the change. A rollback must retain the replacement key.
 
-## Proxy investigation, November 4, 2026
+## Render public-ingress client identity
 
-Verified Render environment has ADMIN_API_KEY, DATABASE_URL and ENVIRONMENT only, with no linked environment groups. ENVIRONMENT is production. TRUSTED_PROXY_CIDRS is absent, so the candidate defaults to an empty list. The Docker command override is empty; the candidate Dockerfile leaves forwarded-header processing to app/core/security.py and preserves the socket peer. Auto-deploy is On Commit on main; health path is /health.
+The service is a public Render Free Docker web service. Render's official PocketBase deployment guide states that Cloudflare overwrites CF-Connecting-IP on public web requests. Render's Free-service documentation states that Free web services cannot receive private-network traffic. This supports an explicit public-ingress header mode without guessing changing internal proxy CIDRs.
 
-An empty trust list ignores forwarded identities. If the socket peer is a Render proxy, users through that peer share its quota. This preserves resistance to forged headers but does not establish fair per-client limits.
+Set TRUST_RENDER_CF_CONNECTING_IP=true only for this public ingress topology. Configuration refuses this mode unless the platform supplies RENDER=true and RENDER_SERVICE_TYPE=web. These environment markers are configuration guards, not cryptographic proof of the request path. Any future move to a paid plan, private/direct ingress, or another platform requires reviewing that boundary before retaining the setting. Untrusted callers must not reach the app through a path that bypasses Cloudflare's header overwrite.
 
-Render's official FastAPI guidance recommends limiting trust to managed load-balancer IPs or CIDRs and warns against trusting every peer. It does not supply the verified ingress ranges for this service. Render outbound ranges describe egress to external systems, not the ingress peers required here. Neither a single observed peer nor all private address space establishes an appropriate allowlist.
+In this mode the API accepts exactly one CF-Connecting-IP containing a single valid IPv4 or IPv6 address. Missing, duplicate, oversized, list-valued, scoped or invalid values fall back conservatively to the socket peer. X-Forwarded-For and True-Client-IP cannot override it or rescue malformed values. Outside this mode, the existing explicit TRUSTED_PROXY_CIDRS chain processing remains unchanged. The default is false, and trust-all networks remain forbidden.
 
-Required before production acceptance:
+Stage TRUST_RENDER_CF_CONNECTING_IP=true using Render Environment Save only. Leave TRUSTED_PROXY_CIDRS=[]; do not insert guessed ingress ranges, outbound IPs, or all private networks. Candidate Docker CMD must continue preserving socket identity. Saving does not activate this behavior on the old image; it requires a later authorized deployment of the new code.
 
-1. Obtain Render's supported ingress peer ranges and forwarding contract for this service, including how user-supplied and duplicate X-Forwarded-For headers are handled and whether peer ranges can change. This requires platform confirmation; no support message was sent by this change.
-2. Validate raw socket peer and forwarding behavior using an isolated candidate service with disposable data. Use bounded private diagnostics with no credentials or public IP-echo endpoint. Check IPv4 and IPv6 where supported.
-3. Set TRUSTED_PROXY_CIDRS to a JSON list of only confirmed ranges. Do not trust all networks, guess ranges, or use the service's outbound ranges. Preserve right-to-left chain validation and malformed-header fallback.
-4. Test independent clients, forged prefixes, duplicate and malformed headers, quota isolation, 429 responses, restart persistence and proxy changes. Existing automated tests cover parser and shared-accounting behavior, but do not prove Render's live ingress contract.
-5. If Render cannot provide a stable trust boundary, choose a gateway with authenticated origin access and an explicit forwarding contract, or redesign authenticated client quotas. Do not silently switch to arbitrary first-header trust.
+Before production acceptance, confirm the service is still public Free with no direct/private ingress. After the later deployment, test two independent networks and forged CF-Connecting-IP and X-Forwarded-For inputs through the public URL, confirming that the edge overwrites forged identity and quotas remain independent. Automated tests verify application parsing and client isolation, not actual Render routing. No public IP-echo endpoint is added. Private diagnostics, if necessary, must exclude credentials and have bounded retention. If this topology changes, disable the header mode until the replacement trust boundary is verified.
 
 Official sources:
 
-- https://render.com/articles/fastapi-production-best-practices
-- https://render.com/docs/outbound-ip-addresses
-- https://render.com/docs/configure-environment-variables
+- https://render.com/articles/host-pocketbase-on-render (public CF-Connecting-IP overwrite contract)
+- https://render.com/docs/free (Free instances cannot receive private-network traffic)
+- https://render.com/docs/environment-variables (platform markers)
+- https://render.com/docs/configure-environment-variables (Save only defers activation)
 
 ## Promotion constraints
 
 PR22 requires 0006_shared_rate_limits. Live remains 0005_record_publication. The migration adds only rate_limit_buckets, its expiry index and the Alembic version change; no corpus or rights updates. Candidate production startup rejects 0005. Main's On Commit deployment makes merging PR22 a deployment trigger.
 
-Do not merge PR22 or deploy this candidate while live schema changes are prohibited. The verification endpoint can be reviewed and merged into launch_blockers independently. Remaining release gates include proxy confirmation, rotation of the previously exposed administrator credential, a fresh backup and coordinated migration/application rollout. WHO commercial access remains blocked; no data or policy changes are included here.
+Do not merge PR22 or deploy this candidate while live schema changes are prohibited. The verification endpoint can be reviewed and merged into launch_blockers independently. Remaining release gates include staging and later validating the Render public-ingress mode, rotation of the previously exposed administrator credential, a fresh backup and coordinated migration/application rollout. WHO commercial access remains blocked; no data or policy changes are included here.

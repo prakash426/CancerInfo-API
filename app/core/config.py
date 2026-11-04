@@ -2,6 +2,7 @@
 Application Configuration
 """
 import json
+import os
 from typing import List, Union
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -40,6 +41,7 @@ class Settings(BaseSettings):
     ADMIN_API_KEY: str = Field(default="dev-admin-secret-key", repr=False)
     RATE_LIMIT_PER_MINUTE: int = Field(default=120, ge=1, le=10000)
     TRUSTED_PROXY_CIDRS: List[str] = Field(default_factory=list)
+    TRUST_RENDER_CF_CONNECTING_IP: bool = False
 
     # Keys are issued only after reviewing the downstream application and use.
     # Store SHA-256 digests, never plaintext keys, in deployment secrets.
@@ -99,6 +101,11 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_production_configuration(self) -> "Settings":
+        if self.TRUST_RENDER_CF_CONNECTING_IP and (
+            os.environ.get("RENDER") != "true"
+            or os.environ.get("RENDER_SERVICE_TYPE") != "web"
+        ):
+            raise ValueError("Render client identity requires a Render public web service.")
         if self.CORS_ALLOW_CREDENTIALS and "*" in self.CORS_ORIGINS:
             raise ValueError("Credentialed CORS requires explicit origins; wildcard origins are forbidden.")
         if self.is_production:
