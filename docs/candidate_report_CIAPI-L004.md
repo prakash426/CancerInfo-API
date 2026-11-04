@@ -168,7 +168,7 @@ tests/test_taxonomy_and_normalization.py .....                           [100%]
 | `app/database/migration_check.py` | Modified | Read-only inspection and startup schema checks (`get_current_revision`, `verify_database_schema_at_head`); explicit guarded legacy repair (`repair_legacy_revision`). |
 | `docs/CONTENT_RIGHTS_AND_ATTRIBUTION.md` | Added | Comprehensive guide covering rights policy, third-party rules, transition workflow, and marketplace listing rules. |
 | `docs/HANDOFF_TO_MITHRA.md` | Added | Dedicated review handoff document for Mithra. |
-| `candidate_report_CIAPI-L004.md` | Added | Formal repository candidate report following `CONTRIBUTING.md:67`. |
+| `docs/candidate_report_CIAPI-L004.md` | Added | Formal repository candidate report following `CONTRIBUTING.md:67`. |
 | `scripts/audit_rights_acceptance.py` | Added | Deterministic CLI audit tool checking L004 acceptance criteria, owner corpus decision, and blockers. |
 | `tests/test_document_rights.py` | Added | Comprehensive test suite for all 20 L004 requirements (27 tests including populated PostgreSQL transition with valid FKs, review preservation, rollback on unresolved links). |
 | `tests/test_migrations.py` | Modified | Updated expected baseline row count to 203 and added legacy revision remapping tests verifying inspection leaves revision unchanged (24 tests). |

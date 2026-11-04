@@ -25,11 +25,9 @@
 
 ## Current project status
 
-Reviewed September 22, 2026 against Python refactor `1199f735e3d77b5c1ada35e6451c7a5b4e36d063`. The API product is FastAPI with SQLAlchemy storage. The former Node JSON server is removed. React is archived in `cancerinfo-explorer-ui/` and its ZIP for a possible later demonstration; it is not required to run the API.
+Checked November 4, 2026. The API runs on FastAPI with SQLAlchemy storage. The former Node JSON server is removed. React is archived in `cancerinfo-explorer-ui/` for possible later use and is not required to run the API.
 
-**Prelaunch, acceptance open.** The 28 existing tests pass locally on Python 3.12.2 with 425 warnings. This is not a coverage percentage, image test, PostgreSQL test or clinical approval. Isolated probes reproduced restricted-source publication, false ingestion success after every fetch failed, unknown-category fallback and missing safety/request headers on 429. See [validation evidence](docs/VALIDATION_GUIDE.md) and [architecture and launch assessment](docs/CODEBASE_ATLAS.md).
-
-The seed contains 7 cancer entities, 5 with content, 21 records and 5 populated categories out of 37 defined. Source dates and rights labels need review before publication. No deployed URL or RapidAPI acceptance is verified. October 4 remains the launch target; September 27 is the intended submission checkpoint for seven days of lead time. September 28 is the adjustable six-day fallback.
+The latest `main` commit passed the [GitHub quality pipeline](https://github.com/prakash426/CancerInfo-API/actions/runs/41862478553), including PostgreSQL and container validation. The local Python 3.11 suite passed with 295 tests and 10 PostgreSQL dependent skips. A fresh disposable SQLite database migrated, bootstrapped and passed HTTP smoke checks. The [deployed API](https://cancerinfo-api.onrender.com/v1/ready) returned healthy readiness with 25 cancers, and its OpenAPI document matched the local application. These checks do not establish clinical approval, rights approval for new content, RapidAPI acceptance or sustained load capacity. Earlier dated assessments below are historical; use current tests and release evidence for launch decisions.
 
 ## 💜 Why This Exists: The Story Behind the Code
 
@@ -81,7 +79,7 @@ python scripts/bootstrap.py
 python -m uvicorn app.main:app --host 127.0.0.1 --port 3000
 ```
 
-Check out the reviewed Python branch before running these commands if the repository default differs. The root `.env.example` documents the Python API settings only. Gemini and AI Studio hosting variables are not required. Set a unique admin secret in your deployment environment before exposing any administrative endpoint; never commit the real value.
+The root `.env.example` documents the Python API settings only. Gemini and AI Studio hosting variables are not required. Set a unique admin secret in your deployment environment before exposing any administrative endpoint; never commit the real value.
 
 Database files, backups, WHO research packages and private permission documents stay local and are not versioned. Checkouts do not restore a corpus. Use an explicitly selected database and preserve a backup before any data operation. Bootstrap is for an empty development database, not the recovered staging or release corpus.
 

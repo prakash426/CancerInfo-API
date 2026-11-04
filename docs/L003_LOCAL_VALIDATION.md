@@ -106,7 +106,7 @@ Current implementation diff before this documentation update:
 - `alembic/env.py`
 - `app/database/adoption.py`
 - `app/database/manifest.py`
-- `candidate_report_CIAPI-L003.md`
+- `docs/candidate_report_CIAPI-L003.md`
 - `tests/test_bootstrap.py`
 - `tests/test_migrations.py`
 

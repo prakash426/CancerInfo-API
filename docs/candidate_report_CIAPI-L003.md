@@ -316,7 +316,7 @@ authorized by this report.
 | `app/database/session.py` | Preserves `cancerinfo.db` fallback for local dev, respects `DATABASE_URL`. |
 | `app/ingestion/seed.py` | Updated `seed_database` to accept `commit=False` for caller transaction control. |
 | `app/main.py` | FastAPI lifespan startup check enforcing schema verification at Alembic head in production. |
-| `candidate_report_CIAPI-L003.md` | Formal candidate report documenting architecture, working-tree validation, disposable Neon evidence, container validation, and the remaining commit-specific CI gate. |
+| `docs/candidate_report_CIAPI-L003.md` | Formal candidate report documenting architecture, working-tree validation, disposable Neon evidence, container validation, and the remaining commit-specific CI gate. |
 | `docs/MIGRATIONS_AND_INITIALIZATION.md` | Complete architectural documentation, schema design, and operational procedures. |
 | `docs/VALIDATION_GUIDE.md` | Step-by-step runbook for all 11 validation operations. |
 | `scripts/adopt_existing_schema.py` | CLI tool for safe pre-Alembic schema adoption (`--validate-only` dry run). |
