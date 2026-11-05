@@ -12,4 +12,12 @@ CDC_NOTICE = (
     "The original material is available on the CDC website for no charge. "
     "Preserve substantive content, source attribution and this notice; do not use agency logos or frame CDC pages."
 )
-SOURCE_NOTICE = NHS_NOTICE + " " + CDC_NOTICE
+WHO_LICENSE_ID = "CC BY-NC-SA 3.0 IGO"
+WHO_LICENSE_URL = "https://creativecommons.org/licenses/by-nc-sa/3.0/igo/"
+WHO_NOTICE = (
+    "Content from the World Health Organization (WHO) is licensed under the Creative Commons "
+    f"Attribution-NonCommercial-ShareAlike 3.0 IGO license ({WHO_LICENSE_ID}; {WHO_LICENSE_URL}). "
+    "WHO content is served only for approved noncommercial use, never on the commercial access path, "
+    "and always with its source attribution. No WHO endorsement is implied."
+)
+SOURCE_NOTICE = NHS_NOTICE + " " + CDC_NOTICE + " " + WHO_NOTICE

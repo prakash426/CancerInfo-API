@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CancerInfo API · Source-cited cancer information for developers</title>
+<meta name="description" content="Structured, source-cited cancer information from official public-health organizations, as a free REST API.">
+<meta name="theme-color" content="#070b1a">
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #070b1a;
+    --bg-2: #0b1126;
+    --panel: rgba(255, 255, 255, 0.035);
+    --panel-2: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-2: rgba(255, 255, 255, 0.14);
+    --text: #eef1ff;
+    --muted: #9aa4c7;
+    --faint: #6b7598;
+    --cyan: #22d3ee;
+    --blue: #3b82f6;
+    --violet: #8b5cf6;
+    --pink: #ec4899;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --grad: linear-gradient(110deg, #22b8ff 0%, #6a6cff 45%, #c04cf5 72%, #ff3fa4 100%);
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --radius: 18px;
+    --max: 1180px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  .seg:empty { display: none; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans);
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; }
+  button, input, select { font: inherit; color: inherit; }
+  ::selection { background: rgba(139, 92, 246, 0.45); }
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 8px; }
+
+  /* Ambient background */
+  .bg-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .bg-glow::before, .bg-glow::after {
+    content: ""; position: absolute; width: 900px; height: 900px; border-radius: 50%; filter: blur(140px); opacity: 0.32;
+  }
+  .bg-glow::before { background: radial-gradient(circle, #1d6bff 0%, transparent 65%); top: -380px; left: -260px; }
+  .bg-glow::after { background: radial-gradient(circle, #c4268f 0%, transparent 65%); top: 120px; right: -420px; opacity: 0.22; }
+  .bg-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 100%);
+  }
+  main, header, footer { position: relative; z-index: 1; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  .nav {
+    position: sticky; top: 0; z-index: 20; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: rgba(7, 11, 26, 0.72); border-bottom: 1px solid var(--border);
+  }
+  .nav .wrap { display: flex; align-items: center; gap: 28px; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; text-decoration: none; font-weight: 800; letter-spacing: -0.3px; font-size: 17px; }
+  .brand img { width: 32px; height: 32px; border-radius: 9px; box-shadow: 0 0 0 1px var(--border-2), 0 6px 18px rgba(80, 90, 255, 0.35); }
+  .brand span b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .nav-links { display: flex; gap: 22px; margin-left: 8px; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-size: 14.5px; font-weight: 600; transition: color .15s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--border-2); background: var(--panel); color: var(--muted); white-space: nowrap;
+  }
+  .status i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); display: inline-block; }
+  .status.ok i { background: var(--green); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6); animation: pulse 2s infinite; }
+  .status.ok { color: #c9f5e4; }
+  .status.wait i { background: var(--amber); }
+  .status.down i { background: var(--red); }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,.55); } 70% { box-shadow: 0 0 0 8px rgba(52,211,153,0); } 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); } }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 12px;
+    font-weight: 700; font-size: 15px; text-decoration: none; cursor: pointer; border: 1px solid var(--border-2);
+    background: var(--panel-2); transition: transform .15s, background .15s, border-color .15s, box-shadow .15s; white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.09); }
+  .btn.primary { border: 0; background: var(--grad); color: #fff; box-shadow: 0 10px 30px rgba(110, 90, 255, 0.35); }
+  .btn.primary:hover { box-shadow: 0 14px 40px rgba(110, 90, 255, 0.5); }
+  .btn.sm { height: 36px; padding: 0 14px; font-size: 13.5px; border-radius: 10px; }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* Hero */
+  .hero { padding: 84px 0 36px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+  .hero-grid > *, .pg > *, .sources > *, .licences > *, .features > *, .eps > * { min-width: 0; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    color: var(--muted); border: 1px solid var(--border-2); background: var(--panel);
+  }
+  .eyebrow b { padding: 2px 10px; border-radius: 999px; background: var(--grad); color: #fff; font-size: 12px; }
+  h1 { font-size: clamp(38px, 5.4vw, 62px); line-height: 1.04; letter-spacing: -2px; margin: 22px 0 18px; font-weight: 800; }
+  h1 .g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { color: var(--muted); font-size: 18.5px; max-width: 560px; margin: 0 0 30px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .quick {
+    margin-top: 26px; display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 13.5px; color: var(--muted);
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; padding: 10px 10px 10px 16px; max-width: 560px;
+  }
+  .quick code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #cfe1ff; }
+  .quick code .p { color: var(--faint); }
+
+  /* Terminal */
+  .term {
+    border-radius: var(--radius); background: rgba(9, 13, 30, 0.85); border: 1px solid var(--border-2);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(120,110,255,0.08), 0 0 80px rgba(80,90,255,0.12);
+    overflow: hidden; position: relative;
+  }
+  .term::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: linear-gradient(140deg, rgba(34,184,255,.5), rgba(255,255,255,0) 35%, rgba(255,63,164,.4));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+  .term-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #2a3150; display: inline-block; }
+  .term-bar i:nth-child(1) { background: #ff5f57; } .term-bar i:nth-child(2) { background: #febc2e; } .term-bar i:nth-child(3) { background: #28c840; }
+  .term-tabs { margin-left: 14px; display: flex; gap: 4px; }
+  .term-tabs button { border: 0; background: transparent; color: var(--faint); font-size: 12.5px; font-weight: 600; padding: 4px 10px; border-radius: 7px; cursor: pointer; }
+  .term-tabs button.on { background: var(--panel-2); color: var(--text); }
+  .term-body { padding: 18px 20px 20px; font-family: var(--mono); font-size: 13px; line-height: 1.65; min-height: 360px; max-height: 360px; overflow: auto; }
+  .term-cmd { color: #cfe1ff; white-space: pre-wrap; word-break: break-all; }
+  .term-cmd .p { color: var(--green); }
+  .term-meta { color: var(--faint); margin: 8px 0 6px; font-size: 12px; }
+  .term-out { white-space: pre; color: #c3cbe8; }
+  .caret { display: inline-block; width: 8px; height: 15px; background: var(--cyan); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 56px; }
+  .stat { padding: 20px 22px; border-radius: 16px; background: var(--panel); border: 1px solid var(--border); }
+  .stat .n { font-size: 34px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; }
+  .stat .n.g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat .l { color: var(--muted); font-size: 14px; font-weight: 600; margin-top: 4px; }
+
+  /* Sections */
+  section.block { padding: 88px 0 8px; }
+  .kicker { font-family: var(--mono); font-size: 12.5px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cyan); }
+  h2 { font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -1.2px; line-height: 1.12; margin: 10px 0 12px; font-weight: 800; }
+  .sub { color: var(--muted); font-size: 17px; max-width: 680px; margin: 0 0 32px; }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); }
+
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { padding: 26px; transition: border-color .2s, transform .2s; }
+  .feature:hover { border-color: var(--border-2); transform: translateY(-2px); }
+  .feature .ic { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--panel-2); border: 1px solid var(--border-2); margin-bottom: 16px; }
+  .feature .ic svg { width: 21px; height: 21px; stroke: url(#g1); }
+  .feature h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.3px; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* Playground */
+  .pg { display: grid; grid-template-columns: 300px 1fr; overflow: hidden; }
+  .pg-side { border-right: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 4px; max-height: 640px; overflow-y: auto; }
+  .pg-side h4 { margin: 10px 8px 6px; font-size: 11.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint); font-weight: 700; }
+  .preset { display: flex; align-items: center; gap: 10px; text-align: left; border: 1px solid transparent; background: transparent; border-radius: 10px; padding: 9px 10px; cursor: pointer; transition: background .15s; }
+  .preset:hover { background: var(--panel-2); }
+  .preset.on { background: rgba(99, 102, 241, 0.14); border-color: rgba(129, 140, 248, 0.35); }
+  .preset .m { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--green); background: rgba(52,211,153,.12); border-radius: 5px; padding: 2px 6px; }
+  .preset .t { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .preset .d { font-size: 12px; color: var(--faint); font-family: var(--mono); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 210px; }
+  .pg-main { min-width: 0; display: flex; flex-direction: column; }
+  .pg-url { display: flex; gap: 10px; padding: 14px; border-bottom: 1px solid var(--border); }
+  .url-box { flex: 1; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.35); border: 1px solid var(--border-2); border-radius: 12px; padding: 0 12px; min-width: 0; }
+  .url-box:focus-within { border-color: rgba(129,140,248,.6); box-shadow: 0 0 0 4px rgba(99,102,241,.15); }
+  .url-box .m { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--green); }
+  .url-box .o { font-family: var(--mono); font-size: 13.5px; color: var(--faint); white-space: nowrap; }
+  .url-box input { flex: 1; min-width: 0; height: 44px; border: 0; outline: 0; background: transparent; font-family: var(--mono); font-size: 13.5px; }
+  .pg-resp-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+  .pill { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); }
+  .pill.ok { color: var(--green); background: rgba(52,211,153,.1); border-color: rgba(52,211,153,.3); }
+  .pill.err { color: var(--red); background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.3); }
+  .seg { display: inline-flex; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { border: 0; background: transparent; color: var(--muted); padding: 5px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .seg button.on { background: var(--panel-2); color: var(--text); box-shadow: 0 0 0 1px var(--border-2) inset; }
+  .grow { flex: 1; }
+  .code {
+    margin: 0; padding: 18px 20px; font-family: var(--mono); font-size: 13px; line-height: 1.65; overflow: auto; height: 470px;
+    background: rgba(3, 6, 18, 0.55); white-space: pre; color: #c3cbe8; tab-size: 2;
+  }
+  .j-k { color: #8ab4ff; } .j-s { color: #9ee6b8; } .j-n { color: #ffb86b; } .j-b { color: #ff7ab6; } .j-x { color: #6b7598; }
+  .empty { color: var(--faint); font-family: var(--sans); white-space: normal; }
+  .copy { position: relative; }
+  .copied { color: var(--green) !important; }
+
+  /* Explorer */
+  .ex { padding: 22px; }
+  .ex-controls { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
+  .select { position: relative; min-width: 280px; }
+  .select select {
+    appearance: none; -webkit-appearance: none; width: 100%; height: 46px; border-radius: 12px; border: 1px solid var(--border-2);
+    background: rgba(0,0,0,0.35); padding: 0 42px 0 16px; font-weight: 600; font-size: 15px; cursor: pointer;
+  }
+  .select::after { content: ""; position: absolute; right: 16px; top: 19px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
+  select option { background: #0e1430; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border-2); background: var(--panel); border-radius: 999px;
+    padding: 7px 14px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all .15s;
+  }
+  .chip:hover { background: var(--panel-2); }
+  .chip.on { background: linear-gradient(110deg, rgba(34,184,255,.22), rgba(192,76,245,.22)); border-color: rgba(160,140,255,.55); }
+  .chip .c { font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
+  .chip.on .c { color: #d9dcff; }
+  .ex-bar { display: flex; align-items: center; gap: 12px; margin: 22px 0 14px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+  .records { display: grid; gap: 12px; }
+  .rec { padding: 18px 20px; border-radius: 14px; background: rgba(0,0,0,0.22); border: 1px solid var(--border); }
+  .rec-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  .tag { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; background: var(--panel-2); border: 1px solid var(--border); color: var(--muted); }
+  .tag.flag { color: var(--text); }
+  .rec-body { color: #dfe4fb; font-size: 15px; white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+  .rec.open .rec-body { -webkit-line-clamp: unset; display: block; }
+  .rec-src { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-2); display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .src-org { font-weight: 700; font-size: 14px; }
+  .src-doc { font-size: 13.5px; color: var(--muted); text-decoration: none; display: block; }
+  .src-doc:hover { color: var(--cyan); text-decoration: underline; }
+  .src-meta { font-size: 12.5px; color: var(--faint); margin-top: 2px; }
+  .rec-actions { margin-left: auto; display: flex; gap: 6px; }
+  .link-btn { border: 1px solid var(--border-2); background: transparent; border-radius: 8px; padding: 5px 10px; font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .link-btn:hover { color: var(--text); background: var(--panel-2); }
+  .notice-empty { padding: 34px; text-align: center; color: var(--muted); border: 1px dashed var(--border-2); border-radius: 14px; }
+  .skeleton { height: 120px; border-radius: 14px; background: linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,.07), rgba(255,255,255,.03)); background-size: 200% 100%; animation: sh 1.2s infinite; }
+  @keyframes sh { to { background-position: -200% 0; } }
+
+  /* Sources */
+  .src-tools { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+  .search { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--border-2); background: rgba(0,0,0,.3); min-width: 260px; }
+  .search input { border: 0; outline: 0; background: transparent; flex: 1; font-size: 14.5px; }
+  .search svg { width: 16px; height: 16px; stroke: var(--faint); }
+  .sources { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .src-card { padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s, transform .2s; }
+  .src-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+  .src-card .top { display: flex; align-items: flex-start; gap: 12px; }
+  .src-card .fl { font-size: 26px; line-height: 1; }
+  .src-card h3 { margin: 0; font-size: 16px; line-height: 1.3; letter-spacing: -0.2px; }
+  .src-card .id { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  .lic { font-size: 13px; color: #d3d8f5; background: rgba(0,0,0,.25); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; }
+  .lic b { display: block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--faint); margin-bottom: 2px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+  .badge { font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.nc { color: #ffc4e3; border-color: rgba(236,72,153,.45); background: rgba(236,72,153,.12); }
+  .badge.okb { color: #b8f0d8; border-color: rgba(52,211,153,.35); background: rgba(52,211,153,.08); }
+
+  /* Licenses */
+  .licenses { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+  .license { padding: 22px; position: relative; overflow: hidden; }
+  .license .lid { display: inline-flex; font-family: var(--mono); font-size: 12.5px; font-weight: 700; padding: 5px 10px; border-radius: 8px; background: var(--grad); color: #fff; margin-bottom: 12px; }
+  .license h3 { margin: 0 0 8px; font-size: 17px; }
+  .license p { margin: 0; color: var(--muted); font-size: 14px; }
+  .license a.more { display: inline-block; margin-top: 12px; font-size: 13.5px; font-weight: 600; color: var(--cyan); text-decoration: none; }
+  .license a.more:hover { text-decoration: underline; }
+
+  /* Endpoints */
+  .eps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .ep { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; cursor: pointer; text-align: left; border: 1px solid var(--border); background: var(--panel); transition: all .15s; }
+  .ep:hover { border-color: rgba(129,140,248,.5); background: var(--panel-2); }
+  .ep .m { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--green); background: rgba(52,211,153,.12); border-radius: 6px; padding: 3px 7px; }
+  .ep .p { font-family: var(--mono); font-size: 13.5px; font-weight: 600; }
+  .ep .d { font-size: 13px; color: var(--muted); }
+  .ep .go { margin-left: auto; color: var(--faint); font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .ep:hover .go { color: var(--cyan); }
+
+  /* Disclaimer + footer */
+  .disclaimer { margin-top: 88px; padding: 24px 26px; border-radius: var(--radius); border: 1px solid rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.06); display: flex; gap: 16px; }
+  .disclaimer svg { flex: none; width: 24px; height: 24px; stroke: var(--amber); margin-top: 2px; }
+  .disclaimer h3 { margin: 0 0 4px; font-size: 16px; color: #fde68a; }
+  .disclaimer p { margin: 0; color: #e9dcb4; font-size: 14.5px; }
+  footer { margin-top: 64px; border-top: 1px solid var(--border); padding: 36px 0 48px; color: var(--faint); font-size: 14px; }
+  footer .wrap { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  footer nav { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; }
+  footer a { text-decoration: none; color: var(--muted); }
+  footer a:hover { color: var(--text); }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0; background: #151c38; border: 1px solid var(--border-2); padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 50; transition: all .25s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 1000px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .features, .sources, .licenses { grid-template-columns: 1fr 1fr; }
+    .pg { grid-template-columns: 1fr; }
+    .pg-side { border-right: 0; border-bottom: 1px solid var(--border); flex-direction: row; overflow-x: auto; max-height: none; }
+    .pg-side h4 { display: none; }
+    .preset { flex: none; }
+    .preset .d { display: none; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 16px; }
+    .hero { padding-top: 48px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .features, .sources, .licenses, .eps { grid-template-columns: 1fr; }
+    .term-body { font-size: 12px; min-height: 300px; max-height: 300px; }
+    .url-box .o { display: none; }
+    .pg-url { flex-wrap: wrap; }
+    .pg-url .btn { width: 100%; }
+    .select { min-width: 100%; }
+    .nav-right .btn { display: none; }
+    .rec-actions { margin-left: 0; }
+    .status { padding: 5px 10px; font-size: 12px; }
+    .nav .wrap { gap: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22b8ff"/><stop offset=".55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#ff3fa4"/>
+    </linearGradient>
+  </defs>
+</svg>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="CancerInfo API home">
+      <img src="/static/logo.png" alt="" width="32" height="32">
+      <span>Cancer<b>Info</b> API</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#playground">Playground</a>
+      <a href="#explorer">Explorer</a>
+      <a href="#sources">Sources &amp; licenses</a>
+      <a href="#endpoints">Endpoints</a>
+    </nav>
+    <div class="nav-right">
+      <span class="status wait" id="status" role="status"><i></i><span>Checking…</span></span>
+      <a class="btn sm" href="/docs">API docs</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="reveal">
+        <span class="eyebrow"><b>v{{APP_VERSION}}</b> Free REST API · OpenAPI 3.1</span>
+        <h1>Cancer information<br>you can <span class="g">cite.</span></h1>
+        <p class="lead">Structured JSON from official public-health organizations. Every fact carries its source, its country and its reuse terms, so your product can show exactly where it came from.</p>
+        <div class="cta">
+          <a class="btn primary" href="#playground">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+            Try it live
+          </a>
+          <a class="btn" href="/docs">Interactive docs</a>
+          <a class="btn" href="https://github.com/prakash426/CancerInfo-API" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+            GitHub
+          </a>
+        </div>
+        <div class="quick">
+          <code id="quick-cmd"><span class="p">$</span> curl <span class="o-origin">https://cancerinfo-api.onrender.com</span>/v1/search?q=CRC</code>
+          <button class="btn sm copy" data-copy-target="quick-cmd" aria-label="Copy command">Copy</button>
+        </div>
+      </div>
+
+      <div class="term reveal" aria-label="Live API examples">
+        <div class="term-bar">
+          <i></i><i></i><i></i>
+          <div class="term-tabs" id="term-tabs" role="tablist"></div>
+        </div>
+        <div class="term-body" id="term-body" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="stats reveal">
+        <div class="stat"><div class="n g" data-stat="cancers">–</div><div class="l">Cancer types in the taxonomy</div></div>
+        <div class="stat"><div class="n" data-stat="categories">–</div><div class="l">Standard knowledge categories</div></div>
+        <div class="stat"><div class="n" data-stat="sources">–</div><div class="l">Official sources in the registry</div></div>
+        <div class="stat"><div class="n" data-stat="countries">–</div><div class="l">Jurisdictions</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="block">
+    <div class="wrap">
+      <div class="kicker">Why developers use it</div>
+      <h2>Built for products that have to be right</h2>
+      <p class="sub">Health content without a source is a liability. CancerInfo API makes provenance part of the data model, not an afterthought.</p>
+      <div class="features">
+        <div class="card feature reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></div>
+          <h3>Every fact is cited</h3>
+          <p>Organization, exact document URL and title, verification date, attribution text and reuse conditions on every record.</p>
+        </div>
+        <div class="card feature reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div>
+          <h3>Country-aware</h3>
+          <p>Guidance differs between countries. Each record states its jurisdiction, and <code>?country=</code> returns that country's records first, plus global ones.</p>
+        </div>
+        <div class="card feature reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3>License-checked</h3>
+          <p>Content is published only after its source document clears a license review. Anything unreviewed stays private, so the API fails closed.</p>
+        </div>
+        <div class="card feature reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+          <h3>One consistent shape</h3>
+          <p>Canonical cancers, aliases and codes, 37 standard categories, uniform pagination and a single error envelope.</p>
+        </div>
+        <div class="card feature reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+          <h3>Smart search</h3>
+          <p>Abbreviations and aliases resolve automatically: <code>CRC</code>, <code>bowel cancer</code> and <code>colon cancer</code> all find colorectal cancer.</p>
+        </div>
+        <div class="card feature reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
+          <h3>Citations that stay current</h3>
+          <p>Store record IDs, then re-check up to 50 at once with <code>/v1/facts</code> to drop anything withdrawn.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Playground -->
+  <section class="block" id="playground">
+    <div class="wrap">
+      <div class="kicker">Playground</div>
+      <h2>Call the live API from here</h2>
+      <p class="sub">Pick an example or type any public path. Requests go to this server; no key needed. Press <code>Ctrl</code> + <code>Enter</code> to send.</p>
+      <div class="card pg reveal">
+        <div class="pg-side" id="presets" role="listbox" aria-label="Example requests"></div>
+        <div class="pg-main">
+          <form class="pg-url" id="pg-form">
+            <label class="url-box">
+              <span class="m">GET</span>
+              <span class="o o-origin">https://cancerinfo-api.onrender.com</span>
+              <input id="pg-input" spellcheck="false" autocomplete="off" aria-label="Request path" value="/v1/search?q=CRC">
+            </label>
+            <button class="btn primary" type="submit" id="pg-send">Send
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+          <div class="pg-resp-head">
+            <span class="pill" id="pg-status">Ready</span>
+            <span id="pg-time"></span>
+            <span id="pg-size"></span>
+            <span class="grow"></span>
+            <div class="seg" id="pg-view" role="tablist" aria-label="Output format">
+              <button class="on" data-view="json">Response</button>
+              <button data-view="curl">cURL</button>
+              <button data-view="python">Python</button>
+              <button data-view="js">JavaScript</button>
+            </div>
+            <button class="link-btn" id="pg-copy">Copy</button>
+          </div>
+          <pre class="code" id="pg-out"><span class="empty">Send a request to see the live JSON response.</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explorer -->
+  <section class="block" id="explorer">
+    <div class="wrap">
+      <div class="kicker">Data explorer</div>
+      <h2>Browse what's published, with citations</h2>
+      <p class="sub">Choose a cancer, then a category. Every card below is a real record from the API, showing exactly how it reaches your users.</p>
+      <div class="card ex reveal">
+        <div class="ex-controls">
+          <div class="select"><select id="ex-cancer" aria-label="Cancer"><option>Loading cancers…</option></select></div>
+          <div class="seg" id="ex-country" aria-label="Country filter"></div>
+        </div>
+        <div class="chips" id="ex-cats"></div>
+        <div class="ex-bar" id="ex-bar"></div>
+        <div class="records" id="ex-records"></div>
+        <div style="text-align:center;margin-top:16px"><button class="btn sm" id="ex-more" hidden>Load more</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sources -->
+  <section class="block" id="sources">
+    <div class="wrap">
+      <div class="kicker">Sources &amp; licenses</div>
+      <h2>Know exactly who said it, and how you may use it</h2>
+      <p class="sub">The live source registry. Each source's license and attribution rules travel with every record it supports.</p>
+      <div class="src-tools">
+        <label class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input id="src-q" placeholder="Filter sources or licenses" aria-label="Filter sources">
+        </label>
+        <div class="seg" id="src-country"></div>
+      </div>
+      <div class="sources" id="src-grid"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+
+      <div class="licenses">
+        <div class="card license reveal">
+          <span class="lid">OGL v3.0</span>
+          <h3>NHS content</h3>
+          <p>{{NHS_NOTICE}}</p>
+          <a class="more" href="https://www.nationalarchives.gov.uk/doc/open-government-license/version/3/" rel="noopener">Open Government Licence v3.0 →</a>
+        </div>
+        <div class="card license reveal">
+          <span class="lid">U.S. Public Domain</span>
+          <h3>CDC content</h3>
+          <p>{{CDC_NOTICE}}</p>
+          <a class="more" href="https://www.cdc.gov/other/agencymaterials.html" rel="noopener">CDC material reuse policy →</a>
+        </div>
+        <div class="card license reveal">
+          <span class="lid">{{WHO_LICENSE_ID}}</span>
+          <h3>WHO content</h3>
+          <p>{{WHO_NOTICE}}</p>
+          <a class="more" href="{{WHO_LICENSE_URL}}" rel="noopener">{{WHO_LICENSE_ID}} license →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Endpoints -->
+  <section class="block" id="endpoints">
+    <div class="wrap">
+      <div class="kicker">Endpoints</div>
+      <h2>Fifteen public routes, one consistent shape</h2>
+      <p class="sub">Click any route to run it in the playground. Full schemas are in the <a href="/docs">Swagger UI</a>, <a href="/redoc">ReDoc</a> and <a href="/openapi.json">OpenAPI JSON</a>.</p>
+      <div class="eps" id="eps"></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="disclaimer" role="note">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div>
+        <h3>Medical disclaimer</h3>
+        <p>{{MEDICAL_DISCLAIMER}}</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/static/logo.png" alt="" width="28" height="28"><span>Cancer<b>Info</b> API</span></a>
+    <span>Code under MIT. Content under each source's own license.</span>
+    <nav aria-label="Footer">
+      <a href="/docs">Swagger UI</a>
+      <a href="/redoc">ReDoc</a>
+      <a href="/openapi.json">OpenAPI</a>
+      <a href="/v1/health">Health</a>
+      <a href="https://github.com/prakash426/CancerInfo-API" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+  var ORIGIN = window.location.origin;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  $$(".o-origin").forEach(function (el) { el.textContent = ORIGIN; });
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function toast(msg) { var t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 1600); }
+  function copy(text) {
+    var done = function () { toast("Copied to clipboard"); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done, function () { fallback(); }); } else { fallback(); }
+    function fallback() { var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) {} ta.remove(); }
+  }
+  function flag(code) {
+    if (!code) return "🏳️";
+    code = String(code).toUpperCase();
+    if (code === "GLOBAL") return "🌐";
+    if (code === "EU") return "🇪🇺";
+    if (!/^[A-Z]{2}$/.test(code)) return "🏳️";
+    return String.fromCodePoint(127397 + code.charCodeAt(0), 127397 + code.charCodeAt(1));
+  }
+  var COUNTRY_NAMES = { US: "United States", GB: "United Kingdom", AU: "Australia", CA: "Canada", NL: "Netherlands", NZ: "New Zealand", GLOBAL: "Global" };
+
+  function api(path) {
+    var t0 = performance.now();
+    return fetch(path, { headers: { Accept: "application/json" } }).then(function (res) {
+      return res.text().then(function (text) {
+        var json = null; try { json = JSON.parse(text); } catch (e) {}
+        return { ok: res.ok, status: res.status, ms: Math.round(performance.now() - t0), text: text, json: json, bytes: new Blob([text]).size, reqId: res.headers.get("X-Request-ID") };
+      });
+    });
+  }
+
+  function highlight(obj) {
+    var s = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+    s = esc(s);
+    return s.replace(/(&quot;(?:\\u[a-fA-F0-9]{4}|\\[^u]|(?!&quot;).)*?&quot;)(\s*:)?|\b(true|false)\b|\bnull\b|-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?/g, function (m, str, colon, bool) {
+      if (str) return colon ? '<span class="j-k">' + str + "</span>" + colon : '<span class="j-s">' + str + "</span>";
+      if (bool) return '<span class="j-b">' + m + "</span>";
+      if (m === "null") return '<span class="j-x">null</span>';
+      return '<span class="j-n">' + m + "</span>";
+    });
+  }
+
+  /* ---------- Status + stats ---------- */
+  function countUp(el, target) {
+    if (typeof target !== "number" || isNaN(target)) { el.textContent = "–"; return; }
+    var start = performance.now(), dur = 900;
+    (function step(now) { var p = Math.min(1, (now - start) / dur); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); })(start);
+  }
+  var status = $("#status");
+  var wakeTimer = setTimeout(function () { status.querySelector("span").textContent = "Waking up…"; }, 1800);
+  api("/v1/health").then(function (r) {
+    clearTimeout(wakeTimer);
+    var ok = r.ok && r.json && r.json.status === "healthy";
+    status.className = "status " + (ok ? "ok" : "down");
+    status.querySelector("span").textContent = ok ? "Operational" : "Degraded";
+    if (r.json) {
+      countUp($('[data-stat="cancers"]'), r.json.approved_cancers_count);
+      countUp($('[data-stat="sources"]'), r.json.source_registry_count);
+    }
+  }).catch(function () { clearTimeout(wakeTimer); status.className = "status down"; status.querySelector("span").textContent = "Unreachable"; });
+  api("/v1/categories").then(function (r) { if (r.json && r.json.data) countUp($('[data-stat="categories"]'), r.json.data.length); });
+  api("/v1/countries").then(function (r) { if (r.json && r.json.data) countUp($('[data-stat="countries"]'), r.json.data.length); });
+
+  /* ---------- Hero terminal ---------- */
+  var TERM = [
+    { tab: "search", path: "/v1/search?q=CRC", pick: function (j) { var r = (j.data.results || [])[0] || {}; return { query: j.data.query, match_type: r.match_type, cancer: r.cancer && { slug: r.cancer.slug, canonical_name: r.cancer.canonical_name, aliases: (r.cancer.aliases || []).slice(0, 4) }, matched_terms: r.matched_terms }; } },
+    { tab: "symptoms", path: "/v1/cancers/breast-cancer/symptoms?country=US", pick: function (j) { var r = (j.data.records || [])[0]; if (!r) return { records: [] }; var s = r.sources[0] || {}; return { content: r.content.slice(0, 64) + "…", jurisdiction: r.jurisdiction, source: { organization: s.organization, url: s.url, last_verified_at: (s.last_verified_at || "").slice(0, 10), license_status: s.license_status } }; } },
+    { tab: "sources", path: "/v1/sources/nhs-uk", pick: function (j) { var d = j.data; return { id: d.id, organization_name: d.organization_name, country_code: d.country_code, trust_tier: d.trust_tier, license_type: d.license_type, attribution_required: d.attribution_required }; } }
+  ];
+  var termIdx = 0, termCache = {}, termTimer = null, typing = null;
+  var tabs = $("#term-tabs");
+  TERM.forEach(function (t, i) {
+    var b = document.createElement("button"); b.textContent = t.tab; b.setAttribute("role", "tab");
+    b.addEventListener("click", function () { showTerm(i, true); }); tabs.appendChild(b);
+  });
+  function showTerm(i, manual) {
+    termIdx = i; clearTimeout(termTimer); clearInterval(typing);
+    $$("button", tabs).forEach(function (b, k) { b.classList.toggle("on", k === i); b.setAttribute("aria-selected", k === i); });
+    var t = TERM[i], body = $("#term-body");
+    body.innerHTML = '<div class="term-cmd"><span class="p">$</span> curl ' + esc(ORIGIN + t.path) + '</div><div class="term-meta">requesting…</div><div class="term-out"></div>';
+    var p = termCache[t.path] || (termCache[t.path] = api(t.path));
+    p.then(function (r) {
+      var out; try { out = r.json ? t.pick(r.json) : { error: r.status }; } catch (e) { out = r.json; }
+      $(".term-meta", body).textContent = "HTTP " + r.status + " · " + r.ms + " ms" + (r.reqId ? " · " + r.reqId.slice(0, 8) : "");
+      var full = JSON.stringify(out, null, 2), pos = 0, el = $(".term-out", body);
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) { el.innerHTML = highlight(full); } else {
+        typing = setInterval(function () {
+          pos = Math.min(full.length, pos + 7);
+          el.innerHTML = highlight(full.slice(0, pos)) + (pos < full.length ? '<span class="caret"></span>' : "");
+          if (pos >= full.length) clearInterval(typing);
+        }, 16);
+      }
+      if (!manual) termTimer = setTimeout(function () { showTerm((termIdx + 1) % TERM.length); }, 7000);
+    }).catch(function () { $(".term-meta", body).textContent = "request failed"; });
+  }
+  showTerm(0);
+
+  /* ---------- Playground ---------- */
+  var PRESETS = [
+    { group: "Discover", t: "Search an abbreviation", p: "/v1/search?q=CRC" },
+    { group: "Discover", t: "Search a phrase", p: "/v1/search?q=bowel%20cancer%20symptoms&limit=5" },
+    { group: "Discover", t: "List cancers", p: "/v1/cancers?limit=25" },
+    { group: "Discover", t: "Cancer profile", p: "/v1/cancers/breast-cancer" },
+    { group: "Content", t: "Symptoms · United States", p: "/v1/cancers/breast-cancer/symptoms?country=US" },
+    { group: "Content", t: "Symptoms · United Kingdom", p: "/v1/cancers/ovarian-cancer/symptoms?country=GB" },
+    { group: "Content", t: "Available sections", p: "/v1/cancers/ovarian-cancer/sections" },
+    { group: "Content", t: "Re-check saved facts", p: "/v1/facts?ids=47567f24-2d21-4ab3-929b-6fc95ccfe758" },
+    { group: "Reference", t: "Source registry", p: "/v1/sources?limit=100" },
+    { group: "Reference", t: "Categories", p: "/v1/categories" },
+    { group: "Reference", t: "Countries", p: "/v1/countries" },
+    { group: "Reference", t: "Health", p: "/v1/health" }
+  ];
+  var side = $("#presets"), lastGroup = null, input = $("#pg-input"), out = $("#pg-out"), view = "json", lastResp = null;
+  PRESETS.forEach(function (pr) {
+    if (pr.group !== lastGroup) { var h = document.createElement("h4"); h.textContent = pr.group; side.appendChild(h); lastGroup = pr.group; }
+    var b = document.createElement("button"); b.className = "preset"; b.type = "button"; b.setAttribute("role", "option");
+    b.innerHTML = '<span class="m">GET</span><span><span class="t">' + esc(pr.t) + '</span><span class="d">' + esc(decodeURIComponent(pr.p)) + "</span></span>";
+    b.addEventListener("click", function () { input.value = pr.p; send(); });
+    pr.el = b; side.appendChild(b);
+  });
+  function markPreset() { PRESETS.forEach(function (pr) { var on = pr.p === input.value.trim(); pr.el.classList.toggle("on", on); pr.el.setAttribute("aria-selected", on); }); }
+  function cleanPath(v) {
+    v = (v || "").trim();
+    if (v.indexOf(ORIGIN) === 0) v = v.slice(ORIGIN.length);
+    if (/^https?:\/\//i.test(v)) return null;
+    if (v.charAt(0) !== "/") v = "/" + v;
+    return v;
+  }
+  function snippet(kind, path) {
+    var url = ORIGIN + path;
+    if (kind === "curl") return 'curl -s "' + url + '" \\\n  -H "Accept: application/json"';
+    if (kind === "python") return 'import requests\n\nresp = requests.get(\n    "' + url + '",\n    headers={"Accept": "application/json"},\n    timeout=30,\n)\nresp.raise_for_status()\ndata = resp.json()\nprint(data["meta"] if "meta" in data else data)';
+    return 'const res = await fetch("' + url + '", {\n  headers: { Accept: "application/json" },\n});\nif (!res.ok) throw new Error(`HTTP ${res.status}`);\nconst data = await res.json();\nconsole.log(data);';
+  }
+  function render() {
+    var path = cleanPath(input.value) || "/";
+    if (view === "json") {
+      if (!lastResp) { out.innerHTML = '<span class="empty">Send a request to see the live JSON response.</span>'; return; }
+      var txt = lastResp.json ? lastResp.json : lastResp.text;
+      var s = typeof txt === "string" ? txt : JSON.stringify(txt, null, 2);
+      out.innerHTML = s.length > 400000 ? esc(s.slice(0, 400000)) + "\n…truncated" : highlight(s);
+    } else {
+      out.innerHTML = '<span class="j-s">' + esc(snippet(view, path)) + "</span>";
+    }
+  }
+  function send() {
+    var path = cleanPath(input.value);
+    if (!path) { toast("Only paths on this server can be requested"); return; }
+    input.value = path; markPreset(); view = "json"; $$("#pg-view button").forEach(function (b) { b.classList.toggle("on", b.dataset.view === "json"); });
+    var st = $("#pg-status"); st.className = "pill"; st.textContent = "Sending…"; $("#pg-time").textContent = ""; $("#pg-size").textContent = "";
+    out.innerHTML = '<span class="empty">Waiting for response…</span>';
+    api(path).then(function (r) {
+      lastResp = r;
+      st.className = "pill " + (r.ok ? "ok" : "err"); st.textContent = r.status + (r.ok ? " OK" : " Error");
+      $("#pg-time").textContent = r.ms + " ms";
+      $("#pg-size").textContent = (r.bytes / 1024).toFixed(1) + " KB";
+      render();
+    }).catch(function () { st.className = "pill err"; st.textContent = "Network error"; out.innerHTML = '<span class="empty">The request did not complete. The server may be waking up; try again in a few seconds.</span>'; });
+  }
+  $("#pg-form").addEventListener("submit", function (e) { e.preventDefault(); send(); });
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send(); } });
+  input.addEventListener("input", markPreset);
+  $$("#pg-view button").forEach(function (b) {
+    b.addEventListener("click", function () { view = b.dataset.view; $$("#pg-view button").forEach(function (x) { x.classList.toggle("on", x === b); }); render(); });
+  });
+  $("#pg-copy").addEventListener("click", function () {
+    var path = cleanPath(input.value) || "/";
+    if (view === "json") { if (lastResp) copy(lastResp.json ? JSON.stringify(lastResp.json, null, 2) : lastResp.text); }
+    else copy(snippet(view, path));
+  });
+  markPreset();
+  function runInPlayground(path) { input.value = path; document.getElementById("playground").scrollIntoView(); send(); }
+
+  /* ---------- Explorer ---------- */
+  var exCancer = $("#ex-cancer"), exCats = $("#ex-cats"), exRecords = $("#ex-records"), exBar = $("#ex-bar"), exMore = $("#ex-more"), exCountry = $("#ex-country");
+  var ex = { slug: null, cat: null, country: "", page: 1, sections: [] };
+  api("/v1/cancers?limit=100").then(function (r) {
+    var list = (r.json && r.json.data) || [];
+    list.sort(function (a, b) { return a.canonical_name.localeCompare(b.canonical_name); });
+    exCancer.innerHTML = list.map(function (c) { return '<option value="' + esc(c.slug) + '">' + esc(c.canonical_name) + "</option>"; }).join("");
+    var start = list.some(function (c) { return c.slug === "ovarian-cancer"; }) ? "ovarian-cancer" : (list[0] && list[0].slug);
+    if (start) { exCancer.value = start; loadCancer(start); }
+  });
+  exCancer.addEventListener("change", function () { loadCancer(exCancer.value); });
+  function loadCancer(slug) {
+    ex.slug = slug; ex.cat = null; ex.country = "";
+    exCats.innerHTML = ""; exRecords.innerHTML = '<div class="skeleton"></div>'; exBar.textContent = ""; exMore.hidden = true; exCountry.innerHTML = "";
+    api("/v1/cancers/" + encodeURIComponent(slug) + "/sections").then(function (r) {
+      var secs = ((r.json && r.json.data) || []).filter(function (s) { return s.record_count > 0; });
+      secs.sort(function (a, b) { return b.record_count - a.record_count; });
+      ex.sections = secs;
+      if (!secs.length) {
+        exRecords.innerHTML = '<div class="notice-empty">No reviewed content is published for this cancer yet. It is in the taxonomy, and content appears here as soon as it clears license review.</div>';
+        return;
+      }
+      exCats.innerHTML = "";
+      secs.forEach(function (s) {
+        var b = document.createElement("button"); b.className = "chip"; b.type = "button";
+        b.innerHTML = esc(s.name) + ' <span class="c">' + s.record_count + "</span>";
+        b.addEventListener("click", function () { selectCat(s.category); });
+        b.dataset.cat = s.category; exCats.appendChild(b);
+      });
+      var preferred = secs.filter(function (s) { return s.category === "symptoms"; })[0] || secs[0];
+      selectCat(preferred.category);
+    });
+  }
+  function selectCat(cat) {
+    ex.cat = cat; ex.country = ""; ex.page = 1;
+    $$(".chip", exCats).forEach(function (c) { c.classList.toggle("on", c.dataset.cat === cat); });
+    var sec = ex.sections.filter(function (s) { return s.category === cat; })[0] || { countries_represented: [] };
+    var cs = sec.countries_represented || [];
+    exCountry.innerHTML = "";
+    if (cs.length > 1) {
+      ["", ].concat(cs).forEach(function (code) {
+        var b = document.createElement("button"); b.type = "button";
+        b.textContent = code ? flag(code) + " " + code : "All";
+        b.className = code === ex.country ? "on" : "";
+        b.addEventListener("click", function () { ex.country = code; ex.page = 1; $$("button", exCountry).forEach(function (x) { x.classList.toggle("on", x === b); }); loadRecords(false); });
+        exCountry.appendChild(b);
+      });
+    }
+    loadRecords(false);
+  }
+  function loadRecords(append) {
+    var q = "/v1/cancers/" + encodeURIComponent(ex.slug) + "/" + encodeURIComponent(ex.cat) + "?limit=10&page=" + ex.page + (ex.country ? "&country=" + encodeURIComponent(ex.country) : "");
+    if (!append) exRecords.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div>';
+    exMore.hidden = true;
+    api(q).then(function (r) {
+      var d = r.json && r.json.data, pg = r.json && r.json.pagination;
+      var recs = (d && d.records) || [];
+      if (!append) exRecords.innerHTML = "";
+      recs.forEach(function (rec) { exRecords.appendChild(recordCard(rec, q)); });
+      if (!recs.length && !append) exRecords.innerHTML = '<div class="notice-empty">No records for this filter.</div>';
+      var total = pg ? pg.total_records : recs.length;
+      var shown = $$(".rec", exRecords).length;
+      exBar.innerHTML = '<span><b style="color:var(--text)">' + shown + "</b> of " + total + " records" + (d && d.category_name ? " · " + esc(d.category_name) : "") + '</span><span class="grow"></span><button class="link-btn" id="ex-open">Open request in playground</button>';
+      $("#ex-open").addEventListener("click", function () { runInPlayground(q); });
+      exMore.hidden = !(pg && pg.has_next);
+    });
+  }
+  exMore.addEventListener("click", function () { ex.page += 1; loadRecords(true); });
+  function recordCard(rec, q) {
+    var el = document.createElement("article"); el.className = "rec";
+    var j = rec.jurisdiction || {};
+    var code = j.country || j.scope || "";
+    var srcs = (rec.sources || []).map(function (s) {
+      var date = (s.last_verified_at || "").slice(0, 10);
+      return '<div><div class="src-org">' + esc(s.organization) + '</div><a class="src-doc" href="' + esc(s.url) + '" rel="noopener" target="_blank">' + esc(s.document_title || s.url) + ' ↗</a><div class="src-meta">' + esc(s.trust_tier || "") + (date ? " · verified " + date : "") + "</div></div>";
+    }).join("");
+    el.innerHTML =
+      '<div class="rec-top"><span class="tag flag">' + flag(code) + " " + esc(COUNTRY_NAMES[code] || code) + '</span><span class="tag">' + esc(rec.audience || "") + '</span><span class="tag">' + esc((rec.content_type || "").replace(/_/g, " ").toLowerCase()) + "</span></div>" +
+      '<div class="rec-body">' + esc(rec.content) + "</div>" +
+      '<div class="rec-src">' + srcs + '<div class="rec-actions"><button class="link-btn" data-a="more">Expand</button><button class="link-btn" data-a="cite">Copy citation</button><button class="link-btn" data-a="id">Copy ID</button></div></div>';
+    el.addEventListener("click", function (e) {
+      var a = e.target.getAttribute && e.target.getAttribute("data-a"); if (!a) return;
+      if (a === "more") { el.classList.toggle("open"); e.target.textContent = el.classList.contains("open") ? "Collapse" : "Expand"; }
+      if (a === "id") copy(rec.id);
+      if (a === "cite") {
+        var s = (rec.sources || [])[0] || {};
+        copy([s.document_title, s.organization, s.url, s.last_verified_at ? "Verified " + s.last_verified_at.slice(0, 10) : "", "Retrieved via CancerInfo API (record " + rec.id + ")"].filter(Boolean).join(". ") + ".");
+      }
+    });
+    return el;
+  }
+
+  /* ---------- Sources ---------- */
+  var SRC = [], srcCountry = "";
+  api("/v1/sources?limit=100").then(function (r) {
+    SRC = (r.json && r.json.data) || [];
+    var codes = []; SRC.forEach(function (s) { if (codes.indexOf(s.country_code) < 0) codes.push(s.country_code); });
+    var seg = $("#src-country");
+    [""].concat(codes).forEach(function (c) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = c ? flag(c) : "All"; b.title = c ? (COUNTRY_NAMES[c] || c) : "All countries";
+      if (!c) b.className = "on";
+      b.addEventListener("click", function () { srcCountry = c; $$("button", seg).forEach(function (x) { x.classList.toggle("on", x === b); }); drawSources(); });
+      seg.appendChild(b);
+    });
+    drawSources();
+  }).catch(function () { $("#src-grid").innerHTML = '<div class="notice-empty">The source registry could not be loaded.</div>'; });
+  $("#src-q").addEventListener("input", drawSources);
+  function drawSources() {
+    var q = ($("#src-q").value || "").toLowerCase();
+    var list = SRC.filter(function (s) {
+      if (srcCountry && s.country_code !== srcCountry) return false;
+      if (!q) return true;
+      return [s.organization_name, s.source_name, s.id, s.license_type, s.country_code].join(" ").toLowerCase().indexOf(q) >= 0;
+    });
+    var grid = $("#src-grid");
+    if (!list.length) { grid.innerHTML = '<div class="notice-empty">No sources match.</div>'; return; }
+    grid.innerHTML = list.map(function (s) {
+      var nc = /\bNC\b|non-?commercial/i.test(s.license_type || "");
+      return '<article class="card src-card"><div class="top"><span class="fl">' + flag(s.country_code) + '</span><div><h3>' + esc(s.organization_name) + '</h3><div class="id">' + esc(s.id) + "</div></div></div>" +
+        '<div class="lic"><b>License</b>' + esc(s.license_type) + "</div>" +
+        '<div class="badges">' + (nc ? '<span class="badge nc">Noncommercial only</span>' : "") +
+        (s.license_status ? '<span class="badge okb">License ' + esc(String(s.license_status).toLowerCase()) + "</span>" : "") +
+        (s.attribution_required ? '<span class="badge">Attribution required</span>' : "") +
+        '<span class="badge">' + esc((s.trust_tier || "").split(" - ")[0]) + "</span></div>" +
+        (s.reuse_policy_url ? '<a class="src-doc" href="' + esc(s.reuse_policy_url) + '" rel="noopener" target="_blank">Reuse policy ↗</a>' : "") +
+        "</article>";
+    }).join("");
+  }
+
+  /* ---------- Endpoints ---------- */
+  var EPS = [
+    ["/v1/cancers", "All cancers in the taxonomy", "/v1/cancers?limit=25"],
+    ["/v1/cancers/{cancer}", "Profile, aliases, codes and available categories", "/v1/cancers/breast-cancer"],
+    ["/v1/cancers/{cancer}/{category}", "Cited records, filterable by country and audience", "/v1/cancers/ovarian-cancer/symptoms?country=GB"],
+    ["/v1/cancers/{cancer}/sections", "Categories with record counts and countries", "/v1/cancers/ovarian-cancer/sections"],
+    ["/v1/cancers/{cancer}/sources", "Sources behind a cancer's records", "/v1/cancers/ovarian-cancer/sources"],
+    ["/v1/cancers/{cancer}/versions", "Version history with source notices", "/v1/cancers/breast-cancer/versions"],
+    ["/v1/search", "Cancers, aliases, abbreviations and content", "/v1/search?q=CRC"],
+    ["/v1/facts", "Re-check up to 50 saved record IDs", "/v1/facts?ids=47567f24-2d21-4ab3-929b-6fc95ccfe758"],
+    ["/v1/categories", "The 37 standard knowledge categories", "/v1/categories"],
+    ["/v1/sources", "The source registry and licenses", "/v1/sources?limit=100"],
+    ["/v1/sources/{id}", "One source in detail", "/v1/sources/nci-us"],
+    ["/v1/countries", "Countries and jurisdictions", "/v1/countries"],
+    ["/v1/coverage", "Published records and sources for a cancer", "/v1/coverage?cancer=ovarian-cancer"],
+    ["/v1/health", "Service health", "/v1/health"],
+    ["/v1/ready", "Database readiness", "/v1/ready"]
+  ];
+  $("#eps").innerHTML = EPS.map(function (e, i) {
+    return '<button class="ep" type="button" data-i="' + i + '"><span class="m">GET</span><span><div class="p">' + esc(e[0]) + '</div><div class="d">' + esc(e[1]) + '</div></span><span class="go">Try →</span></button>';
+  }).join("");
+  $$(".ep").forEach(function (b) { b.addEventListener("click", function () { runInPlayground(EPS[+b.dataset.i][2]); }); });
+
+  /* ---------- Misc ---------- */
+  $$("[data-copy-target]").forEach(function (b) { b.addEventListener("click", function () { copy($("#" + b.dataset.copyTarget).textContent.replace(/^\$\s*/, "")); }); });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold: 0.08 });
+    $$(".reveal").forEach(function (el) { io.observe(el); });
+  } else { $$(".reveal").forEach(function (el) { el.classList.add("in"); }); }
+})();
+</script>
+</body>
+</html>
