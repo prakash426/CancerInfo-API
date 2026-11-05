@@ -149,7 +149,7 @@ if [ "$STATUS_CODE" != "200" ]; then
     echo "FAILED! Expected HTTP 200, got ${STATUS_CODE}."
     exit 1
 fi
-echo "$BODY" | grep -q "canonical_name" || { echo "FAILED! Missing canonical_name in response."; exit 1; }
+grep -q "canonical_name" <<< "$BODY" || { echo "FAILED! Missing canonical_name in response."; exit 1; }
 echo "PASSED."
 
 # GET / with Accept: text/html
@@ -161,7 +161,7 @@ if [ "$STATUS_CODE" != "200" ]; then
     echo "FAILED! Expected HTTP 200, got ${STATUS_CODE}."
     exit 1
 fi
-echo "$BODY" | grep -qi "CancerInfo API" || { echo "FAILED! HTML missing title."; exit 1; }
+grep -qi "CancerInfo API" <<< "$BODY" || { echo "FAILED! HTML missing title."; exit 1; }
 echo "PASSED."
 
 # GET / with Accept: application/json
@@ -173,7 +173,7 @@ if [ "$STATUS_CODE" != "200" ]; then
     echo "FAILED! Expected HTTP 200, got ${STATUS_CODE}."
     exit 1
 fi
-echo "$BODY" | grep -q "\"name\":" || { echo "FAILED! JSON missing name key."; exit 1; }
+grep -q "\"name\":" <<< "$BODY" || { echo "FAILED! JSON missing name key."; exit 1; }
 echo "PASSED."
 
 # GET /docs
@@ -321,7 +321,7 @@ print('Probe cancer record inserted into SQLite database.')
 # Verify probe cancer record is immediately retrievable via HTTP from Container A
 echo -n "  - Verifying probe record via HTTP GET from Container A... "
 PROBE_RESP=$(curl -s -f "http://127.0.0.1:${PORT_DEFAULT}/v1/cancers/durability-probe-cancer")
-echo "$PROBE_RESP" | grep -q "Durability Probe Cancer" || { echo "FAILED! Record not found in Container A."; exit 1; }
+grep -q "Durability Probe Cancer" <<< "$PROBE_RESP" || { echo "FAILED! Record not found in Container A."; exit 1; }
 echo "PASSED."
 
 # Destroy Container A completely
@@ -345,7 +345,7 @@ wait_for_endpoint "$PORT_DEFAULT" "/v1/health" "$CONTAINER_PERSIST_B"
 # Verify probe record persisted into Container B via HTTP without re-running bootstrap
 echo -n "  - Verifying probe record persists via HTTP GET in Container B... "
 PROBE_RESP_B=$(curl -s -f "http://127.0.0.1:${PORT_DEFAULT}/v1/cancers/durability-probe-cancer")
-echo "$PROBE_RESP_B" | grep -q "Durability Probe Cancer" || { echo "FAILED! Record did NOT persist into Container B!"; exit 1; }
+grep -q "Durability Probe Cancer" <<< "$PROBE_RESP_B" || { echo "FAILED! Record did NOT persist into Container B!"; exit 1; }
 echo "PASSED."
 
 # Verify probe record directly in SQLite database inside Container B
