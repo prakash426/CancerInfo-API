@@ -74,6 +74,8 @@ def test_portal_and_openapi_publish_required_notices(client):
         assert 'no specific charge' in text or 'specific charge' in text
         assert 'no charge' in text
         assert 'United States Government' in text
+        assert 'CC BY-NC-SA 3.0 IGO' in text
+    assert client.get('/static/logo.png').headers['content-type'] == 'image/png'
 
 
 def make_plan(data):
