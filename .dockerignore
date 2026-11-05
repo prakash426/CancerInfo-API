@@ -16,10 +16,8 @@ __pycache__
 .coverage
 htmlcov
 
-# Node & Frontend Archives
+# Node artifacts
 node_modules
-cancerinfo-explorer-ui/
-cancerinfo-explorer-ui.zip
 
 # Local SQLite databases
 cancerinfo.db
@@ -36,7 +34,7 @@ cancerinfo.db
 # Unit Tests & Local Scripts
 tests/
 
-# Exclude local scripts except production-required L003 CLIs
+# Exclude local scripts except the production-required database CLIs
 scripts/*
 !scripts/bootstrap.py
 !scripts/adopt_existing_schema.py

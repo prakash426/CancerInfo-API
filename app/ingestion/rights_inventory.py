@@ -12,8 +12,7 @@ Guiding Principles:
 """
 from dataclasses import asdict, dataclass
 from datetime import datetime
-import re
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Union
 from sqlalchemy.orm import Session
 
 from app.core.constants import PublicationStatus, ThirdPartyPermissionStatus
@@ -1357,21 +1356,3 @@ def generate_markdown_inventory_table() -> str:
             f"| {i} | `{dec.source_id}` | {dec.source_organization} | `{url}` | `{dec.publication_status.value}` | {dec.quarantine_reason} |"
         )
     return "\n".join(lines)
-
-
-def extract_candidate_urls_from_markdown(markdown_text: str) -> Set[str]:
-    """
-    Extracts candidate document URLs from markdown tables.
-    Matches lines starting with '|' and containing backticked candidate URLs.
-    """
-    urls: Set[str] = set()
-    for line in markdown_text.splitlines():
-        if line.strip().startswith("|") and "`http" in line:
-            m = re.search(r"`(https?://[^`]+)`", line)
-            if m:
-                u = m.group(1)
-                if any(d in u for d in ["cancer.gov", "nhs.uk", "who.int", "canceraustralia.gov.au", "cdc.gov"]):
-                    if not any(p in u for p in ["/policies/", "/copyright", "/open-access", "agencymaterials"]):
-                        urls.add(u)
-    return urls
-

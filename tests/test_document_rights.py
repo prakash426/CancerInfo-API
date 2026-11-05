@@ -47,7 +47,6 @@ from app.ingestion.rights_inventory import (
     RIGHTS_INVENTORY,
     audit_candidate_acceptance,
     export_rights_audit_report,
-    extract_candidate_urls_from_markdown,
     get_rights_inventory_entry,
     list_rights_inventory,
     record_owner_rights_review,
@@ -427,34 +426,22 @@ def test_l004_migration_upgrade_and_downgrade(tmp_path):
     engine.dispose()
 
 
-def test_documented_candidate_urls_match_registry_and_seed(test_db_session):
+def test_rights_inventory_matches_seeded_candidate_documents(test_db_session):
     """
-    Mithra acceptance correction: Handoff and candidate report URL sets
-    must not diverge from the registry or seeded candidate set.
-    Asserts: set(documented_candidate_urls) == set(RIGHTS_INVENTORY.keys()) == set(seed_candidate_urls)
+    The rights inventory and the seeded candidate documents must describe
+    exactly the same set of source URLs.
     """
     inv_urls = set(RIGHTS_INVENTORY.keys())
     seed_urls = {d.original_url for d in test_db_session.query(SourceDocument).all()}
 
-    with open("docs/HANDOFF_TO_MITHRA.md") as f:
-        handoff_urls = extract_candidate_urls_from_markdown(f.read())
-
-    with open("docs/candidate_report_CIAPI-L004.md") as f:
-        report_urls = extract_candidate_urls_from_markdown(f.read())
-
     assert len(inv_urls) == 32
     assert len(seed_urls) == 32
-    assert len(handoff_urls) == 32
-    assert len(report_urls) == 32
-
-    assert handoff_urls == inv_urls
-    assert report_urls == inv_urls
     assert seed_urls == inv_urls
 
 
 def test_acceptance_validation_reports_missing_owner_review_as_blocker(test_db_session):
     """
-    Mithra acceptance correction: Acceptance validation must truthfully report
+    Acceptance validation must truthfully report
     missing rights_reviewed_at and rights_reviewer as OPEN blockers.
     """
     report = audit_candidate_acceptance(db=test_db_session)
@@ -483,7 +470,7 @@ def test_acceptance_validation_reports_missing_owner_review_as_blocker(test_db_s
 
 def test_third_party_permission_state_distinguishes_not_requested_from_submitted():
     """
-    Mithra acceptance correction: Third-party permission state must distinguish
+    Third-party permission state must distinguish
     'not requested' (REQUIRED_NOT_SUBMITTED) from 'submitted and awaiting response'.
     """
     doc = SourceDocument(

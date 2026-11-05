@@ -1,4 +1,4 @@
-# Archived UI (cancerinfo-explorer-ui) Node patterns
+# Node / editor artifacts
 node_modules/
 build/
 dist/
