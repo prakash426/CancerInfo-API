@@ -18,7 +18,7 @@ These are the owner-reported plan settings, not proof of gateway enforcement or 
 
 ## Software and source content
 
-The repository's MIT license covers software. It does not establish hosted service pricing or grant blanket permission to reuse third-party source content. Preserve citations and follow the applicable source restrictions and approved service terms. Document-level rights decisions remain with L004.
+The repository's MIT license covers software. It does not establish hosted service pricing or grant blanket permission to reuse third-party source content. Preserve citations and follow the applicable source restrictions and approved service terms. Document-level rights decisions are described in [Content rights and attribution](CONTENT_RIGHTS_AND_ATTRIBUTION.md).
 
 ## Support
 
@@ -32,6 +32,5 @@ The Basic plan has a $0 monthly API subscription, with 1,000 requests per month 
 
 - Plan price/rate-limit screenshot and request-quota/pricing screenshots supplied by the owner on October 2, 2026.
 - [RapidAPI: Connecting to an API](https://docs.rapidapi.com/docs/connecting-to-an-api), Bandwidth Platform Fee section: bandwidth above the included subscription allowance is charged to the consumer.
-- [CIAPI-L016](https://app.notion.com/p/3e46e02a20c18127a521faa0e643d7d1), owner decisions and remaining launch requirements.
 
 This policy supersedes earlier unrestricted-access and permanent charge-free promises in project collateral. Prices and limits can change; the published plan governs each subscription.

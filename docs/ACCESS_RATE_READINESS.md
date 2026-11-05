@@ -1,6 +1,6 @@
 # Access, request limits and database readiness
 
-This candidate changes request controls and health reporting. It does not grant publication rights, change source decisions, import content, or modify WHO permissions. No migration or deployment is performed merely by opening this PR.
+This guide covers administrator access, proxy identity, shared rate limiting and database readiness. These controls do not grant publication rights, change source decisions, import content or modify WHO permissions.
 
 ## Administrator access
 
@@ -32,12 +32,12 @@ See the official [PostgreSQL locking clauses](https://www.postgresql.org/docs/cu
 
 Failure messages and log events do not include database exceptions, credentials, request bodies, query strings, or submitted authentication headers. Readiness, accounting failures and unexpected request failures log server-generated request IDs. Success, validation errors, routing errors, rate denial, dependency failure and internal errors carry the same request, timing, rate, disclaimer, version, publication-use and private/no-store cache headers.
 
-A future deployment should configure the platform's readiness check to `/v1/ready` and monitor its 503 responses separately from process liveness. Alert delivery, incident ownership, full staging load acceptance and a safe application rollback drill remain separate operational work. This PR does not configure external alerts or authorize a deployment.
+A future deployment should configure the platform's readiness check to `/v1/ready` and monitor its 503 responses separately from process liveness. Alert delivery, incident ownership, full staging load acceptance and a safe application rollback drill remain separate operational work. External alerting is not configured by the application.
 
-## Future rollout checks
+## Release checks
 
 1. Back up the selected production database and verify the recovery target.
-2. Provision a strong admin secret and verified proxy trust before starting the candidate.
+2. Provision a strong admin secret and verified proxy trust before starting a new release.
 3. Rehearse and apply the additive migration through the controlled release process. Startup refuses an old schema; no implicit migration runs.
 4. Verify readiness, separate client allowances, forged-forwarding rejection, 429/503 headers, restart/multiworker continuity, administrator denial and required WHO exclusion against the accepted release.
-5. Record the exact candidate, schema, corpus and CI evidence before an owner-authorized deployment.
+5. Record the exact commit, schema revision, corpus and CI evidence before an owner-authorized deployment.

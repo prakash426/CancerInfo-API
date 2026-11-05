@@ -33,4 +33,4 @@ The follow-up passed 398 full SQLite/PostgreSQL tests with one existing Starlett
 
 The exact live follow-up and replay were verified. All 365 records, 365 citations, 365 versions, 60 WHO provenance rows and 5,628 legacy rows are unchanged. Only the requested 16 statuses and 16 notes changed. Every other live value matched the baseline. Main-local synchronization passed source-value comparisons; 81 other local database/research files matched their previous fingerprints.
 
-Private production/local backups, before/after snapshots, applied 48-row CSVs and preservation evidence are retained outside Git. The PR's exact-head CI is the authoritative final remote result. Code remains proposed into launch_blockers through PR #21. Do not merge into main or deploy. No content is re-ingested, reseeded, deleted or reactivated, and commercial WHO access remains blocked.
+Private production/local backups, before/after snapshots, applied 48-row CSVs and preservation evidence are retained outside Git. No content is re-ingested, reseeded, deleted or reactivated, and commercial WHO access remains blocked.

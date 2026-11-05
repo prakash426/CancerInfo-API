@@ -1,12 +1,12 @@
-# Content Rights, Redistribution, and Attribution Guide (CIAPI-L004)
+# Content Rights, Redistribution, and Attribution Guide
 
-Current use-specific implementation: [Publication by content type and approved use](publication-use-policy.md). The candidate inventories below describe the original L004 audit, not the current live corpus.
+Current use-specific implementation: [Publication by content type and approved use](publication-use-policy.md). The candidate inventories below describe the original rights audit, not the current live corpus.
 
 ## 1. Executive Summary & Policy Overview
 
 The CancerInfo API aggregates cancer clinical information, patient guides, and epidemiological statistics from authoritative public health organizations worldwide. However, public availability on the open web does **not** equal unrestricted redistribution rights for downstream API consumers, commercial entities, or derivative works.
 
-Under **CIAPI-L004**, CancerInfo API enforces a **fail-closed, document-level rights architecture**. Every individual source document, raw scraped content record, and consensus citation must possess an explicit, audited rights decision before it may be published or redistributed.
+CancerInfo API enforces a **fail-closed, document-level rights architecture**. Every individual source document, raw scraped content record, and consensus citation must possess an explicit, audited rights decision before it may be published or redistributed.
 
 ---
 
@@ -132,9 +132,9 @@ Total Candidate URLs: 32
 Consensus facts synthesize corroborated clinical agreement across multiple health authorities (e.g., NCI, NHS, WHO, Cancer Australia).
 
 ### Relational Linkage
-Prior to L004, `ConsensusFactSource` stored a freeform `source_name` and `source_url`, without a relational connection to the underlying ingested document. 
+Originally, `ConsensusFactSource` stored a freeform `source_name` and `source_url`, without a relational connection to the underlying ingested document.
 
-In **CIAPI-L004**, `ConsensusFactSource` includes a required foreign key:
+`ConsensusFactSource` now includes a required foreign key:
 ```sql
 consensus_fact_sources.source_document_id -> source_documents.id
 ```

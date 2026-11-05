@@ -12,7 +12,7 @@ Thank you for your interest in contributing to **CancerInfo API**! Every pull re
 2. **Expand Canonical Cancer Mappings & Aliases**:
    - Add international colloquial names, abbreviations (e.g. `NSCLC`, `ALL`, `CML`), or ICD-O-3 codes in `app/ingestion/seed.py`.
 3. **Enhance Taxonomy & Classification**:
-   - Help refine extraction rules across our 37 standardized categories in `app/core/constants.py and app/normalization/taxonomy.py`.
+   - Help refine extraction rules across our 37 standardized categories in `app/core/constants.py` and `app/normalization/taxonomy.py`.
 4. **Develop Client SDKs & Community Templates**:
    - Build client libraries in Python, JavaScript/TypeScript, Go, Swift, Rust, or Kotlin.
 
@@ -24,7 +24,7 @@ The core service is Python/FastAPI. The supported launch runtime is Python 3.11 
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Prakash-Merepala/CancerInfo-API.git
+git clone https://github.com/prakash426/CancerInfo-API.git
 cd CancerInfo-API
 
 # 2. Set up Python virtual environment & dependencies
@@ -53,7 +53,7 @@ Before opening a pull request, ensure all CI validation gates pass locally:
 2. `python -m pip check` — Ensure dependency graph consistency.
 3. `DATABASE_URL=sqlite:////tmp/cancerinfo-tests.db python -m pytest tests/ -v -ra -W default` — Run the full existing suite and meaningful regression tests for the changed behavior.
 4. `python -c "from app.main import app; app.openapi()"` — OpenAPI 3.1 schema generates without error.
-5. `curl -f http://localhost:3000/health` — Local server health check returns 200 OK.
+5. `curl -f http://localhost:3000/v1/health` — Local server health check returns 200 OK.
 6. `./scripts/validate_container.sh` — Docker container builds cleanly without baked state, boots on dynamic PORT, passes all endpoint checks, and verifies data durability across container recreation.
 
 ---
@@ -65,10 +65,15 @@ Before opening a pull request, ensure all CI validation gates pass locally:
 - Every added medical fact **must** include its primary source URL and organization attribution.
 - Respect our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## Scope and review evidence
+## Pull request checklist
 
-Create a task-referenced branch from the agreed base. This documentation branch is `docs/CIAPI-001-python-core-launch`, created from main and fast-forwarded to the Python refactor. Keep it open for additional commits; do not merge without the owner’s instruction.
+- Branch from `main` and keep each pull request focused on one change.
+- Describe what changed, any schema or data impact, and the exact tests you ran.
+- Do not add a second dataset or serving implementation; the FastAPI service is the single source of truth.
 
-The archived React client is future scope. Core changes must not restore a second dataset or serving implementation. Include requirements, changed files, schema/data impact, exact tests/results and unresolved risks in each handoff. Source review, local tests, CI, image boot, database restore and marketplace acceptance are separate evidence stages.
+## Data safety
 
-Startup never creates or seeds tables. Run migrations and the controlled bootstrap explicitly on an empty development database. Local corpora, backups and private research must remain untracked; `python scripts/check_local_artifacts.py` verifies the Git index without reading their contents. Use a disposable database for tests and never run seed/ingestion against valuable data without an approved data procedure. Public content must pass exact-document rights and citation review. See [codebase and launch assessment](docs/CODEBASE_ATLAS.md).
+- Application startup never creates or seeds tables. Run migrations and the controlled bootstrap explicitly against an empty development database.
+- Local corpora, backups and private research stay untracked. `python scripts/check_local_artifacts.py` verifies the Git index without reading their contents.
+- Use a disposable database for tests. Never run seed or ingestion against valuable data without an approved data procedure.
+- Public content must pass exact-document rights and citation review. See [Content rights and attribution](docs/CONTENT_RIGHTS_AND_ATTRIBUTION.md) and [Publication by content type](docs/publication-use-policy.md).

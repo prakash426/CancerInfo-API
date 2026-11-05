@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000",
+      "value": "https://cancerinfo-api.onrender.com",
       "type": "string"
     },
     {
@@ -117,7 +117,7 @@
       }
     },
     {
-      "name": "Get Screening Guidelines (UK / NHS)",
+      "name": "Get Symptoms with UK / NHS Provenance",
       "request": {
         "method": "GET",
         "header": [
@@ -127,15 +127,15 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/v1/cancers/colorectal-cancer/screening?country=GB",
+          "raw": "{{baseUrl}}/v1/cancers/ovarian-cancer/symptoms?country=GB",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "v1",
             "cancers",
-            "colorectal-cancer",
-            "screening"
+            "ovarian-cancer",
+            "symptoms"
           ],
           "query": [
             {

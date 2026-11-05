@@ -25,8 +25,10 @@ Official sources:
 - https://render.com/docs/environment-variables (platform markers)
 - https://render.com/docs/configure-environment-variables (Save only defers activation)
 
-## Promotion constraints
+## Release checklist
 
-PR22 requires 0006_shared_rate_limits. Live remains 0005_record_publication. The migration adds only rate_limit_buckets, its expiry index and the Alembic version change; no corpus or rights updates. Candidate production startup rejects 0005. Main's On Commit deployment makes merging PR22 a deployment trigger.
-
-Do not merge PR22 or deploy this candidate while live schema changes are prohibited. The verification endpoint can be reviewed and merged into launch_blockers independently. Remaining release gates include staging and later validating the Render public-ingress mode, rotation of the previously exposed administrator credential, a fresh backup and coordinated migration/application rollout. WHO commercial access remains blocked; no data or policy changes are included here.
+- Migration `0006_shared_rate_limits` adds only `rate_limit_buckets`, its expiry index and the Alembic version change; it makes no corpus or rights updates. Production startup refuses an older schema.
+- `main` deploys on commit, so merging to `main` is a deployment trigger. Take a fresh backup and apply migrations through the controlled release process first.
+- Rotate any administrator credential that has ever been exposed, then confirm with `GET /v1/admin/verify` that the new key succeeds and the retired key fails.
+- Validate the Render public-ingress client-identity mode in staging before relying on it for rate limiting.
+- WHO content remains restricted to approved noncommercial access.

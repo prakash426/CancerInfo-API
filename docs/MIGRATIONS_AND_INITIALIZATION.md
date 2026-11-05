@@ -1,4 +1,4 @@
-# Database Migrations, Controlled Initialization & Production Operations Guide (CIAPI-L003)
+# Database Migrations, Controlled Initialization & Production Operations Guide
 
 This document establishes the authoritative operational runbook for database migrations, baseline bootstrap, and schema lifecycle management across Neon PostgreSQL and Render hosting.
 

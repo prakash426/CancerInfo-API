@@ -1,6 +1,6 @@
-# Public response contract: CIAPI-L010
+# Public response contract
 
-This change freezes response behavior for the existing Python API. It does not certify publication eligibility, clinical review, source rights, or release readiness. The pending profile, comparison and trial endpoints remain separate tasks.
+This document defines the stable response behavior of the public API. It does not certify publication eligibility, clinical review or source rights.
 
 ## Identity and category resolution
 
@@ -22,7 +22,7 @@ Search adds optional `page` (default 1, minimum 1) while retaining `limit` (defa
 
 Category `page` and `limit` paginate `records`. Legacy `items` remain a separate unpaginated consensus collection, with `consensus_summary.total_items` recording its size. Category pagination totals count records; `meta.result_count` counts returned records plus returned consensus items. Duplicate citations cannot duplicate record totals. Cancer-list order uses canonical name then ID.
 
-Current search ranking materializes matching results before slicing. Large-corpus optimization and performance acceptance belong to L014/L030; these tests do not establish load performance.
+Current search ranking materializes matching results before slicing. Large-corpus optimization and load testing are tracked separately; these tests do not establish load performance.
 
 ## Errors and compatibility changes
 
@@ -30,13 +30,13 @@ Errors use `error.code`, `error.message`, and `error.details`. Domain errors ret
 
 Intentional corrections: unknown categories no longer silently return overview; unreviewed aliases no longer resolve; colliding aliases return 409; search filters now apply across evidence types; pagination metadata counts the collection actually paginated; validation and router errors now use the API envelope. Existing successful response fields and routes remain available.
 
-Handlers follow the [official FastAPI error-handling guidance](https://fastapi.tiangolo.com/tutorial/handling-errors/). Runtime OpenAPI references the error schema. Committed consumer specification generation and RapidAPI import remain L013 acceptance work.
+Handlers follow the [official FastAPI error-handling guidance](https://fastapi.tiangolo.com/tutorial/handling-errors/). Runtime OpenAPI references the error schema. The public consumer specification is exported with `python scripts/export_public_openapi.py` and checked against the runtime schema in tests.
 
 ## Root, probes and headers
 
 Root `/` returns JSON when Accept contains application/json without text/html. Otherwise it returns the HTML developer portal. `/health` and `/api/health` return the lightweight `status: ok` probe; `/v1/health` returns the versioned application health envelope. Probes are not database persistence or launch-readiness evidence.
 
-Ordinary application responses carry request ID, response time, rate limits, disclaimer and API-version headers from the existing middleware. The middleware's early rate-limit response retains retry/rate headers; completing its broader header and trust controls belongs to L011.
+Ordinary application responses carry request ID, response time, rate limits, disclaimer and API-version headers from the existing middleware. The middleware's early rate-limit response retains retry/rate headers, and success and error paths share the same header set (see [access, rate limits and readiness](ACCESS_RATE_READINESS.md)).
 
 ## Runtime route inventory
 
