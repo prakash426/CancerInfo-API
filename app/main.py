@@ -339,9 +339,9 @@ def root(request: Request):
 <body>
   <div class="container">
     <div class="header">
-      <span class="badge">🎗️ Verified Clinical Knowledge API</span>
+      <span class="badge">🎗️ Source-cited cancer information API</span>
       <h1>CancerInfo API</h1>
-      <p class="subtitle">A free, structured, global, source-transparent REST API aggregating clinical oncology data with fact-level provenance from world-leading public health authorities.</p>
+      <p class="subtitle">Structured cancer information from official public-health sources, with the citation, jurisdiction and reuse terms attached to every fact.</p>
       
       <div class="btn-group">
         <a class="btn" href="/docs">⚡ Interactive Swagger UI (/docs)</a>
@@ -354,15 +354,15 @@ def root(request: Request):
     <div class="grid">
       <div class="card">
         <h3>🔍 Quick Test Endpoints</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px;">Run these sample queries directly against the live backend:</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px;">Run these sample queries against this server:</p>
         <pre><code># 1. Search by abbreviation or symptom
-curl -s http://localhost:3000/v1/search?q=breast+cancer | jq
+curl -s "<span class="origin">http://localhost:3000</span>/v1/search?q=breast+cancer" | jq
 
 # 2. Symptoms with fact-level provenance
-curl -s http://localhost:3000/v1/cancers/breast-cancer/symptoms?country=US | jq
+curl -s "<span class="origin">http://localhost:3000</span>/v1/cancers/breast-cancer/symptoms?country=US" | jq
 
 # 3. Screening guidelines by jurisdiction
-curl -s http://localhost:3000/v1/cancers/colorectal-cancer/screening | jq</code></pre>
+curl -s "<span class="origin">http://localhost:3000</span>/v1/cancers/colorectal-cancer/screening" | jq</code></pre>
       </div>
 
       <div class="card">
@@ -370,13 +370,20 @@ curl -s http://localhost:3000/v1/cancers/colorectal-cancer/screening | jq</code>
         <p style="color: var(--text-muted); font-size: 0.9rem;">Every medical statement is traced to source URL, retrieved date, and legal attribution:</p>
         <div class="sources-list">
           <span class="source-tag">National Cancer Institute (US)</span>
+          <span class="source-tag">NHS (UK)</span>
           <span class="source-tag">World Health Organization (Global)</span>
-          <span class="source-tag">National Health Service (UK)</span>
-          <span class="source-tag">Cancer Australia (AU)</span>
+          <span class="source-tag">CDC (US)</span>
+          <span class="source-tag">MedlinePlus (US)</span>
+          <span class="source-tag">AIHW (AU)</span>
+          <span class="source-tag">Office for National Statistics (UK)</span>
+          <span class="source-tag">Statistics Canada (CA)</span>
+          <span class="source-tag">Statistics Netherlands (NL)</span>
+          <span class="source-tag">Te Aho o Te Kahu (NZ)</span>
+          <span class="source-tag">Eurostat (EU)</span>
         </div>
         <pre><code># Inspect source audit registry
-curl -s http://localhost:3000/v1/sources | jq
-curl -s http://localhost:3000/v1/coverage | jq</code></pre>
+curl -s "<span class="origin">http://localhost:3000</span>/v1/sources" | jq
+curl -s "<span class="origin">http://localhost:3000</span>/v1/coverage" | jq</code></pre>
       </div>
     </div>
 
@@ -385,6 +392,9 @@ curl -s http://localhost:3000/v1/coverage | jq</code></pre>
       <strong>Clinical Disclaimer:</strong> {MEDICAL_DISCLAIMER}
     </div>
   </div>
+  <script>
+    document.querySelectorAll(".origin").forEach(function (el) {{ el.textContent = window.location.origin; }});
+  </script>
 </body>
 </html>
 """
